@@ -1,0 +1,67 @@
+// esempio di widget che usa una list view con dati da firebase
+
+class Main extends StatelessWidget {
+  const Main({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'My Widget Example',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('test app v2'),
+        ),
+        body: Center(
+          child: Section1(),
+        ),
+      ),
+    );
+  }
+}
+
+class Section1 extends StatefulWidget {
+  @override
+  _Section1 createState() => _Section1();
+}
+
+class _Section1 extends State<Section1> {
+  List<MyData> dataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('esercizi').get();
+
+    List<MyData> tempList = [];
+
+    querySnapshot.docs.forEach((doc) {
+      String string1 = doc['nome'];
+      double value = doc['value'];
+
+      MyData data = MyData(string1, value);
+      tempList.add(data);
+    });
+
+    setState(() {
+      dataList = tempList;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: dataList.length,
+      itemBuilder: (context, index) {
+        final item = dataList[index];
+        return ListTile(
+          title: Text(item.nome),
+          subtitle: Text(item.value.toString()),
+        );
+      },
+    );
+  }
+}
