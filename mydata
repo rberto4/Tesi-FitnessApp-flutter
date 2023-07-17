@@ -1,0 +1,9 @@
+
+// esempio di struttura dati con stringa e valore double
+
+class MyData {
+  final String nome;
+  final double value;
+
+  MyData(this.nome, this.value);
+}
