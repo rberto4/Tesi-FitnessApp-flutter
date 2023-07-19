@@ -1,106 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Applicazione());
 }
 
-class MyApp extends StatelessWidget {
+class Applicazione extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Schermata Home',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomeScreen(),
-    );
+        title: "Applicazione",
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+        ),
+        home: HomePage());
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    Screen1(),
-    Screen2(),
-    Screen3(),
-  ];
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Schermata Home',
-          textAlign: TextAlign.right,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
+    return ResponsiveBuilder(builder: (context, sizingInformation) {
+      if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
+        return Scaffold(
+            appBar: AppBar(
+              title: Text("Sei su desktop "),
+              automaticallyImplyLeading: false,
+            ),
+            body: Row(
+              children: [
+                mydrawer(),
+                Expanded(
+                  child: Container(
+                      // Contenuto del corpo dell'applicazione
+                      ),
+                ),
+              ],
+            ));
+      } else {
+        return Scaffold(
+          drawer: mydrawer(),
+          appBar: AppBar(
+            title: Text("Sei su mobile "),
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              // Azione da eseguire quando viene premuto l'icona delle impostazioni
+        );
+      }
+    });
+  }
+}
+
+class mydrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          ListTile(
+            title: Text('Opzione 1'),
+            onTap: () {
+              // Azione per l'opzione 1
+            },
+          ),
+          ListTile(
+            title: Text('Opzione 2'),
+            onTap: () {
+              // Azione per l'opzione 2
             },
           ),
         ],
       ),
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Schermata 1',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Schermata 2',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Schermata 3',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Screen1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Schermata 1'),
-    );
-  }
-}
-
-class Screen2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Schermata 2'),
-    );
-  }
-}
-
-class Screen3 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Schermata 3'),
     );
   }
 }
