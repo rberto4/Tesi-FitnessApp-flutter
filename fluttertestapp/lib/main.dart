@@ -32,8 +32,9 @@ class HomePage extends StatelessWidget {
                 mydrawer(),
                 Expanded(
                   child: Container(
-                      // Contenuto del corpo dell'applicazione
-                      ),
+                    alignment: AlignmentDirectional.topStart,
+                    child: Text("ciao"),
+                  ),
                 ),
               ],
             ));
