@@ -12,15 +12,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  verificaAccesso();
   runApp(app());
 }
-
-void verificaAccesso() {}
 
 class app extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp();
+    return MaterialApp(
+      home: LoginPageUtente(),
+    );
   }
 }
