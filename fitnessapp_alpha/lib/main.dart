@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'autenticazione/LoginPageUtente.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,7 @@ class App extends StatelessWidget {
         appBar: AppBar(
           title: Text("fitnessapp_alpha_v0.1"),
         ),
+        body: loginUtente(),
       ),
     );
   }
