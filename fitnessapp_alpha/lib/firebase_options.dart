@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD00c-_QcCpxNDc0Ee4e1g0pu4G9AJTdmU',
-    appId: '1:772076034210:web:e0eded6d5ea577d1415ffb',
-    messagingSenderId: '772076034210',
-    projectId: 'myfluttertest-e8d97',
-    authDomain: 'myfluttertest-e8d97.firebaseapp.com',
-    storageBucket: 'myfluttertest-e8d97.appspot.com',
-    measurementId: 'G-BZ5WDKB8YS',
+    apiKey: 'AIzaSyCQ5voGbMqWTHMgQ97lJ57yxM5P_qbUVsY',
+    appId: '1:864860752246:web:132b99518c217e92599257',
+    messagingSenderId: '864860752246',
+    projectId: 'app-fitness-test',
+    authDomain: 'app-fitness-test.firebaseapp.com',
+    storageBucket: 'app-fitness-test.appspot.com',
+    measurementId: 'G-7ZWXXR810L',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCGe8hhnd79TMkcNuvaZB2AgxzsuI-U8sw',
-    appId: '1:772076034210:android:6f1e1b15769054d4415ffb',
-    messagingSenderId: '772076034210',
-    projectId: 'myfluttertest-e8d97',
-    storageBucket: 'myfluttertest-e8d97.appspot.com',
+    apiKey: 'AIzaSyBQgoXxUqWp7A5WsTl7Q2k970KINnj4t_w',
+    appId: '1:864860752246:android:622568bc36e7efa4599257',
+    messagingSenderId: '864860752246',
+    projectId: 'app-fitness-test',
+    storageBucket: 'app-fitness-test.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCWdvop3ZmSp4CyQZqwZWVOTxPv8grPAeE',
-    appId: '1:772076034210:ios:178296bdf7c2cdd4415ffb',
-    messagingSenderId: '772076034210',
-    projectId: 'myfluttertest-e8d97',
-    storageBucket: 'myfluttertest-e8d97.appspot.com',
-    iosBundleId: 'com.example.fitnessappAlpha',
+    apiKey: 'AIzaSyCVAWNXeGWOtVNR4Hbr7a79nCNcw9-mGeg',
+    appId: '1:864860752246:ios:de0f7ee5ee30d7a2599257',
+    messagingSenderId: '864860752246',
+    projectId: 'app-fitness-test',
+    storageBucket: 'app-fitness-test.appspot.com',
+    iosBundleId: 'com.example.appFitnessTest',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCWdvop3ZmSp4CyQZqwZWVOTxPv8grPAeE',
-    appId: '1:772076034210:ios:4799f18620bd48fc415ffb',
-    messagingSenderId: '772076034210',
-    projectId: 'myfluttertest-e8d97',
-    storageBucket: 'myfluttertest-e8d97.appspot.com',
-    iosBundleId: 'com.example.fitnessappAlpha.RunnerTests',
+    apiKey: 'AIzaSyCVAWNXeGWOtVNR4Hbr7a79nCNcw9-mGeg',
+    appId: '1:864860752246:ios:80702069c9085741599257',
+    messagingSenderId: '864860752246',
+    projectId: 'app-fitness-test',
+    storageBucket: 'app-fitness-test.appspot.com',
+    iosBundleId: 'com.example.appFitnessTest.RunnerTests',
   );
 }

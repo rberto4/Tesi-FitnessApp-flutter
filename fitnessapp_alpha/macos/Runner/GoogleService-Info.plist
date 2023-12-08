@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyCWdvop3ZmSp4CyQZqwZWVOTxPv8grPAeE</string>
+	<string>AIzaSyCVAWNXeGWOtVNR4Hbr7a79nCNcw9-mGeg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>772076034210</string>
+	<string>864860752246</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.fitnessappAlpha.RunnerTests</string>
+	<string>com.example.appFitnessTest.RunnerTests</string>
 	<key>PROJECT_ID</key>
-	<string>myfluttertest-e8d97</string>
+	<string>app-fitness-test</string>
 	<key>STORAGE_BUCKET</key>
-	<string>myfluttertest-e8d97.appspot.com</string>
+	<string>app-fitness-test.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:772076034210:ios:d54fa5e0b964fb5d415ffb</string>
+	<string>1:864860752246:ios:80702069c9085741599257</string>
 </dict>
 </plist>
