@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+final _firestore = FirebaseFirestore.instance;
+
 class authCheck extends StatelessWidget {
   const authCheck({super.key});
 
@@ -57,8 +59,6 @@ Future<bool> checkIfUserIsCoach(String? userEmail) async {
 }
 
 class authService extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
 //LOGIN ACCOUNT
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Future<UserCredential> accedi(String email, String password) async {
@@ -106,5 +106,16 @@ class authService extends ChangeNotifier {
 
   String? getEmailFromDb() {
     return _firebaseAuth.currentUser?.email;
+  }
+
+  // selezione cliente dalla lsta del coach
+
+  String selectedName = '';
+  String selectedSurname = '';
+
+  void setUserData(String nome, String cognome) {
+    selectedName = nome;
+    selectedSurname = cognome;
+    notifyListeners();
   }
 }
