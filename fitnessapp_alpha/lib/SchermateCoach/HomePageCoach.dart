@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'visualizzazioneSchedaHome.dart';
+import 'oggettiSchede.dart';
+
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class schermataHomeCoach extends StatefulWidget {
   const schermataHomeCoach({super.key});
@@ -27,7 +30,6 @@ class _schermataHomeState extends State<schermataHomeCoach> {
   }
 
   // lista clienti x drawer laterale
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<String>> getClientiList() async {
     QuerySnapshot querySnapshot = await _firestore
@@ -105,28 +107,7 @@ class _schermataHomeState extends State<schermataHomeCoach> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Mostra il bottom sheet quando il pulsante è premuto
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return Container(
-                height: 200.0, // Regola l'altezza del bottom sheet
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('Contenuto del Bottom Sheet'),
-                    SizedBox(height: 20.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Chiudi il bottom sheet quando il pulsante è premuto
-                        Navigator.pop(context);
-                      },
-                      child: Text('Chiudi'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
+          addMapTest();
         },
         tooltip: 'Mostra Bottom Sheet',
         child: Icon(Icons.add),
@@ -157,5 +138,34 @@ class _schermataHomeState extends State<schermataHomeCoach> {
         ],
       ),
     );
+  }
+
+  Future<void> addMapTest() async {
+    final esercizio = Esercizio(
+        nome: "panca",
+        recupero: "120",
+        serie: "4",
+        ripetizioni: "12",
+        carico: "75%");
+    // Crea una nuova istanza di `FirebaseFirestore`
+
+    // Crea una nuova raccolta
+    final collection = _firestore.collection('clienti');
+    // Trova il documento
+    final query = collection.where('nome', isEqualTo: 'mirko').limit(1);
+    final snapshot = await query.get();
+
+    final documentoTrovato = snapshot.docs.first;
+    final idDocumento = documentoTrovato.id;
+
+    // Aggiorna il documento
+    _firestore.collection('clienti').doc(idDocumento).update({
+      "scheda1": {
+        "lunedi": {
+          "nome1": esercizio.creaMappaPerDb(),
+          "nome2": esercizio.creaMappaPerDb()
+        }
+      }
+    });
   }
 }

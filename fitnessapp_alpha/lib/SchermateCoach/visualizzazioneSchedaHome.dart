@@ -75,7 +75,9 @@ class _tabellaSchedaState extends State<tabellaScheda> {
     List<QueryDocumentSnapshot> clienteSelezionato = querySnapshotClienti.docs;
     if (clienteSelezionato.isNotEmpty) {
       Map<String, dynamic> schedeClienteSelezionato;
-      schedeClienteSelezionato = clienteSelezionato[0].get("schede");
+      schedeClienteSelezionato = clienteSelezionato[0].get({
+        "scheda1": {"lunedi"}
+      });
       print(schedeClienteSelezionato);
     }
   }

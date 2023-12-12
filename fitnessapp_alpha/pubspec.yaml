@@ -13,7 +13,6 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.1.1
-  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
