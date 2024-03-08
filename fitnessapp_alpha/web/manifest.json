@@ -1,6 +1,6 @@
 {
-    "name": "app_fitness_test",
-    "short_name": "app_fitness_test",
+    "name": "app_fitness_test_2",
+    "short_name": "app_fitness_test_2",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

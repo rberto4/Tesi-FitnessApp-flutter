@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "864860752246",
+    "firebase_url": "https://app-fitness-test-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "app-fitness-test",
     "storage_bucket": "app-fitness-test.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:864860752246:android:622568bc36e7efa4599257",
+        "mobilesdk_app_id": "1:864860752246:android:ea228aa3eeec8bd0599257",
         "android_client_info": {
-          "package_name": "com.example.app_fitness_test"
+          "package_name": "com.example.app_fitness_test_2"
         }
       },
       "oauth_client": [],

@@ -45,37 +45,41 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCQ5voGbMqWTHMgQ97lJ57yxM5P_qbUVsY',
-    appId: '1:864860752246:web:132b99518c217e92599257',
+    appId: '1:864860752246:web:8d03c0cfa6e828ec599257',
     messagingSenderId: '864860752246',
     projectId: 'app-fitness-test',
     authDomain: 'app-fitness-test.firebaseapp.com',
+    databaseURL: 'https://app-fitness-test-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'app-fitness-test.appspot.com',
-    measurementId: 'G-7ZWXXR810L',
+    measurementId: 'G-Y1MZFRHD1R',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBQgoXxUqWp7A5WsTl7Q2k970KINnj4t_w',
-    appId: '1:864860752246:android:622568bc36e7efa4599257',
+    appId: '1:864860752246:android:ea228aa3eeec8bd0599257',
     messagingSenderId: '864860752246',
     projectId: 'app-fitness-test',
+    databaseURL: 'https://app-fitness-test-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'app-fitness-test.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCVAWNXeGWOtVNR4Hbr7a79nCNcw9-mGeg',
-    appId: '1:864860752246:ios:de0f7ee5ee30d7a2599257',
+    appId: '1:864860752246:ios:94514c95d9c7e2b8599257',
     messagingSenderId: '864860752246',
     projectId: 'app-fitness-test',
+    databaseURL: 'https://app-fitness-test-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'app-fitness-test.appspot.com',
-    iosBundleId: 'com.example.appFitnessTest',
+    iosBundleId: 'com.example.appFitnessTest2',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCVAWNXeGWOtVNR4Hbr7a79nCNcw9-mGeg',
-    appId: '1:864860752246:ios:80702069c9085741599257',
+    appId: '1:864860752246:ios:6629d10372e9d6fd599257',
     messagingSenderId: '864860752246',
     projectId: 'app-fitness-test',
+    databaseURL: 'https://app-fitness-test-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'app-fitness-test.appspot.com',
-    iosBundleId: 'com.example.appFitnessTest.RunnerTests',
+    iosBundleId: 'com.example.appFitnessTest2.RunnerTests',
   );
 }
