@@ -19,13 +19,13 @@ class _MainPageClienteState extends State<MainPageCliente> {
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
-          shadowColor: Colors.black,
+        shadowColor: Colors.black,
         iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
         title: Text(
           "$user",
-          style:
-              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
         ),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
@@ -49,26 +49,28 @@ class _MainPageClienteState extends State<MainPageCliente> {
       // DRAWER NAVIGATION
       drawer: Drawer(),
 
-      bottomNavigationBar: BottomNavigationBar(items:const <BottomNavigationBarItem>[
+      bottomNavigationBar: BottomNavigationBar(
+        
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'Scheda corrente',
+
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.folder_open_rounded),
             label: 'Archivio',
           ),
-         
         ],
-         currentIndex: _selectedIndex,
+        currentIndex: _selectedIndex,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: _onItemTapped,
-        ),
+      ),
       body: Container(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("utente loggato")],
+            children: [tabPages[_selectedIndex]],
           ),
         ),
       ),
@@ -79,5 +81,42 @@ class _MainPageClienteState extends State<MainPageCliente> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  final List<Widget> tabPages = [
+    paginaSchedaCorrente(),
+    paginaSchedaCorrente2(),
+  ];
+}
+
+class paginaSchedaCorrente extends StatefulWidget {
+  const paginaSchedaCorrente({super.key});
+
+  @override
+  State<paginaSchedaCorrente> createState() => _paginaSchedaCorrenteState();
+}
+
+class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text("ciao"),
+    );
+  }
+}
+
+class paginaSchedaCorrente2 extends StatefulWidget {
+  const paginaSchedaCorrente2({super.key});
+
+  @override
+  State<paginaSchedaCorrente2> createState() => _paginaSchedaCorrenteState2();
+}
+
+class _paginaSchedaCorrenteState2 extends State<paginaSchedaCorrente2> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text("ciao2"),
+    );
   }
 }
