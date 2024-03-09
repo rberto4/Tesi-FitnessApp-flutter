@@ -1,10 +1,12 @@
 import 'dart:ui';
 
+import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:app_fitness_test_2/firebase_options.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'registrazione.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,10 +18,26 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool passwordVisible = true;
+  TextEditingController mailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          elevation: 4,
+          shadowColor: Colors.black,
+          // shape: const RoundedRectangleBorder(borderRadius: BorderRadiusDirectional.only(bottomEnd: Radius.circular(16),bottomStart: Radius.circular(16))),
+          toolbarHeight: 220,
+          centerTitle: true,
+          backgroundColor: Theme.of(context).primaryColor,
+          title: const Text(
+            "Log in",
+            style: TextStyle(
+                fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
         backgroundColor: Colors.grey.shade200,
         body: Center(
           child: SingleChildScrollView(
@@ -30,15 +48,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Login page",
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
-                    Container(
-                      height: 48,
-                    ),
-                    // mail text input
                     const SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -62,12 +71,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ]),
                       child: TextFormField(
+                          controller: mailcontroller,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Devi inserire una e-mail';
                             }
                             return null;
                           },
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -102,7 +113,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )),
                     ),
-
                     const SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -126,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ]),
                       child: TextFormField(
+                        controller: passwordcontroller,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Devi inserire una password';
@@ -181,22 +192,31 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-
                     Container(
                       height: 16,
                     ),
-
                     Container(
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // If the form is valid, display a snackbar. In the real world,
-                              // you'd often call a server or save the information in a database.
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Login in corso, attendi')),
-                              );
+                              AuthenticationHelper()
+                                  .signIn(
+                                      email: mailcontroller.text,
+                                      password: passwordcontroller.text)
+                                  .then((result) {
+                                if (result == null) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MainPageCliente()));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(result)),
+                                  );
+                                }
+                              });
                             }
                           },
                           style: ButtonStyle(
@@ -227,7 +247,6 @@ class _LoginPageState extends State<LoginPage> {
                             fontSize: 12),
                       ),
                     ),
-
                     Container(
                       width: double.infinity,
                       child: OutlinedButton(

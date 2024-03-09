@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:app_fitness_test_2/firebase_options.dart';
+import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,6 +17,12 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool passwordVisible = true;
+
+  TextEditingController mailcontroller = TextEditingController();
+  TextEditingController usernamecontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+  TextEditingController confirmpasswordcontroller = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -72,6 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ]),
                         child: TextFormField(
+                            controller: usernamecontroller,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Devi inserire il tuo nome e cognome';
@@ -138,6 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ]),
                         child: TextFormField(
+                            controller: mailcontroller,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Devi inserire la tua e-mail';
@@ -205,6 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ]),
                         child: TextFormField(
+                          controller: passwordcontroller,
                           obscureText: passwordVisible,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -260,12 +272,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ]),
                         child: TextFormField(
+                          controller: confirmpasswordcontroller,
                           obscureText: passwordVisible,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-
                               // controllo conferma password
-                              
+
                               return 'Reinserisci la password scelta, per confermarla';
                             }
                             return null;
@@ -316,11 +328,36 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          '')),
-                                );
+                                if (passwordcontroller.text !=
+                                    confirmpasswordcontroller.text) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Password e conferma password, non coincidono")));
+                                } else {
+                                  AuthenticationHelper()
+                                      .signUp(
+                                          email: mailcontroller.text,
+                                          password: passwordcontroller.text)
+                                      .then((result) {
+                                    if (result == null) {
+                                      User? user =
+                                          FirebaseAuth.instance.currentUser;
+                                      user?.updateDisplayName(
+                                          usernamecontroller.text);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MainPageCliente()));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(result)),
+                                      );
+                                    }
+                                  });
+                                }
                               }
                             },
                             style: ButtonStyle(
