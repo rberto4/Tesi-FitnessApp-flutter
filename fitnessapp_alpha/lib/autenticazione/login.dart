@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
-        backgroundColor: Colors.grey.shade200,
+       // backgroundColor: Colors.grey.shade200,
         body: Center(
           child: SingleChildScrollView(
             child: Padding(

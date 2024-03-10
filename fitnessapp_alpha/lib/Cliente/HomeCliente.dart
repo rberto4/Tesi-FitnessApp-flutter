@@ -100,10 +100,40 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("ciao"),
+      child: Column(
+        children: [
+        ],
+      )
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class paginaSchedaCorrente2 extends StatefulWidget {
   const paginaSchedaCorrente2({super.key});
