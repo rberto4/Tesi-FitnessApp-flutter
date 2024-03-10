@@ -38,6 +38,8 @@ dependencies:
   firebase_core: ^2.26.0
   firebase_database: ^10.4.8
   firebase_auth: ^4.17.8
+  easy_date_timeline: ^1.0.6
+  cloud_firestore: ^4.15.8
 
 dev_dependencies:
   flutter_test:

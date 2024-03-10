@@ -1,7 +1,13 @@
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+FirebaseFirestore db = FirebaseFirestore.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+get user => _auth.currentUser?.displayName;
 
 class MainPageCliente extends StatefulWidget {
   const MainPageCliente({super.key});
@@ -11,9 +17,8 @@ class MainPageCliente extends StatefulWidget {
 }
 
 class _MainPageClienteState extends State<MainPageCliente> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  get user => _auth.currentUser?.displayName;
   int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +55,10 @@ class _MainPageClienteState extends State<MainPageCliente> {
       drawer: Drawer(),
 
       bottomNavigationBar: BottomNavigationBar(
-        
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'Scheda corrente',
-
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.folder_open_rounded),
@@ -69,7 +72,6 @@ class _MainPageClienteState extends State<MainPageCliente> {
       body: Container(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [tabPages[_selectedIndex]],
           ),
         ),
@@ -99,41 +101,33 @@ class paginaSchedaCorrente extends StatefulWidget {
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   @override
   Widget build(BuildContext context) {
+    //leggiDati();
     return Container(
-      child: Column(
-        children: [
-        ],
-      )
-    );
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        EasyDateTimeLine(
+          locale: "it_IT",
+          initialDate: DateTime.now(),
+          onDateChange: (selectedDate) {
+            //`selectedDate` the new date selected.
+          },
+        ),
+        Text("ciaooo"),
+      ],
+    ));
+  }
+
+  Future leggiDati() async {
+    if (_auth.currentUser != null) {
+      await db.collection("roberto@mail.com").get().then((value) {
+        for (var doc in value.docs) {
+          print("${doc.id} => ${doc.data()}");
+        }
+      });
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class paginaSchedaCorrente2 extends StatefulWidget {
   const paginaSchedaCorrente2({super.key});
