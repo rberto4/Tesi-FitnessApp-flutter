@@ -1,5 +1,7 @@
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/services/database_service.dart';
+import 'package:app_fitness_test_2/services/schedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,10 @@ class _MainPageClienteState extends State<MainPageCliente> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         elevation: 4,
         shadowColor: Colors.black,
@@ -70,7 +76,7 @@ class _MainPageClienteState extends State<MainPageCliente> {
         onTap: _onItemTapped,
       ),
       body: Container(
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
             children: [tabPages[_selectedIndex]],
           ),
@@ -99,33 +105,48 @@ class paginaSchedaCorrente extends StatefulWidget {
 }
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
+  final DatabaseService _dbs = DatabaseService();
+
   @override
   Widget build(BuildContext context) {
-    //leggiDati();
     return Container(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        EasyDateTimeLine(
-          locale: "it_IT",
-          initialDate: DateTime.now(),
-          onDateChange: (selectedDate) {
-            //`selectedDate` the new date selected.
-          },
-        ),
-        Text("ciaooo"),
-      ],
-    ));
-  }
-
-  Future leggiDati() async {
-    if (_auth.currentUser != null) {
-      await db.collection("roberto@mail.com").get().then((value) {
-        for (var doc in value.docs) {
-          print("${doc.id} => ${doc.data()}");
-        }
-      });
-    }
+      child: Column(
+        children: [
+          EasyDateTimeLine(
+            locale: "it_IT",
+            initialDate: DateTime.now(),
+            onDateChange: (selectedDate) {
+              //`selectedDate` the new date selected.
+            },
+          ),
+          StreamBuilder(
+            stream: _dbs.getScheda(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text("No data");
+              } else {
+                List docs = snapshot.data!.docs;
+                return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: snapshot.data?.docs.length,
+                  itemBuilder: (context, index) {
+                   //schedaModel sm = _dbs.getDocument();
+                    return Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(title: Text("ciao"),),
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          )
+        ],
+      ),
+    );
   }
 }
 

@@ -26,5 +26,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:864860752246:ios:94514c95d9c7e2b8599257</string>
+	<key>DATABASE_URL</key>
+	<string>https://app-fitness-test-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>
