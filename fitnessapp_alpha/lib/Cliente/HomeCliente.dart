@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
-import 'package:app_fitness_test_2/services/schedaModel.dart';
+import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +108,7 @@ class paginaSchedaCorrente extends StatefulWidget {
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   final DatabaseService _dbs = DatabaseService();
-
+  late DateTime selectedDay;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -116,33 +118,41 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
             locale: "it_IT",
             initialDate: DateTime.now(),
             onDateChange: (selectedDate) {
-              //`selectedDate` the new date selected.
+              selectedDay = selectedDate;
             },
           ),
-          StreamBuilder(
-            stream: _dbs.getScheda(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Text("No data");
-              } else {
-                List docs = snapshot.data!.docs;
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: snapshot.data?.docs.length,
-                  itemBuilder: (context, index) {
-                   //schedaModel sm = _dbs.getDocument();
-                    return Card(
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(title: Text("ciao"),),
-                      ),
-                    );
-                  },
-                );
-              }
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: double.infinity,
+              child:  Card(
+                  child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "Spalle",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                  Theme(
+                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: Icon(Icons.fitness_center_rounded),
+                      title: Text('Military Press', style: TextStyle(fontWeight:FontWeight.bold  ),),
+                      children: <Widget>[
+                        ListView.builder(scrollDirection: Axis.vertical,shrinkWrap: true,itemCount: 10,itemBuilder: (context, index){
+                          return ListTile(
+                            title: Text("ciao"),
+                          );
+                        })
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+            ),
           )
         ],
       ),

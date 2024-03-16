@@ -1,37 +1,50 @@
-import 'package:app_fitness_test_2/services/schedaModel.dart';
+import 'package:app_fitness_test_2/services/SchedaModel.dart';
+import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-String COLLEZIONE = "clienti";
+const String COLLEZIONE_UTENTI = "users";
+const String COLLEZIONE_SCHEDE = "schede";
 
 class DatabaseService {
+  late String uid_user_loggato = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseFirestore _instance = FirebaseFirestore.instance;
-  late final CollectionReference _reference;
+  late final DocumentReference _doc_reference;
 
   DatabaseService() {
-    _reference = _instance.collection(COLLEZIONE).withConverter<schedaModel>(
-          fromFirestore: schedaModel.fromFirestore,
-          toFirestore: (schedaModel, _) => schedaModel.toFirestore(),
+    _doc_reference = _instance
+        .collection(COLLEZIONE_UTENTI)
+        .doc(uid_user_loggato)
+        .withConverter<UserModel>(
+          fromFirestore: UserModel.fromFirestore,
+          toFirestore: (um, _) => um.toFirestore(),
         );
 
-        getListaDocuments();
+    getSchedaCorrente();
   }
 
-  Stream<QuerySnapshot> getScheda() {
-    return _reference.get().asStream();
+  Future getSchedaCorrente() async {
+    print("data di adesso:" + Timestamp.now().toString());
+    await _instance
+        .collection(COLLEZIONE_UTENTI)
+        .doc(uid_user_loggato)
+        .collection(COLLEZIONE_SCHEDE)
+        .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
+        .limit(1)
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          print('${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+        return querySnapshot.docs.toList();
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
   }
 
-  void getListaDocuments() async {
-    final docSnap = await _reference.get();
-    final schedaModel = docSnap.docs.map((e) => docSnap.docs.toList()); // Convert to City object
-    if (schedaModel != null) {
-      print(schedaModel.first);
-    } else {
-      print("No such document.");
-    }
-  }
-
-  void addScheda(schedaModel schedaModel) async {
-    _reference.add(schedaModel);
+  Stream<DocumentSnapshot> getDocumentoUtenteStream() {
+    return _doc_reference.snapshots();
   }
 }

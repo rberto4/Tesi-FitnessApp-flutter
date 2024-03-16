@@ -1,44 +1,65 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-class schedaModel {
-  String? test;
-  schedaModel({required this.test,});
+class SchedaModel {
+  String? nome_scheda;
+  Lunedi? lunedi;
+  SchedaModel({
+    required this.nome_scheda,
+    required this.lunedi
+  });
 
-  
-  factory schedaModel.fromFirestore(
+  factory SchedaModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
-    return schedaModel(
-     test: data?["test"]
+    return SchedaModel(
+      nome_scheda: data?["nome_scheda"],
+      lunedi: Lunedi.fromFirestore(data?["lunedi"],options)
     );
   }
 
   Map<String, Object?> toFirestore() {
     return {
-      if (test != null) "test": test,
+      if (nome_scheda != null) "nome_scheda": nome_scheda,
+            if (lunedi != null) "lunedi": lunedi,
     };
   }
-
 }
 
-/*
-class mappa {
-  String? testo1;
-  String? testo2;
-  mappa({required this.testo1, required this.testo2});
-  factory mappa.fromJson(Map<dynamic, dynamic> json) => mappa(
-        testo1: json['testo1'] as String,
-        testo2: json['testo2'] as String,
-      );
+class Lunedi {
+  final List<String>? nomi_es;
+  final List<String>? serie_es;
+  final List<String>? ripetizioni_es;
 
-  Map<String, dynamic> toJson() => {
-        "testo1": testo1,
-        "testo2": testo2,
-      };
+  Lunedi(
+      {required this.nomi_es,
+      required this.ripetizioni_es,
+      required this.serie_es});
+
+  factory Lunedi.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Lunedi(
+      nomi_es: data?['nomi_esercizi'] is Iterable
+          ? List.from(data?['nomi_esercizi'])
+          : null,
+      serie_es: data?['serie_esercizi'] is Iterable
+          ? List.from(data?['serie_esercizi'])
+          : null,
+      ripetizioni_es: data?['ripetizioni_esercizi'] is Iterable
+          ? List.from(data?['ripetizioni_esercizi'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      if (nomi_es != null) "nomi_esercizi": nomi_es,
+      if (serie_es != null) "serie_esercizi": serie_es,
+      if (ripetizioni_es != null) "ripetizioni_esercizi": ripetizioni_es,
+    };
+  }
 }
-*/
