@@ -1,4 +1,3 @@
-
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
@@ -166,23 +165,21 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
 
                                     return Theme(
                                       data: ThemeData().copyWith(
-                                          dividerColor: Colors.transparent,
-                                           highlightColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      splashFactory: NoSplash.splashFactory,
-                                          ),
+                                        dividerColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        splashFactory: NoSplash.splashFactory,
+                                      ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: ExpansionTile(
-                                         
                                           backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
-                                          leading: Icon(
-                                              Icons.book),
+                                          leading: Icon(Icons.book),
                                           title: Text(
                                             lista_es_nomi![index],
                                             style: TextStyle(
@@ -190,7 +187,6 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                           ),
                                           children: <Widget>[
                                             ListTile(
-                                          
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10.0),
