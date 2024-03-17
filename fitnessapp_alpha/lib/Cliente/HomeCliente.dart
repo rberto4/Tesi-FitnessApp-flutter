@@ -124,98 +124,25 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: double.infinity,
-              child: Card(
-                  child: Column(
-                children: [
-                  StreamBuilder(
-                      stream: _dbs.getSchedaCorrente(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List lista = snapshot.data!.docs;
-                          SchedaModel sm = lista[0].data();
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  sm.nome_scheda!,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24),
-                                ),
-                              ),
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: sm.lunedi!.nomi_es!
-                                      .length, // lunghezza lista esercizi presa dalla lunga dell'array dei nomi
-                                  itemBuilder: (context, index) {
-                                    // liste nomi, reps, serie
-
-                                    List<String>? lista_es_nomi =
-                                        sm.lunedi!.nomi_es;
-                                    List<String>? lista_es_ripetizioni =
-                                        sm.lunedi!.ripetizioni_es;
-                                    List<String>? lista_es_serie =
-                                        sm.lunedi!.serie_es;
-
-                                    return Theme(
-                                      data: ThemeData().copyWith(
-                                        dividerColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        splashFactory: NoSplash.splashFactory,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ExpansionTile(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          leading: Icon(Icons.book),
-                                          title: Text(
-                                            lista_es_nomi![index],
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          children: <Widget>[
-                                            ListTile(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              title: Text(
-                                                  "${lista_es_serie![index]} serie"),
-                                            ),
-                                            ListTile(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              title: Text(
-                                                  "${lista_es_ripetizioni![index]} ripetizioni"),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                            ],
-                          );
-                        } else {
-                          return Text("no data");
-                        }
-                      }),
-                ],
-              )),
-            ),
+            child: StreamBuilder(
+                stream: _dbs.getSchedaCorrente(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List lista = snapshot.data!.docs;
+                    SchedaModel sm = lista[0].data();
+                    List<Object?> lista_sedute_allenamenti = sm.martedi!.toList(growable: true);
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: lista_sedute_allenamenti.length,
+                      itemBuilder: (context, index) {
+                        print(index);
+                      },
+                    );
+                  } else {
+                    return Text("no data");
+                  }
+                }),
           )
         ],
       ),
