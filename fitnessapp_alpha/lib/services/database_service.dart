@@ -11,6 +11,7 @@ class DatabaseService {
   late String uid_user_loggato = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseFirestore _instance = FirebaseFirestore.instance;
   late final DocumentReference _doc_reference;
+  late final Query _col_reference_schedacorrente;
 
   DatabaseService() {
     _doc_reference = _instance
@@ -20,12 +21,11 @@ class DatabaseService {
           fromFirestore: UserModel.fromFirestore,
           toFirestore: (um, _) => um.toFirestore(),
         );
-
     getSchedaCorrente();
   }
 
-  Future getSchedaCorrente() async {
-    print("data di adesso:" + Timestamp.now().toString());
+/*
+  void getSchedaCorrente() async {
     await _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
@@ -35,16 +35,26 @@ class DatabaseService {
         .get()
         .then(
       (querySnapshot) {
+        print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           print('${docSnapshot.id} => ${docSnapshot.data()}');
         }
-        return querySnapshot.docs.toList();
       },
       onError: (e) => print("Error completing: $e"),
     );
   }
-
+*/
   Stream<DocumentSnapshot> getDocumentoUtenteStream() {
     return _doc_reference.snapshots();
+  }
+
+  Stream<QuerySnapshot> getSchedaCorrente (){
+    return _instance
+        .collection(COLLEZIONE_UTENTI)
+        .doc(uid_user_loggato)
+        .collection(COLLEZIONE_SCHEDE)
+        .withConverter<SchedaModel>(fromFirestore: (snapshot, options) => SchedaModel.fromFirestore(snapshot.data()!), toFirestore: (value, options) => value.toFirestore(),)
+        .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
+        .limit(1).snapshots();
   }
 }

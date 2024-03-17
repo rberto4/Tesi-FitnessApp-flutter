@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SchedaModel {
@@ -8,16 +10,11 @@ class SchedaModel {
     required this.lunedi
   });
 
-  factory SchedaModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    final data = snapshot.data();
-    return SchedaModel(
-      nome_scheda: data?["nome_scheda"],
-      lunedi: Lunedi.fromFirestore(data?["lunedi"],options)
-    );
-  }
+
+ factory SchedaModel.fromFirestore(Map<dynamic, dynamic> json) => SchedaModel(
+          nome_scheda: json["nome_scheda"],
+      lunedi: Lunedi.fromFirestore(json['lunedi'])
+     );
 
   Map<String, Object?> toFirestore() {
     return {
@@ -37,23 +34,19 @@ class Lunedi {
       required this.ripetizioni_es,
       required this.serie_es});
 
-  factory Lunedi.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    final data = snapshot.data();
-    return Lunedi(
-      nomi_es: data?['nomi_esercizi'] is Iterable
-          ? List.from(data?['nomi_esercizi'])
+
+factory Lunedi.fromFirestore(Map<dynamic, dynamic> json) => Lunedi(
+   nomi_es: json?['nomi_esercizi'] is Iterable
+          ? List.from(json?['nomi_esercizi'])
           : null,
-      serie_es: data?['serie_esercizi'] is Iterable
-          ? List.from(data?['serie_esercizi'])
+      serie_es: json?['serie_esercizi'] is Iterable
+          ? List.from(json?['serie_esercizi'])
           : null,
-      ripetizioni_es: data?['ripetizioni_esercizi'] is Iterable
-          ? List.from(data?['ripetizioni_esercizi'])
+      ripetizioni_es: json?['ripetizioni_esercizi'] is Iterable
+          ? List.from(json?['ripetizioni_esercizi'])
           : null,
-    );
-  }
+  );
+
 
   Map<String, dynamic> toFirestore() {
     return {
