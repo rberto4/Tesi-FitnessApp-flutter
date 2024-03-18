@@ -14,14 +14,7 @@ class DatabaseService {
   late final Query _col_reference_schedacorrente;
 
   DatabaseService() {
-    _doc_reference = _instance
-        .collection(COLLEZIONE_UTENTI)
-        .doc(uid_user_loggato)
-        .withConverter<UserModel>(
-          fromFirestore: UserModel.fromFirestore,
-          toFirestore: (um, _) => um.toFirestore(),
-        );
-    getSchedaCorrente();
+    
   }
 
 /*
@@ -44,8 +37,25 @@ class DatabaseService {
     );
   }
 */
+
+
+// OTTIENI ISTANZA DB FIRESTORE
+FirebaseFirestore getInstanceDb(){
+  return _instance;
+}
+
+String getCollezioneUtenti(){
+  return COLLEZIONE_UTENTI;
+}
+
   Stream<DocumentSnapshot> getDocumentoUtenteStream() {
-    return _doc_reference.snapshots();
+    return _instance
+        .collection(COLLEZIONE_UTENTI)
+        .doc(uid_user_loggato)
+        .withConverter<UserModel>(
+          fromFirestore: UserModel.fromFirestore,
+          toFirestore: (um, _) => um.toFirestore(),
+        ).snapshots();
   }
 
   Stream<QuerySnapshot> getSchedaCorrente (){

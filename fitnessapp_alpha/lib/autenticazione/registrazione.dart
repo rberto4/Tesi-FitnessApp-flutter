@@ -338,13 +338,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                   AuthenticationHelper()
                                       .signUp(
                                           email: mailcontroller.text,
-                                          password: passwordcontroller.text)
+                                          password: passwordcontroller.text,
+                                          username: usernamecontroller.text
+                                          )
                                       .then((result) {
                                     if (result == null) {
-                                      User? user =
-                                          FirebaseAuth.instance.currentUser;
-                                      user?.updateDisplayName(
-                                          usernamecontroller.text);
+                                     
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

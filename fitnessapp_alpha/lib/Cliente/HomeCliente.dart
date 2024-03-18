@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
-get user => _auth.currentUser?.displayName;
 
 class MainPageCliente extends StatefulWidget {
   const MainPageCliente({super.key});
@@ -34,7 +33,7 @@ class _MainPageClienteState extends State<MainPageCliente> {
         iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: Text(
-          "$user",
+          _auth.currentUser!.displayName.toString(),
           style: const TextStyle(
               fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
         ),
@@ -107,7 +106,7 @@ class paginaSchedaCorrente extends StatefulWidget {
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   final DatabaseService _dbs = DatabaseService();
-  late DateTime selectedDay;
+  late DateTime selectedDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -121,22 +120,97 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                 selectedDay = selectedDate;
               });
             },
+            
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: StreamBuilder(
                 stream: _dbs.getSchedaCorrente(),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {  // CONTROLLO SULLO STREAM DI DATI
                     List lista = snapshot.data!.docs;
                     SchedaModel sm = lista[0].data();
-                    List<Object?> lista_sedute_allenamenti = sm.martedi!.toList(growable: true);
+                    List<Allenamento?> lista_sedute_allenamenti = [];
+                    if (selectedDay
+                                .compareTo(sm.inizio_scheda!.toDate()) >
+                            0 &&
+                        selectedDay
+                                .compareTo(sm.fine_scheda!.toDate()) <
+                            0) {
+                      for (var a in sm.allenamenti!.toList(growable: true)) {
+                        if (a.giornoAllenamento == selectedDay.weekday) {
+                          lista_sedute_allenamenti.add(a);
+                        }
+                      }
+                    }
                     return ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       itemCount: lista_sedute_allenamenti.length,
-                      itemBuilder: (context, index) {
-                        print(index);
+                      itemBuilder: (context, index_allenamenti) {
+                        //return Text(lista_sedute_allenamenti[index]!.giornoSettimana!);
+                        return Card(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Text(
+                                    lista_sedute_allenamenti[index_allenamenti]!
+                                        .nomeAllenamento!,
+                                    style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                ListView.builder(
+                                  itemCount: lista_sedute_allenamenti[
+                                          index_allenamenti]!
+                                      .nomi_es!
+                                      .length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index_esercizi) {
+                                    return Theme(
+                                      data: ThemeData().copyWith(
+                                          dividerColor: Colors.transparent),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 8, right: 8, left: 8),
+                                        child: ExpansionTile(
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8))),
+                                          leading: CircleAvatar(
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor,
+                                              child: Text(
+                                                "${index_esercizi + 1}°",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              )),
+                                          title: Text(
+                                            lista_sedute_allenamenti[
+                                                    index_allenamenti]!
+                                                .nomi_es![index_esercizi],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          children: [
+                                            ListTile(
+                                                title: Text(
+                                                    "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
+                                            ListTile(
+                                                title: Text(
+                                                    "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              ]),
+                        );
                       },
                     );
                   } else {
