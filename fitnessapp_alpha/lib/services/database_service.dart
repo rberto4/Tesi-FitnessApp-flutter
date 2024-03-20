@@ -6,16 +6,17 @@ import 'package:flutter/material.dart';
 
 const String COLLEZIONE_UTENTI = "users";
 const String COLLEZIONE_SCHEDE = "schede";
+const String COLLEZIONE_COACHES = "coaches";
 
 class DatabaseService {
-  late String uid_user_loggato = FirebaseAuth.instance.currentUser!.uid;
+
+  late final FirebaseAuth _auth = FirebaseAuth.instance;
+  late String uid_user_loggato = _auth.currentUser!.uid;
   final FirebaseFirestore _instance = FirebaseFirestore.instance;
   late final DocumentReference _doc_reference;
   late final Query _col_reference_schedacorrente;
 
-  DatabaseService() {
-    
-  }
+  DatabaseService() {}
 
 /*
   void getSchedaCorrente() async {
@@ -38,15 +39,22 @@ class DatabaseService {
   }
 */
 
-
 // OTTIENI ISTANZA DB FIRESTORE
-FirebaseFirestore getInstanceDb(){
-  return _instance;
-}
+  FirebaseFirestore getInstanceDb() {
+    return _instance;
+  }
 
-String getCollezioneUtenti(){
-  return COLLEZIONE_UTENTI;
-}
+  String getCollezioneUtenti() {
+    return COLLEZIONE_UTENTI;
+  }
+
+  String getCollezioneCoaches() {
+    return COLLEZIONE_COACHES;
+  }
+
+  FirebaseAuth getAuth (){
+    return _auth;
+  }
 
   Stream<DocumentSnapshot> getDocumentoUtenteStream() {
     return _instance
@@ -55,16 +63,36 @@ String getCollezioneUtenti(){
         .withConverter<UserModel>(
           fromFirestore: UserModel.fromFirestore,
           toFirestore: (um, _) => um.toFirestore(),
-        ).snapshots();
+        )
+        .snapshots();
   }
 
-  Stream<QuerySnapshot> getSchedaCorrente (){
+  Stream<QuerySnapshot> getSchedaCorrente() {
     return _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
         .collection(COLLEZIONE_SCHEDE)
-        .withConverter<SchedaModel>(fromFirestore: (snapshot, options) => SchedaModel.fromFirestore(snapshot.data()!), toFirestore: (value, options) => value.toFirestore(),)
+        .withConverter<SchedaModel>(
+          fromFirestore: (snapshot, options) =>
+              SchedaModel.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
         .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
-        .limit(1).snapshots();
+        .limit(1)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getTotaleSchede() {
+    return _instance
+        .collection(COLLEZIONE_UTENTI)
+        .doc(uid_user_loggato)
+        .collection(COLLEZIONE_SCHEDE)
+        .withConverter<SchedaModel>(
+          fromFirestore: (snapshot, options) =>
+              SchedaModel.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
+        .orderBy("inizioScheda", descending: true)
+        .snapshots();
   }
 }

@@ -6,34 +6,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
-FirebaseFirestore db = FirebaseFirestore.instance;
-final FirebaseAuth _auth = FirebaseAuth.instance;
+final DatabaseService _dbs = DatabaseService();
 
-class MainPageCliente extends StatefulWidget {
-  const MainPageCliente({super.key});
+class MainPageUtente extends StatefulWidget {
+  const MainPageUtente({super.key});
 
   @override
-  State<MainPageCliente> createState() => _MainPageClienteState();
+  State<MainPageUtente> createState() => _MainPageUtenteState();
 }
 
-class _MainPageClienteState extends State<MainPageCliente> {
+class _MainPageUtenteState extends State<MainPageUtente> {
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
-      ),
+     
       appBar: AppBar(
         elevation: 4,
         shadowColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: Text(
-          _auth.currentUser!.displayName.toString(),
+          _dbs.getAuth().currentUser!.email.toString(),
           style: const TextStyle(
               fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
         ),
@@ -105,7 +102,6 @@ class paginaSchedaCorrente extends StatefulWidget {
 }
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
-  final DatabaseService _dbs = DatabaseService();
   late DateTime selectedDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -120,23 +116,19 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                 selectedDay = selectedDate;
               });
             },
-            
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: StreamBuilder(
                 stream: _dbs.getSchedaCorrente(),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {  // CONTROLLO SULLO STREAM DI DATI
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                    // CONTROLLO SULLO STREAM DI DATI
                     List lista = snapshot.data!.docs;
                     SchedaModel sm = lista[0].data();
                     List<Allenamento?> lista_sedute_allenamenti = [];
-                    if (selectedDay
-                                .compareTo(sm.inizio_scheda!.toDate()) >
-                            0 &&
-                        selectedDay
-                                .compareTo(sm.fine_scheda!.toDate()) <
-                            0) {
+                    if (selectedDay.compareTo(sm.inizio_scheda!.toDate()) > 0 &&
+                        selectedDay.compareTo(sm.fine_scheda!.toDate()) < 0) {
                       for (var a in sm.allenamenti!.toList(growable: true)) {
                         if (a.giornoAllenamento == selectedDay.weekday) {
                           lista_sedute_allenamenti.add(a);
@@ -226,16 +218,133 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
 
 class paginaSchedaCorrente2 extends StatefulWidget {
   const paginaSchedaCorrente2({super.key});
-
   @override
   State<paginaSchedaCorrente2> createState() => _paginaSchedaCorrenteState2();
 }
 
 class _paginaSchedaCorrenteState2 extends State<paginaSchedaCorrente2> {
+  String nome_scheda_filtrato = "";
+  TextEditingController searchbar_controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("ciao2"),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Archivio",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+            ),
+            Card(
+              child: TextField(
+                controller: searchbar_controller,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  hintText: "Ricerca le schede per nome ...",
+                  hintMaxLines: 1,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        searchbar_controller.clear();
+                      });
+                    },
+                    icon: Icon(Icons.clear_rounded),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    nome_scheda_filtrato = value;
+                  });
+                },
+              ),
+            ),
+            StreamBuilder(
+              stream: _dbs.getTotaleSchede(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                  final List schede = snapshot.data!.docs ?? [];
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: schede.length,
+                    itemBuilder: (context, index) {
+                      final SchedaModel sm = schede[index].data();
+
+                       // CONTROLLO PER LA RICERCA PER NOME
+
+                      if (searchbar_controller.text.isEmpty ||
+                          sm.nome_scheda!
+                              .toLowerCase()
+                              .replaceAll(" ", "")
+                              .characters
+                              .containsAll(nome_scheda_filtrato
+                                  .toLowerCase()
+                                  .replaceAll(" ", "")
+                                  .characters)) {
+                                                              print(nome_scheda_filtrato);
+
+                        return Card(
+                          // CARD SCHEDA
+
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8, bottom: 8),
+                            child: Theme(
+                              data: ThemeData()
+                                  .copyWith(dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                  title: ListTile(
+                                    leading: CircleAvatar(
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
+                                        child: Icon(
+                                          Icons.book_rounded,
+                                          color: Colors.white,
+                                        )),
+                                    title: Text(
+                                      sm.nome_scheda!,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text("Dal " +
+                                        DateFormat.yMd().format(
+                                            sm.inizio_scheda!.toDate()) +
+                                        " al " +
+                                        DateFormat.yMd()
+                                            .format(sm.fine_scheda!.toDate())),
+                                  ),
+                                  children: []),
+                            ),
+                          ),
+                        );
+                      } 
+                    },
+                  );
+                } else {
+                  return Text("no data");
+                }
+              },
+            )
+          ],
+        ),
+      ),
     );
   }
 }

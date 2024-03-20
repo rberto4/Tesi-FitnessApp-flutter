@@ -348,7 +348,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  MainPageCliente()));
+                                                  MainPageUtente()));
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

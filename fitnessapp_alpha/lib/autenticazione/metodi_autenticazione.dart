@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
@@ -6,26 +8,41 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationHelper {
   final DatabaseService _dbs = DatabaseService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  get user => _auth.currentUser;
   //SIGN UP METHOD
 
+  Future<bool> isCoach() async {
+    bool v = false;
+   await _dbs
+        .getInstanceDb()
+        .collection(_dbs.getCollezioneCoaches())
+        .doc(_dbs.getAuth().currentUser?.uid)
+        .get()
+        .then((value) {
+          print("value : ${value.exists}");
+      v = value.exists;
+    });
+    print("v : $v");
+    return v;
+  }
 
-  Future signUp({required String email, required String password, required String username}) async {
+  Future signUp(
+      {required String email,
+      required String password,
+      required String username}) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      _auth.currentUser?.updateDisplayName(username);
+      await _dbs.getAuth().createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+      _dbs.getAuth().currentUser?.updateDisplayName(username);
       _dbs
           .getInstanceDb()
           .collection(_dbs.getCollezioneUtenti())
-          .doc(_auth.currentUser?.uid)
+          .doc(_dbs.getAuth().currentUser?.uid)
           .set({
-        "mail": _auth.currentUser?.email,
+        "mail": _dbs.getAuth().currentUser?.email,
         "username": username,
-        "isCoach" : false
+        "isCoach": false
       });
       return null;
     } on FirebaseAuthException catch (e) {
@@ -36,7 +53,9 @@ class AuthenticationHelper {
   //SIGN IN METHOD
   Future signIn({required String email, required String password}) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _dbs
+          .getAuth()
+          .signInWithEmailAndPassword(email: email, password: password);
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -45,7 +64,7 @@ class AuthenticationHelper {
 
   //SIGN OUT METHOD
   Future signOut() async {
-    await _auth.signOut();
+    await _dbs.getAuth().signOut();
     print('signout');
   }
 

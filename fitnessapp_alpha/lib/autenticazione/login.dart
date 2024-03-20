@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
-       // backgroundColor: Colors.grey.shade200,
+        // backgroundColor: Colors.grey.shade200,
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
@@ -199,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: ()  {
                             if (_formKey.currentState!.validate()) {
                               AuthenticationHelper()
                                   .signIn(
@@ -207,11 +208,17 @@ class _LoginPageState extends State<LoginPage> {
                                       password: passwordcontroller.text)
                                   .then((result) {
                                 if (result == null) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MainPageCliente()));
+                                  Navigator.pushReplacement(context,
+                                      MaterialPageRoute(builder: (context) {
+                                        /*
+                                    if (AuthenticationHelper().isCoach()) {
+                                      return MainPageUtente();
+                                    } else {
+                                      return MainPageCoach();
+                                    }
+                                    */
+                                    return MainPageUtente();
+                                  }));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(result)),

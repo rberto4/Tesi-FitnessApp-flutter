@@ -1,4 +1,5 @@
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
+import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,9 +14,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: true
-  );
+  FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: true);
   runApp(const MyApp());
 }
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       home: loadingPageMain(),
     );
@@ -37,7 +37,6 @@ class MyApp extends StatelessWidget {
 }
 
 class loadingPageMain extends StatelessWidget {
-  
   final FirebaseAuth _auth = FirebaseAuth.instance;
   get user => _auth.currentUser;
 
@@ -51,7 +50,11 @@ class loadingPageMain extends StatelessWidget {
           if (user == null) {
             return LoginPage();
           } else {
-            return MainPageCliente();
+            if (AuthenticationHelper().isCoach()) {
+              return MainPageUtente();
+            } else {
+              return MainPageCoach();
+            }
           }
         } else {
           return Scaffold(
@@ -64,5 +67,3 @@ class loadingPageMain extends StatelessWidget {
     );
   }
 }
-  
-
