@@ -1,6 +1,7 @@
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
+import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,24 +38,25 @@ class MyApp extends StatelessWidget {
 }
 
 class loadingPageMain extends StatelessWidget {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  get user => _auth.currentUser;
-
+  final DatabaseService _dbs = DatabaseService();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      stream: _dbs.getAuth().authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           User? user = snapshot.data;
           if (user == null) {
             return LoginPage();
           } else {
-            if (AuthenticationHelper().isCoach()) {
-              return MainPageUtente();
-            } else {
+            return FutureBuilder(future: _dbs.isCoach(), builder: (context, snapshot) {
+             if(snapshot.hasData){
               return MainPageCoach();
-            }
+             }else{
+              return MainPageUtente();
+             }
+            },
+            );
           }
         } else {
           return Scaffold(

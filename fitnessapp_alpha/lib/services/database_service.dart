@@ -16,28 +16,11 @@ class DatabaseService {
   late final DocumentReference _doc_reference;
   late final Query _col_reference_schedacorrente;
 
-  DatabaseService() {}
+  DatabaseService() {
 
-/*
-  void getSchedaCorrente() async {
-    await _instance
-        .collection(COLLEZIONE_UTENTI)
-        .doc(uid_user_loggato)
-        .collection(COLLEZIONE_SCHEDE)
-        .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
-        .limit(1)
-        .get()
-        .then(
-      (querySnapshot) {
-        print("Successfully completed");
-        for (var docSnapshot in querySnapshot.docs) {
-          print('${docSnapshot.id} => ${docSnapshot.data()}');
-        }
-      },
-      onError: (e) => print("Error completing: $e"),
-    );
   }
-*/
+
+
 
 // OTTIENI ISTANZA DB FIRESTORE
   FirebaseFirestore getInstanceDb() {
@@ -95,4 +78,13 @@ class DatabaseService {
         .orderBy("inizioScheda", descending: true)
         .snapshots();
   }
+
+  Future<DocumentSnapshot> isCoach() async {
+
+    // va a guardare nella collezione dei coaches, se esiste il docuemento relativo all'utente loggato, allora è un coach e returna true
+    _doc_reference = _instance.collection(COLLEZIONE_COACHES).doc(_auth.currentUser?.uid);
+    DocumentSnapshot ds = await _doc_reference.get(); 
+    return ds;
+  
+}
 }

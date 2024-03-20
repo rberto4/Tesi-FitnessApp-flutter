@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -21,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   bool passwordVisible = true;
   TextEditingController mailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
-
+  final DatabaseService _dbs = DatabaseService();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -200,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: ()  {
+                          onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               AuthenticationHelper()
                                   .signIn(
@@ -210,14 +211,15 @@ class _LoginPageState extends State<LoginPage> {
                                 if (result == null) {
                                   Navigator.pushReplacement(context,
                                       MaterialPageRoute(builder: (context) {
-                                        /*
-                                    if (AuthenticationHelper().isCoach()) {
-                                      return MainPageUtente();
-                                    } else {
-                                      return MainPageCoach();
-                                    }
-                                    */
-                                    return MainPageUtente();
+                                    return FutureBuilder(
+                                        future: _dbs.isCoach(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return MainPageCoach();
+                                          } else {
+                                            return MainPageUtente();
+                                          }
+                                        });
                                   }));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
