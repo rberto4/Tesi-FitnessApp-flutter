@@ -31,7 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
@@ -41,10 +40,12 @@ dependencies:
   easy_date_timeline: ^1.0.6
   cloud_firestore: ^4.15.8
   intl: ^0.19.0
+  calendar_date_picker2: ^0.5.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  intl: any
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

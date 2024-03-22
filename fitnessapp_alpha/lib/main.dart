@@ -7,9 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -27,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+     
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -49,13 +47,19 @@ class loadingPageMain extends StatelessWidget {
           if (user == null) {
             return LoginPage();
           } else {
-            return FutureBuilder(future: _dbs.isCoach(), builder: (context, snapshot) {
-             if(snapshot.hasData){
-              return MainPageCoach();
-             }else{
-              return MainPageUtente();
-             }
-            },
+            return FutureBuilder(
+              future: _dbs.isCoach(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.exists) {
+                    return MainPageCoach();
+                  } else {
+                    return MainPageUtente();
+                  }
+                } else {
+                  return MainPageUtente();
+                }
+              },
             );
           }
         } else {

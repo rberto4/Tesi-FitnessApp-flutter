@@ -10,20 +10,6 @@ class AuthenticationHelper {
   final DatabaseService _dbs = DatabaseService();
   //SIGN UP METHOD
 
-  Future<bool> isCoach() async {
-    bool v = false;
-   await _dbs
-        .getInstanceDb()
-        .collection(_dbs.getCollezioneCoaches())
-        .doc(_dbs.getAuth().currentUser?.uid)
-        .get()
-        .then((value) {
-          print("value : ${value.exists}");
-      v = value.exists;
-    });
-    print("v : $v");
-    return v;
-  }
 
   Future signUp(
       {required String email,

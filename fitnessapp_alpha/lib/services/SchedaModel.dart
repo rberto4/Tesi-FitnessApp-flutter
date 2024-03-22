@@ -12,7 +12,8 @@ class SchedaModel {
       {required this.nome_scheda,
       required this.allenamenti,
       required this.inizio_scheda,
-      required this.fine_scheda});
+      required this.fine_scheda,
+      });
 
   factory SchedaModel.fromFirestore(Map<String, dynamic> json) {
     var list = json['allenamenti'] as List;
@@ -38,21 +39,24 @@ class SchedaModel {
 
 class Allenamento {
   final String? nomeAllenamento;
-  final int? giornoAllenamento;
   final List<String>? nomi_es;
   final List<String>? serie_es;
   final List<String>? ripetizioni_es;
+    final List<Timestamp>? giorniAssegnati;
 
   Allenamento(
       {required this.nomi_es,
       required this.ripetizioni_es,
       required this.serie_es,
-      required this.giornoAllenamento,
-      required this.nomeAllenamento});
+      required this.nomeAllenamento,
+      required this.giorniAssegnati
+      });
 
   factory Allenamento.fromFirestore(Map<dynamic, dynamic> json) => Allenamento(
-        giornoAllenamento: json['giornoAllenamento'],
         nomeAllenamento: json['nomeAllenamento'],
+        giorniAssegnati: json['giorniAssegnati'] is Iterable
+          ? List.from(json['giorniAssegnati'])
+          : null,
         nomi_es:
             json['nomi_Es'] is Iterable ? List.from(json['nomi_Es']) : null,
         serie_es:
@@ -65,10 +69,10 @@ class Allenamento {
   Map<String, dynamic> toFirestore() {
     return {
       if (nomeAllenamento != null) "nomeAllenamento": nomeAllenamento,
-      if (giornoAllenamento != null) "giorno_settimana": giornoAllenamento,
       if (nomi_es != null) "nomi_Es": nomi_es,
       if (serie_es != null) "serie_Es": serie_es,
       if (ripetizioni_es != null) "ripetizioni_Es": ripetizioni_es,
+            if (giorniAssegnati != null) "giorniAssegnati": giorniAssegnati,
     };
   }
 }
