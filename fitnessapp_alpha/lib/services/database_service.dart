@@ -10,17 +10,14 @@ const String COLLEZIONE_COACHES = "coaches";
 
 class DatabaseService {
 
-  late final FirebaseAuth _auth;
+  late final FirebaseAuth _auth = FirebaseAuth.instance;
   late String uid_user_loggato = _auth.currentUser!.uid;
-  late final FirebaseFirestore _instance;
+  final FirebaseFirestore _instance = FirebaseFirestore.instance;
   late final DocumentReference _doc_reference;
   late final Query _col_reference_schedacorrente;
 
   DatabaseService() {
 
-    _auth = FirebaseAuth.instance;
-     _instance = FirebaseFirestore.instance;
-     
   }
 
 
@@ -38,6 +35,9 @@ class DatabaseService {
     return COLLEZIONE_COACHES;
   }
 
+ String getCollezioneSchede() {
+    return COLLEZIONE_SCHEDE;
+  }
   FirebaseAuth getAuth (){
     return _auth;
   }
@@ -54,7 +54,6 @@ class DatabaseService {
   }
 
   Stream<QuerySnapshot> getSchedaCorrente() {
-
     return _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
@@ -83,17 +82,12 @@ class DatabaseService {
         .snapshots();
   }
 
-  void assegnazioneAutomaticaGiorniAllenamento(){
-   
-  }
-
   Future<DocumentSnapshot> isCoach() async {
 
     // va a guardare nella collezione dei coaches, se esiste il docuemento relativo all'utente loggato, allora è un coach e returna true
-    DocumentReference doc = _instance.collection(COLLEZIONE_COACHES).doc(_auth.currentUser?.uid);
-    DocumentSnapshot ds = await doc.get(); 
-    print(ds.exists.toString());
-    return ds;
+    _doc_reference = _instance.collection(COLLEZIONE_COACHES).doc(_auth.currentUser?.uid);
+    DocumentSnapshot ds = await _doc_reference.get(); 
     
-    }
+    return ds;
+}
 }

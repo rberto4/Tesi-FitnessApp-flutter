@@ -26,8 +26,7 @@ class _AssegnazioneGiornateAllenamentoPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-            isExtended: true, label: Text("Salva"), onPressed: () {}),
+        
         appBar: AppBar(
           automaticallyImplyLeading: true,
         ),
@@ -64,7 +63,11 @@ class _AssegnazioneGiornateAllenamentoPageState
                                 Text(sm.allenamenti![index].nomeAllenamento!),
                             value: isChecked(
                                 sm.allenamenti![index].giorniAssegnati!),
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                modificaSelezioneGiorno(value!);
+                              });
+                            },
                           );
                         }
                       },
@@ -80,10 +83,17 @@ class _AssegnazioneGiornateAllenamentoPageState
   bool isChecked(List<Timestamp> l) {
     bool b = false;
     for (var a in l) {
-      if (a == lista_date_selezionate.first) {
+      if (DateUtils.dateOnly(a.toDate()) == DateUtils.dateOnly(lista_date_selezionate.first!)) {
         b = true;
       }
     }
     return b;
   }
+
+  void modificaSelezioneGiorno(bool b){
+    _dbs.getInstanceDb().collection(_dbs.getCollezioneUtenti()).doc(_dbs.getAuth().currentUser?.uid).collection(_dbs.getCollezioneSchede()).get().then((value) {
+      
+    });
+  }
+
 }

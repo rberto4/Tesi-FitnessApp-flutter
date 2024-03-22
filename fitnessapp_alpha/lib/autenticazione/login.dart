@@ -215,11 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                                         future: _dbs.isCoach(),
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
-                                            if (snapshot.data!.exists) {
-                                              return MainPageCoach();
-                                            } else {
-                                              return MainPageUtente();
-                                            }
+                                            return MainPageCoach();
                                           } else {
                                             return MainPageUtente();
                                           }
