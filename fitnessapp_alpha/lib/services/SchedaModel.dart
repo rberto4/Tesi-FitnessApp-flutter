@@ -20,19 +20,20 @@ class SchedaModel {
     List<Allenamento> allenamentiList =
         list.map((i) => Allenamento.fromFirestore(i)).toList();
     return SchedaModel(
-      inizio_scheda: json['inizioScheda'],
-      fine_scheda: json['fineScheda'],
+      inizio_scheda: json['inizio_scheda'],
+      fine_scheda: json['fine_scheda'],
       nome_scheda: json['nome_scheda'],
       allenamenti: allenamentiList,
     );
   }
 
   Map<String, Object?> toFirestore() {
-    return {
+
+        return {
       if (nome_scheda != null) "nome_scheda": nome_scheda,
-      if (allenamenti != null) "allenamenti": allenamenti,
-      if (inizio_scheda != null) "inizioScheda": inizio_scheda,
-      if (fine_scheda != null) "fineScheda": fine_scheda,
+      if (allenamenti != null) "allenamenti": allenamenti?.map((e) => e.toFirestore()) ,
+      if (inizio_scheda != null) "inizio_scheda": inizio_scheda,
+      if (fine_scheda != null) "fine_scheda": fine_scheda,
     };
   }
 }
@@ -53,26 +54,26 @@ class Allenamento {
       });
 
   factory Allenamento.fromFirestore(Map<dynamic, dynamic> json) => Allenamento(
-        nomeAllenamento: json['nomeAllenamento'],
-        giorniAssegnati: json['giorniAssegnati'] is Iterable
-          ? List.from(json['giorniAssegnati'])
+        nomeAllenamento: json['nome_allenamento'],
+        giorniAssegnati: json['giorni_assegnati'] is Iterable
+          ? List.from(json['giorni_assegnati'])
           : null,
         nomi_es:
-            json['nomi_Es'] is Iterable ? List.from(json['nomi_Es']) : null,
+            json['nomi_esercizi'] is Iterable ? List.from(json['nomi_esercizi']) : null,
         serie_es:
-            json['serie_Es'] is Iterable ? List.from(json['serie_Es']) : null,
-        ripetizioni_es: json['ripetizioni_Es'] is Iterable
-            ? List.from(json['ripetizioni_Es'])
+            json['serie_esercizi'] is Iterable ? List.from(json['serie_esercizi']) : null,
+        ripetizioni_es: json['ripetizioni_esercizi'] is Iterable
+            ? List.from(json['ripetizioni_esercizi'])
             : null,
       );
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (nomeAllenamento != null) "nomeAllenamento": nomeAllenamento,
-      if (nomi_es != null) "nomi_Es": nomi_es,
-      if (serie_es != null) "serie_Es": serie_es,
-      if (ripetizioni_es != null) "ripetizioni_Es": ripetizioni_es,
-            if (giorniAssegnati != null) "giorniAssegnati": giorniAssegnati,
+      if (nomeAllenamento != null) "nome_allenamento": nomeAllenamento,
+      if (nomi_es != null) "nomi_esercizi": nomi_es,
+      if (serie_es != null) "serie_esercizi": serie_es,
+      if (ripetizioni_es != null) "ripetizioni_esercizi": ripetizioni_es,
+      if (giorniAssegnati != null) "giorni_assegnati": giorniAssegnati,
     };
   }
 }

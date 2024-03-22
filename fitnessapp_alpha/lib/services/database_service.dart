@@ -63,7 +63,7 @@ class DatabaseService {
               SchedaModel.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
-        .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
+        .where("fine_scheda", isGreaterThanOrEqualTo: Timestamp.now())
         .limit(1)
         .snapshots();
   }
@@ -78,7 +78,7 @@ class DatabaseService {
               SchedaModel.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
-        .orderBy("inizioScheda", descending: true)
+        .orderBy("inizio_scheda", descending: true)
         .snapshots();
   }
 

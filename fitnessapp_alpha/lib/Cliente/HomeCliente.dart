@@ -110,6 +110,7 @@ class paginaSchedaCorrente extends StatefulWidget {
 }
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
+
   late Timestamp selectedDay = Timestamp.now();
 
   @override
@@ -119,125 +120,139 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: StreamBuilder(
-                stream: _dbs.getSchedaCorrente(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                    // CONTROLLO SULLO STREAM DI DATI
-                    List lista = snapshot.data!.docs;
-                    SchedaModel sm = lista[0].data();
-                    List<Allenamento?> lista_sedute_allenamenti =
-                        new List.empty(growable: true);
-
-                    for (var a in sm.allenamenti!) {
-                      for (int i = 0; i < a.giorniAssegnati!.length; i++) {
-                        if (a.giorniAssegnati![i] == selectedDay) {
-                          if (controlloData(
-                              sm.inizio_scheda!, sm.fine_scheda!)) {
-                            lista_sedute_allenamenti.add(a);
+            child: SafeArea(
+              child: StreamBuilder(
+                  stream: _dbs.getSchedaCorrente(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                      // CONTROLLO SULLO STREAM DI DATI
+                      List lista = snapshot.data!.docs;
+                      SchedaModel sm = lista[0].data();
+              
+                      List<Allenamento?> lista_sedute_allenamenti =
+                          new List.empty(growable: true);
+              
+                      for (var a in sm.allenamenti!) {
+                        for (int i = 0; i < a.giorniAssegnati!.length; i++) {
+                          if (DateUtils.dateOnly(
+                                  a.giorniAssegnati![i].toDate()) ==
+                              DateUtils.dateOnly(selectedDay.toDate())) {
+                            if (controlloData(
+                                sm.inizio_scheda!, sm.fine_scheda!)) {
+                              lista_sedute_allenamenti.add(a);
+                            }
                           }
                         }
                       }
-                    }
-
-                    return Column(
-                      children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: EasyDateTimeLine(
-                              dayProps: const EasyDayProps(
-                                landScapeMode: true,
+              
+                      return Column(
+                        children: [
+                          EasyDateTimeLine(
+                            headerProps: const EasyHeaderProps(
+                              dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
+                            ),
+                            dayProps: const EasyDayProps(
                                 activeDayStyle: DayStyle(
                                   borderRadius: 48.0,
+                                  dayNumStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
                                 ),
-                                dayStructure: DayStructure.dayStrDayNum,
-                              ),
-                              locale: "it_IT",
-                              initialDate: DateTime.now(),
-                              onDateChange: (selectedDate) {
-                                setState(() {
-                                  selectedDay =
-                                      Timestamp.fromDate(selectedDate);
-                                });
-                              },
-                            ),
+                                width: 56.0,
+                                height: 56.0,
+                                dayStructure: DayStructure.dayNumDayStr,
+                                inactiveDayStyle: DayStyle(
+                                    dayNumStyle: TextStyle(
+                                  fontSize: 18.0,
+                                ))),
+                            locale: "it_IT",
+                            initialDate: DateTime.now(),
+                            onDateChange: (selectedDate) {
+                              setState(() {
+                                selectedDay = Timestamp.fromDate(selectedDate);
+                              });
+                            },
                           ),
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: lista_sedute_allenamenti.length,
-                          itemBuilder: (context, index_allenamenti) {
-                            //return Text(lista_sedute_allenamenti[index]!.giornoSettimana!);
-                            return Card(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Text(
-                                        lista_sedute_allenamenti[
-                                                index_allenamenti]!
-                                            .nomeAllenamento!,
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: lista_sedute_allenamenti.length,
+                            itemBuilder: (context, index_allenamenti) {
+                              //return Text(lista_sedute_allenamenti[index]!.giornoSettimana!);
+                              return Card(
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Text(
+                                          lista_sedute_allenamenti[
+                                                  index_allenamenti]!
+                                              .nomeAllenamento!,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                    ListView.builder(
-                                      itemCount: lista_sedute_allenamenti[
-                                              index_allenamenti]!
-                                          .nomi_es!
-                                          .length,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index_esercizi) {
-                                        return Theme(
-                                          data: ThemeData().copyWith(
-                                              dividerColor: Colors.transparent),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8, right: 8, left: 8),
-                                            child: ExpansionTile(
-                                              backgroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(8))),
-                                              leading: CircleAvatar(
-                                                  child: Text(
-                                                "${index_esercizi + 1}°",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              )),
-                                              title: Text(
-                                                lista_sedute_allenamenti[
-                                                        index_allenamenti]!
-                                                    .nomi_es![index_esercizi],
+                                      ListView.builder(
+                                        itemCount: lista_sedute_allenamenti[
+                                                index_allenamenti]!
+                                            .nomi_es!
+                                            .length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index_esercizi) {
+                                          return Theme(
+                                            data: ThemeData().copyWith(
+                                                dividerColor: Colors.transparent),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8, right: 8, left: 8),
+                                              child: ExpansionTile(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(8))),
+                                                leading: CircleAvatar(
+                                                  backgroundColor: Colors.blue,
+                                                    child: Text(
+                                                  "${index_esercizi + 1}°",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                )
+                                                ),
+                                                title: Text(
+                                                  lista_sedute_allenamenti[
+                                                          index_allenamenti]!
+                                                      .nomi_es![index_esercizi],
+                                                ),
+                                                children: [
+                                                  ListTile(
+                                                      title: Text(
+                                                          "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
+                                                  ListTile(
+                                                      title: Text(
+                                                          "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
+                                                ],
                                               ),
-                                              children: [
-                                                ListTile(
-                                                    title: Text(
-                                                        "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
-                                                ListTile(
-                                                    title: Text(
-                                                        "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
-                                              ],
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    )
-                                  ]),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Text("no data");
-                  }
-                }),
+                                          );
+                                        },
+                                      )
+                                    ]),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Text("no data");
+                    }
+                  }),
+            ),
           )
         ],
       ),
@@ -246,10 +261,14 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
 
   bool controlloData(Timestamp inizio, Timestamp fine) {
     DateTime dt = selectedDay.toDate();
-    if ((dt.day >= inizio.toDate().day && dt.day <= dt.day) &&
-        (dt.month >= inizio.toDate().month &&
-            dt.month <= fine.toDate().month) &&
-        (dt.year >= inizio.toDate().year && dt.year <= fine.toDate().year)) {
+    print("data selezionata: ${DateUtils.dateOnly(dt)}");
+    if (DateUtils.dateOnly(dt)
+            .isAtSameMomentAs(DateUtils.dateOnly(fine.toDate())) ||
+        DateUtils.dateOnly(dt)
+            .isAtSameMomentAs(DateUtils.dateOnly(inizio.toDate())) ||
+        (DateUtils.dateOnly(dt).isAfter(DateUtils.dateOnly(inizio.toDate())) &&
+            DateUtils.dateOnly(dt)
+                .isBefore(DateUtils.dateOnly(fine.toDate())))) {
       return true;
     } else {
       return false;
