@@ -2,7 +2,6 @@ import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 const String COLLEZIONE_UTENTI = "users";
 const String COLLEZIONE_SCHEDE = "schede";

@@ -1,4 +1,3 @@
-import 'dart:html';
 
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
@@ -8,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
                return MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!);
      },
       title: 'Flutter Demo',
-      theme: ThemeData.light(useMaterial3: false),
+      theme: ThemeData(useMaterial3: false),
       home: loadingPageMain(),
     );
   }
@@ -64,7 +64,7 @@ class loadingPageMain extends StatelessWidget {
             );
           }
         } else {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),

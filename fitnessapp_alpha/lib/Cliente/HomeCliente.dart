@@ -6,7 +6,6 @@ import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 final DatabaseService _dbs = DatabaseService();
@@ -28,7 +27,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         elevation: 4,
         shadowColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
-        centerTitle: true,
+        centerTitle: false,
         title: Text(
           _dbs.getAuth().currentUser!.email.toString(),
           style: const TextStyle(
@@ -374,13 +373,13 @@ class _paginaSchedaCorrenteState2 extends State<paginaSchedaCorrente2> {
                                     leading: CircleAvatar(
                                         backgroundColor:
                                             Theme.of(context).primaryColor,
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.book_rounded,
                                           color: Colors.white,
                                         )),
                                     title: Text(
                                       sm.nome_scheda!,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     subtitle: Text("Dal " +

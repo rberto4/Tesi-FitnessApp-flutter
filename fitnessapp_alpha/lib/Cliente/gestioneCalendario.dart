@@ -1,12 +1,9 @@
-import 'dart:js';
-
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 DatabaseService _dbs = DatabaseService();
 
@@ -23,16 +20,15 @@ class AssegnazioneGiornateAllenamentoPage extends StatefulWidget {
 
 class _AssegnazioneGiornateAllenamentoPageState
     extends State<AssegnazioneGiornateAllenamentoPage> {
-
   List<DateTime?> lista_date_selezionate = new List.empty();
   TimeOfDay orarioSelezionato = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-                resizeToAvoidBottomInset : false,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          centerTitle: true,
+          centerTitle: false,
           title: Text(
             "Calendario scheda",
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -80,9 +76,10 @@ class _AssegnazioneGiornateAllenamentoPageState
                         visible: lista_date_selezionate.isNotEmpty,
                         child: ListTile(
                           title: Text(
-                            "Sedute di allenamento",
+                            "Allenamenti in scheda",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                       ),
@@ -92,113 +89,106 @@ class _AssegnazioneGiornateAllenamentoPageState
                         itemCount: sm.allenamenti!.length,
                         itemBuilder: (context, index) {
                           if (lista_date_selezionate.isNotEmpty) {
-                            return Card(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: CheckboxListTile(
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      title: Theme(
-                                        data: ThemeData().copyWith(
-                                              splashFactory: NoSplash.splashFactory,
-                                          splashColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                            dividerColor: Colors.transparent),
-                                        child: ExpansionTile(
-                                          
-                                          title: Text(
-                                            sm.allenamenti![index]
-                                                .nomeAllenamento!,
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          children: [
-                                            ListView.builder(
-                                                shrinkWrap: true,
-                                                itemCount: sm.allenamenti![index]
-                                                    .nomi_es!.length,
-                                                scrollDirection: Axis.vertical,
-                                                itemBuilder: (context, index_es) {
-                                                  return ListTile(
-                                                    leading: CircleAvatar(
-                                                        radius: 12,
-                                                        backgroundColor:
-                                                            Colors.blue,
-                                                        child: Text(
-                                                          "${index_es + 1}°",
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 12),
-                                                        )),
-                                                    title: Text(sm
-                                                        .allenamenti![index]
-                                                        .nomi_es![index_es]),
-                                                    subtitle: Text(sm
-                                                        .allenamenti![index]
-                                                        .serie_es![index_es]+ " serie, "+sm
-                                                        .allenamenti![index]
-                                                        .ripetizioni_es![index_es]+ " ripetizioni"),
-                                                  );
-                                                })
-                                          ],
+                            return Theme(
+                              data: ThemeData(useMaterial3: false)
+                                  .copyWith(dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                trailing: Visibility(
+                                  visible: isChecked(
+                                      sm.allenamenti![index].giorniAssegnati!),
+                                  child: Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        Visibility(
+                                          visible: isTimeSelected(sm
+                                              .allenamenti![index]
+                                              .giorniAssegnati!),
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.blue),
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          48)),
+                                              child: Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: getOrarioAssegnato(sm
+                                                      .allenamenti![index]
+                                                      .giorniAssegnati!))),
                                         ),
-                                      ),
-                                      value: isChecked(sm
-                                          .allenamenti![index].giorniAssegnati!),
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          modificaSelezioneGiorno(value!, index,
-                                              sm, snapshot.data!.docs.first.id);
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top:12.0),
-                                    child: Visibility(
-                                      visible: true,
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1, color: Colors.blue),
-                                              shape: BoxShape.rectangle,
-                                              borderRadius:
-                                                  BorderRadius.circular(48)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                             "",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blue,
-                                                  fontSize: 12),
-                                            ),
-                                          )),
-                                    ),
-                                  ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.alarm_add_rounded,
+                                          ),
+                                          onPressed: () {
+                                            _selectTime(index, sm,
+                                                snapshot.data!.docs.first.id);
+                                          },
+                                        ),
+                                      ]),
+                                ),
+                                leading: Checkbox(
+                                  value: isChecked(
+                                      sm.allenamenti![index].giorniAssegnati!),
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      modificaSelezioneGiorno(
+                                          value!,
+                                          index,
+                                          sm,
+                                          lista_date_selezionate.first!,
+                                          snapshot.data!.docs.first.id);
+                                    });
+                                  },
+                                ),
+                                title: Text(
+                                  sm.allenamenti![index].nomeAllenamento!,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Visibility(
-                                        visible: isChecked(sm.allenamenti![index]
-                                            .giorniAssegnati!),
-                                        child: IconButton.filled(
-                                          onPressed: () async {
-                                            final TimeOfDay ? timeOfDay = await showTimePicker(context: context,
-                                            initialTime: TimeOfDay.now(), initialEntryMode: TimePickerEntryMode.dial, 
+                                    child: Card(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: sm.allenamenti![index]
+                                              .nomi_es!.length,
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (context, index_es) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 16),
+                                              child: ListTile(
+                                                leading: CircleAvatar(
+                                                    radius: 12,
+                                                    backgroundColor:
+                                                        Colors.blue,
+                                                    child: Text(
+                                                      "${index_es + 1}°",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12),
+                                                    )),
+                                                title: Text(sm
+                                                    .allenamenti![index]
+                                                    .nomi_es![index_es]),
+                                                subtitle: Text(sm
+                                                        .allenamenti![index]
+                                                        .serie_es![index_es] +
+                                                    " serie, " +
+                                                    sm.allenamenti![index]
+                                                            .ripetizioni_es![
+                                                        index_es] +
+                                                    " ripetizioni"),
+                                              ),
                                             );
-                                            if (timeOfDay != null){
-                                              setState(() {
-                                                orarioSelezionato = timeOfDay;
-                                              });
-                                            }
-                                          },
-                                          icon: Icon(
-                                            Icons.alarm,
-                                            color: Colors.blue,
-                                          ),
-                                        )),
+                                          }),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -215,8 +205,30 @@ class _AssegnazioneGiornateAllenamentoPageState
         ));
   }
 
+  void _selectTime(int i, SchedaModel sm, String docId) async {
+    final TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: orarioSelezionato,
+    );
+    if (newTime != null) {
+      setState(() {
+        orarioSelezionato = newTime;
+        modificaSelezioneGiorno(
+            true,
+            i,
+            sm,
+            DateTime(
+                lista_date_selezionate.first!.year,
+                lista_date_selezionate.first!.month,
+                lista_date_selezionate.first!.day,
+                orarioSelezionato.hour,
+                orarioSelezionato.minute),
+            docId);
+      });
+    }
 
-  
+    print(orarioSelezionato.toString());
+  }
 
   bool isChecked(List<Timestamp> l) {
     bool b = false;
@@ -229,14 +241,61 @@ class _AssegnazioneGiornateAllenamentoPageState
     return b;
   }
 
-  void modificaSelezioneGiorno(bool b, int index, SchedaModel sm, String id) {
+  bool isTimeSelected(List<Timestamp> list) {
+    bool b = false;
+    for (var a in list) {
+      if (DateUtils.dateOnly(a.toDate()) ==
+          DateUtils.dateOnly(lista_date_selezionate.first!)) {
+        if (a.toDate().hour != 0 || a.toDate().minute != 0) {
+          b = true;
+        }
+      }
+    }
+    return b;
+  }
+
+  Text getOrarioAssegnato(List<Timestamp> list) {
+    late String b = "";
+    for (var a in list) {
+      if (DateUtils.dateOnly(a.toDate()) ==
+          DateUtils.dateOnly(lista_date_selezionate.first!)) {
+        if (a.toDate().hour != 0 || a.toDate().minute != 0) {
+          if (a.toDate().hour < 10 && a.toDate().minute > 10) {
+            b = "0" +
+                a.toDate().hour.toString() +
+                ":" +
+                a.toDate().minute.toString();
+          } else if (a.toDate().hour > 10 && a.toDate().minute < 10) {
+            b = a.toDate().hour.toString() +
+                ":0" +
+                a.toDate().minute.toString();
+          } else {
+            b = a.toDate().hour.toString() + ":" + a.toDate().minute.toString();
+          }
+        }
+      }
+    }
+    return Text(
+      b,
+      style: TextStyle(
+          fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 12),
+    );
+  }
+
+  void modificaSelezioneGiorno(
+      bool b, int index, SchedaModel sm, DateTime d, String id) {
     if (b) {
-      sm.allenamenti![index].giorniAssegnati!
-          .add(Timestamp.fromDate(lista_date_selezionate.first!));
+      for (var a in sm.allenamenti![index].giorniAssegnati!) {
+        if (DateUtils.dateOnly(a.toDate()) == DateUtils.dateOnly(d)) {
+          sm.allenamenti![index].giorniAssegnati!.remove(a);
+          break;
+        }
+      }
+      sm.allenamenti![index].giorniAssegnati!.add(Timestamp.fromDate(d));
     } else {
       print(b);
       for (var a in sm.allenamenti![index].giorniAssegnati!) {
-        if (DateUtils.dateOnly(a.toDate()) == lista_date_selezionate.first!) {
+        if (DateUtils.dateOnly(a.toDate()) == DateUtils.dateOnly(d)) {
           sm.allenamenti![index].giorniAssegnati!.remove(a);
           break;
         }

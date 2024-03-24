@@ -1,9 +1,5 @@
-import 'dart:io';
 
-import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
-import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationHelper {
