@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
@@ -21,11 +23,14 @@ class AssegnazioneGiornateAllenamentoPage extends StatefulWidget {
 
 class _AssegnazioneGiornateAllenamentoPageState
     extends State<AssegnazioneGiornateAllenamentoPage> {
+
   List<DateTime?> lista_date_selezionate = new List.empty();
+  TimeOfDay orarioSelezionato = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+                resizeToAvoidBottomInset : false,
         appBar: AppBar(
           centerTitle: true,
           title: Text(
@@ -34,171 +39,184 @@ class _AssegnazioneGiornateAllenamentoPageState
           ),
           automaticallyImplyLeading: true,
         ),
-        body: StreamBuilder(
-            stream: _dbs.getSchedaCorrente(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List lista = snapshot.data!.docs;
-                SchedaModel sm = lista[0].data();
-                return Column(
-                  children: [
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CalendarDatePicker2(
-                          config: CalendarDatePicker2Config(
-                              dayBuilder: (
-                                  {required date,
-                                  decoration,
-                                  isDisabled,
-                                  isSelected,
-                                  isToday,
-                                  textStyle}) {},
-                              selectedDayTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  color: Colors.white),
-                              firstDate: sm.inizio_scheda!.toDate(),
-                              lastDate: sm.fine_scheda!.toDate(),
-                              calendarType: CalendarDatePicker2Type.single),
-                          value: lista_date_selezionate,
-                          onValueChanged: (value) {
-                            setState(() {
-                              lista_date_selezionate = value;
-                            });
-                          },
+        body: SingleChildScrollView(
+          child: StreamBuilder(
+              stream: _dbs.getSchedaCorrente(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List lista = snapshot.data!.docs;
+                  SchedaModel sm = lista[0].data();
+                  return Column(
+                    children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CalendarDatePicker2(
+                            config: CalendarDatePicker2Config(
+                                dayBuilder: (
+                                    {required date,
+                                    decoration,
+                                    isDisabled,
+                                    isSelected,
+                                    isToday,
+                                    textStyle}) {},
+                                selectedDayTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.white),
+                                firstDate: sm.inizio_scheda!.toDate(),
+                                lastDate: sm.fine_scheda!.toDate(),
+                                calendarType: CalendarDatePicker2Type.single),
+                            value: lista_date_selezionate,
+                            onValueChanged: (value) {
+                              setState(() {
+                                lista_date_selezionate = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    Visibility(
-                      visible: lista_date_selezionate.isNotEmpty,
-                      child: ListTile(
-                        title: Text(
-                          "Sedute di allenamento",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                      Visibility(
+                        visible: lista_date_selezionate.isNotEmpty,
+                        child: ListTile(
+                          title: Text(
+                            "Sedute di allenamento",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: sm.allenamenti!.length,
-                      itemBuilder: (context, index) {
-                        if (lista_date_selezionate.isNotEmpty) {
-                          return Card(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: CheckboxListTile(
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    title: Theme(
-                                      data: ThemeData().copyWith(
-                                          dividerColor: Colors.transparent),
-                                      child: ExpansionTile(
-                                        title: Text(
-                                          sm.allenamenti![index]
-                                              .nomeAllenamento!,
-                                          style: TextStyle(fontSize: 18),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: sm.allenamenti!.length,
+                        itemBuilder: (context, index) {
+                          if (lista_date_selezionate.isNotEmpty) {
+                            return Card(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: CheckboxListTile(
+                                      controlAffinity:
+                                          ListTileControlAffinity.leading,
+                                      title: Theme(
+                                        data: ThemeData().copyWith(
+                                              splashFactory: NoSplash.splashFactory,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                            dividerColor: Colors.transparent),
+                                        child: ExpansionTile(
+                                          
+                                          title: Text(
+                                            sm.allenamenti![index]
+                                                .nomeAllenamento!,
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          children: [
+                                            ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: sm.allenamenti![index]
+                                                    .nomi_es!.length,
+                                                scrollDirection: Axis.vertical,
+                                                itemBuilder: (context, index_es) {
+                                                  return ListTile(
+                                                    leading: CircleAvatar(
+                                                        radius: 12,
+                                                        backgroundColor:
+                                                            Colors.blue,
+                                                        child: Text(
+                                                          "${index_es + 1}°",
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 12),
+                                                        )),
+                                                    title: Text(sm
+                                                        .allenamenti![index]
+                                                        .nomi_es![index_es]),
+                                                    subtitle: Text(sm
+                                                        .allenamenti![index]
+                                                        .serie_es![index_es]+ " serie, "+sm
+                                                        .allenamenti![index]
+                                                        .ripetizioni_es![index_es]+ " ripetizioni"),
+                                                  );
+                                                })
+                                          ],
                                         ),
-                                        children: [
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: sm.allenamenti![index]
-                                                  .nomi_es!.length,
-                                              scrollDirection: Axis.vertical,
-                                              itemBuilder: (context, index_es) {
-                                                return ListTile(
-                                                  leading: CircleAvatar(
-                                                      radius: 12,
-                                                      backgroundColor:
-                                                          Colors.blue,
-                                                      child: Text(
-                                                        "${index_es + 1}°",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 12),
-                                                      )),
-                                                  title: Text(sm
-                                                      .allenamenti![index]
-                                                      .nomi_es![index_es]),
-                                                  subtitle: Text(sm
-                                                      .allenamenti![index]
-                                                      .serie_es![index_es]+ " serie, "+sm
-                                                      .allenamenti![index]
-                                                      .ripetizioni_es![index_es]+ " ripetizioni"),
-                                                );
-                                              })
-                                        ],
                                       ),
+                                      value: isChecked(sm
+                                          .allenamenti![index].giorniAssegnati!),
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          modificaSelezioneGiorno(value!, index,
+                                              sm, snapshot.data!.docs.first.id);
+                                        });
+                                      },
                                     ),
-                                    value: isChecked(sm
-                                        .allenamenti![index].giorniAssegnati!),
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        modificaSelezioneGiorno(value!, index,
-                                            sm, snapshot.data!.docs.first.id);
-                                      });
-                                    },
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top:12.0),
-                                  child: Visibility(
-                                    visible: isChecked(
-                                        sm.allenamenti![index].giorniAssegnati!),
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1, color: Colors.blue),
-                                            shape: BoxShape.rectangle,
-                                            borderRadius:
-                                                BorderRadius.circular(48)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "16:30",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blue,
-                                                fontSize: 12),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top:12.0),
+                                    child: Visibility(
+                                      visible: true,
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: Colors.blue),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(48)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                             "",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue,
+                                                  fontSize: 12),
+                                            ),
+                                          )),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Visibility(
+                                        visible: isChecked(sm.allenamenti![index]
+                                            .giorniAssegnati!),
+                                        child: IconButton.filled(
+                                          onPressed: () async {
+                                            final TimeOfDay ? timeOfDay = await showTimePicker(context: context,
+                                            initialTime: TimeOfDay.now(), initialEntryMode: TimePickerEntryMode.dial, 
+                                            );
+                                            if (timeOfDay != null){
+                                              setState(() {
+                                                orarioSelezionato = timeOfDay;
+                                              });
+                                            }
+                                          },
+                                          icon: Icon(
+                                            Icons.alarm,
+                                            color: Colors.blue,
                                           ),
                                         )),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Visibility(
-                                      visible: isChecked(sm.allenamenti![index]
-                                          .giorniAssegnati!),
-                                      child: IconButton.filled(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.alarm,
-                                          color: Colors.blue,
-                                        ),
-                                      )),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {}
-                      },
-                    ),
-                  ],
-                );
-              } else {
-                return Text("no data");
-              }
-            }));
+                                ],
+                              ),
+                            );
+                          } else {}
+                        },
+                      ),
+                    ],
+                  );
+                } else {
+                  return Text("no data");
+                }
+              }),
+        ));
   }
 
-  Future<TimeOfDay?> showTimePicker() async {
-    final TimeOfDay? timeOfDay = await showTimePicker();
-  }
+
+  
 
   bool isChecked(List<Timestamp> l) {
     bool b = false;
