@@ -1,3 +1,4 @@
+import 'package:app_fitness_test_2/Cliente/dettagliAllenamento.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
@@ -23,6 +24,13 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton.extended(
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: (){}, 
+        label: Text("Allenamento"), 
+        icon: Icon(Icons.sports_score_rounded),
+        ): null,
       appBar: AppBar(
         elevation: 4,
         shadowColor: Colors.black,
@@ -68,16 +76,21 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
-            label: 'Scheda corrente',
+            label: 'Calendario',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.folder_open_rounded),
+            icon: Icon(Icons.bar_chart_rounded),
+            label: 'Progressi',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder),
             label: 'Archivio',
           ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+
       body: Container(
         child: SingleChildScrollView(
           child: Column(
@@ -95,21 +108,22 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   }
 
   final List<Widget> tabPages = [
-    const paginaSchedaCorrente(),
-    const paginaSchedaCorrente2(),
+    const paginaCalendario(),
+    const paginaProgressi(),
+    const paginaArchivioSchede(),
   ];
+  
 }
 
 // ignore: camel_case_types
-class paginaSchedaCorrente extends StatefulWidget {
-  const paginaSchedaCorrente({super.key});
+class paginaCalendario extends StatefulWidget {
+  const paginaCalendario({super.key});
 
   @override
-  State<paginaSchedaCorrente> createState() => _paginaSchedaCorrenteState();
+  State<paginaCalendario> createState() => _paginaCalendarioState();
 }
 
-class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
-
+class _paginaCalendarioState extends State<paginaCalendario> {
   late Timestamp selectedDay = Timestamp.now();
 
   @override
@@ -127,10 +141,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                       // CONTROLLO SULLO STREAM DI DATI
                       List lista = snapshot.data!.docs;
                       SchedaModel sm = lista[0].data();
-              
                       List<Allenamento?> lista_sedute_allenamenti =
                           new List.empty(growable: true);
-              
+
                       for (var a in sm.allenamenti!) {
                         for (int i = 0; i < a.giorniAssegnati!.length; i++) {
                           if (DateUtils.dateOnly(
@@ -143,12 +156,13 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                           }
                         }
                       }
-              
+
                       return Column(
                         children: [
                           EasyDateTimeLine(
                             headerProps: const EasyHeaderProps(
-                              dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
+                              dateFormatter:
+                                  DateFormatter.fullDateDMonthAsStrY(),
                             ),
                             dayProps: const EasyDayProps(
                                 activeDayStyle: DayStyle(
@@ -157,9 +171,12 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                     color: Colors.white,
                                     fontSize: 18.0,
                                   ),
+                                  dayStrStyle: TextStyle(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                width: 56.0,
-                                height: 56.0,
+                                width: 64.0,
+                                height: 64.0,
                                 dayStructure: DayStructure.dayNumDayStr,
                                 inactiveDayStyle: DayStyle(
                                     dayNumStyle: TextStyle(
@@ -181,74 +198,121 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                             scrollDirection: Axis.vertical,
                             itemCount: lista_sedute_allenamenti.length,
                             itemBuilder: (context, index_allenamenti) {
-                              //return Text(lista_sedute_allenamenti[index]!.giornoSettimana!);
                               return Card(
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(16),
-                                        child: Text(
-                                          lista_sedute_allenamenti[
-                                                  index_allenamenti]!
-                                              .nomeAllenamento!,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                        itemCount: lista_sedute_allenamenti[
-                                                index_allenamenti]!
-                                            .nomi_es!
-                                            .length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index_esercizi) {
-                                          return Theme(
-                                            data: ThemeData().copyWith(
-                                                dividerColor: Colors.transparent),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 8, right: 8, left: 8),
-                                              child: ExpansionTile(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(8))),
-                                                leading: CircleAvatar(
-                                                  backgroundColor: Colors.blue,
-                                                    child: Text(
-                                                  "${index_esercizi + 1}°",
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Column(children: [
+                                  ListTile(
+                                    trailing: Visibility(
+                                      visible: true,
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: Colors.teal),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(48)),
+                                          child: const Wrap(
+                                              crossAxisAlignment:
+                                                  WrapCrossAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text("18:30",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.teal,
+                                                          fontSize: 12)),
+                                                ),
+                                              ])),
+                                    ),
+                                    title: Text(
+                                      lista_sedute_allenamenti[
+                                              index_allenamenti]!
+                                          .nomeAllenamento!,
+                                      style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    itemCount: lista_sedute_allenamenti[
+                                            index_allenamenti]!
+                                        .nomi_es!
+                                        .length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index_esercizi) {
+                                      return Theme(
+                                        data: ThemeData().copyWith(
+                                            dividerColor: Colors.transparent),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 8, right: 8, left: 8),
+                                          child: ExpansionTile(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(48))),
+                                            leading: CircleAvatar(
+                                                radius: 16,
+                                                backgroundColor: Colors.teal,
+                                                child: Text(
+                                                  "${index_esercizi + 1}.",
                                                   style: TextStyle(
-                                                      color: Colors.white),
-                                                )
-                                                ),
-                                                title: Text(
-                                                  lista_sedute_allenamenti[
-                                                          index_allenamenti]!
-                                                      .nomi_es![index_esercizi],
-                                                ),
-                                                children: [
-                                                  ListTile(
-                                                      title: Text(
-                                                          "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
-                                                  ListTile(
-                                                      title: Text(
-                                                          "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
-                                                ],
-                                              ),
+                                                      color: Colors.white,
+                                                      fontSize: 16),
+                                                )),
+                                            title: Text(
+                                              lista_sedute_allenamenti[
+                                                      index_allenamenti]!
+                                                  .nomi_es![index_esercizi],
                                             ),
-                                          );
-                                        },
-                                      )
-                                    ]),
+                                            children: [
+                                              ListTile(
+                                                  title: Text(
+                                                      "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
+                                              ListTile(
+                                                  title: Text(
+                                                      "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  ListTile(
+                                      trailing: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Colors.orange.shade700)),
+                                    child: Text("Visualizza e compila"),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => dettagliScheda(
+                                                  allenamento:
+                                                      lista_sedute_allenamenti[
+                                                          index_allenamenti]!,
+                                                  id: snapshot
+                                                      .data!.docs[0].id)));
+                                    },
+                                  )),
+                                  SizedBox(
+                                    height: 4,
+                                  )
+                                ]),
                               );
                             },
                           ),
                         ],
                       );
                     } else {
-                      return Text("no data");
+                      return Text("");
                     }
                   }),
             ),
@@ -275,13 +339,13 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   }
 }
 
-class paginaSchedaCorrente2 extends StatefulWidget {
-  const paginaSchedaCorrente2({super.key});
+class paginaArchivioSchede extends StatefulWidget {
+  const paginaArchivioSchede({super.key});
   @override
-  State<paginaSchedaCorrente2> createState() => _paginaSchedaCorrenteState2();
+  State<paginaArchivioSchede> createState() => _paginaArchivioSchedeState();
 }
 
-class _paginaSchedaCorrenteState2 extends State<paginaSchedaCorrente2> {
+class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
   String nome_scheda_filtrato = "";
   TextEditingController searchbar_controller = TextEditingController();
   @override
@@ -397,7 +461,7 @@ class _paginaSchedaCorrenteState2 extends State<paginaSchedaCorrente2> {
                     },
                   );
                 } else {
-                  return Text("no data");
+                  return Text("");
                 }
               },
             )
@@ -405,5 +469,42 @@ class _paginaSchedaCorrenteState2 extends State<paginaSchedaCorrente2> {
         ),
       ),
     );
+  }
+}
+
+class paginaProgressi extends StatefulWidget {
+  const paginaProgressi({super.key});
+
+  @override
+  State<paginaProgressi> createState() => _paginaProgressiState();
+}
+
+class _paginaProgressiState extends State<paginaProgressi> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: StreamBuilder(
+      stream: _dbs.getSchedaCorrente(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          List data = snapshot.data!.docs;
+          SchedaModel sm = data[0].data();
+          return Container(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: sm.storico_esercizi!.length,
+              itemBuilder: (context, index) {
+                esercizio es = sm.storico_esercizi![index];
+                return ListTile(
+                  title: Text(es.nome_esercizio),
+                );
+              },
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    ));
   }
 }

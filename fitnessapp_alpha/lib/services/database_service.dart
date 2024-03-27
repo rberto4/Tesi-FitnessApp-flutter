@@ -41,6 +41,8 @@ class DatabaseService {
     return _auth;
   }
 
+  // stream per dettagli documento utente
+
   Stream<DocumentSnapshot> getDocumentoUtenteStream() {
     return _instance
         .collection(COLLEZIONE_UTENTI)
@@ -51,6 +53,7 @@ class DatabaseService {
         )
         .snapshots();
   }
+    // stream per recuperare l'ultima scheda ricevuta
 
   Stream<QuerySnapshot> getSchedaCorrente() {
     return _instance
@@ -66,6 +69,8 @@ class DatabaseService {
         .limit(1)
         .snapshots();
   }
+
+      // stream per recuperare elenco di tutte le schede, non faccio query, ordino solo per data
 
   Stream<QuerySnapshot> getTotaleSchede() {
     return _instance
@@ -88,5 +93,7 @@ class DatabaseService {
     DocumentSnapshot ds = await _doc_reference.get(); 
     
     return ds;
-}
+  }
+
+  
 }

@@ -1,4 +1,3 @@
-
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -26,11 +26,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-     builder: (context, child) {
-               return MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!);
-     },
+      builder: (context, child) {
+        return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!);
+      },
       title: 'Flutter Demo',
-      theme: ThemeData(useMaterial3: false),
+      theme: ThemeData(
+          useMaterial3: false,
+          primaryColor: Colors.orange.shade700,
+          primarySwatch: Colors.teal,
+          textTheme: GoogleFonts.latoTextTheme(TextTheme())
+          ),
       home: loadingPageMain(),
     );
   }
