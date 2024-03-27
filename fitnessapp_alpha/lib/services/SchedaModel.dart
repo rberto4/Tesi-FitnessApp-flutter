@@ -52,7 +52,7 @@ class Allenamento {
   final List<String>? serie_es;
   final List<String>? ripetizioni_es;
   final List<Timestamp>? giorniAssegnati;
-  final List<Carico>? carichi;
+  //final List<Carico>? carichi;
 
   Allenamento(
       {required this.nomi_es,
@@ -60,14 +60,15 @@ class Allenamento {
       required this.serie_es,
       required this.nomeAllenamento,
       required this.giorniAssegnati,
-      required this.carichi
+     // required this.carichi
       });
 
 
  factory Allenamento.fromFirestore(Map<String, dynamic> json) {
-    var list = json['carichi'] as List;
+  /*  var list = json['carichi'] as List;
     List<Carico> carichilist =
         list.map((i) => Carico.fromFirestore(i)).toList();
+        */
     return Allenamento(
         nomeAllenamento: json['nome_allenamento'],
         nomi_es: json['nomi_esercizi'] is Iterable
@@ -82,7 +83,7 @@ class Allenamento {
         giorniAssegnati: json['giorni_assegnati'] is Iterable
         ? List.from(json['giorni_assegnati'])
         : null,
-      carichi: carichilist,
+      //carichi: carichilist,
     );
   }
 
@@ -93,7 +94,7 @@ class Allenamento {
       if (serie_es != null) "serie_esercizi": serie_es,
       if (ripetizioni_es != null) "ripetizioni_esercizi": ripetizioni_es,
       if (giorniAssegnati != null) "giorni_assegnati": giorniAssegnati,
-      if (carichi != null) "carichi": carichi?.map((e) => e.toFirestore()) ,
+      //if (carichi != null) "carichi": carichi?.map((e) => e.toFirestore()) ,
     };
   }
 }

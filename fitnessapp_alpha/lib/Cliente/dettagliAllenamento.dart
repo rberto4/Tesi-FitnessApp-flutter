@@ -286,6 +286,8 @@ class _dettagliSchedaState extends State<dettagliScheda> {
     );
   }
 
+
+/*
   void impostoCarichi() {
     for (var a in allenamento.carichi!) {
       for (var b in a.carichi_es!) {
@@ -302,7 +304,7 @@ class _dettagliSchedaState extends State<dettagliScheda> {
 
   }
 
-/*
+
   void aggiornamentoCarichiDb() {
  
     list_edit_controller.clear();
