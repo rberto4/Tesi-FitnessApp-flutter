@@ -11,6 +11,14 @@ import 'package:intl/intl.dart';
 
 final DatabaseService _dbs = DatabaseService();
 
+late SchedaModel sm = new SchedaModel(
+      nome_scheda: null,
+      allenamenti: null,
+      inizio_scheda: null,
+      fine_scheda: null,
+      storico_esercizi: null,
+      id_scheda: null);
+
 class MainPageUtente extends StatefulWidget {
   const MainPageUtente({super.key});
 
@@ -20,17 +28,20 @@ class MainPageUtente extends StatefulWidget {
 
 class _MainPageUtenteState extends State<MainPageUtente> {
   int _selectedIndex = 0;
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton.extended(
-        backgroundColor: Theme.of(context).primaryColor,
-        onPressed: (){}, 
-        label: Text("Allenamento"), 
-        icon: Icon(Icons.sports_score_rounded),
-        ): null,
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton.extended(
+              backgroundColor: Theme.of(context).primaryColor,
+              onPressed: () {},
+              label: Text("Allenamento"),
+              icon: Icon(Icons.sports_score_rounded),
+            )
+          : null,
       appBar: AppBar(
         elevation: 4,
         shadowColor: Colors.black,
@@ -47,8 +58,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          const AssegnazioneGiornateAllenamentoPage()),
+                      builder: (context) => gestioneCalendario(sm: sm)),
                 );
               },
               icon: Icon(Icons.edit_calendar_rounded)),
@@ -112,7 +122,6 @@ class _MainPageUtenteState extends State<MainPageUtente> {
     const paginaProgressi(),
     const paginaArchivioSchede(),
   ];
-  
 }
 
 // ignore: camel_case_types
@@ -140,7 +149,7 @@ class _paginaCalendarioState extends State<paginaCalendario> {
                     if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                       // CONTROLLO SULLO STREAM DI DATI
                       List lista = snapshot.data!.docs;
-                      SchedaModel sm = lista[0].data();
+                      sm = lista[0].data();
                       List<Allenamento?> lista_sedute_allenamenti =
                           new List.empty(growable: true);
 
@@ -245,6 +254,9 @@ class _paginaCalendarioState extends State<paginaCalendario> {
                                         .nomi_es!
                                         .length,
                                     shrinkWrap: true,
+
+                                    //scrollDirection: Axis.vertical,
+                                    //physics: const BouncingScrollPhysics(),
                                     itemBuilder: (context, index_esercizi) {
                                       return Theme(
                                         data: ThemeData().copyWith(
@@ -289,7 +301,7 @@ class _paginaCalendarioState extends State<paginaCalendario> {
                                         backgroundColor:
                                             MaterialStatePropertyAll(
                                                 Colors.orange.shade700)),
-                                    child: Text("Visualizza e compila"),
+                                    child: Text("Dettagli"),
                                     onPressed: () {
                                       Navigator.push(
                                           context,
