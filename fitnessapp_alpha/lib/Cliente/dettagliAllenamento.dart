@@ -18,6 +18,7 @@ class dettagliScheda extends StatefulWidget {
 
 
 class _dettagliSchedaState extends State<dettagliScheda> {
+  
   late Allenamento allenamento;
   
   late String id;

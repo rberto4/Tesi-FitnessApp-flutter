@@ -27,7 +27,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
   _gestioneCalendarioState(this.sm);
 
   TimeOfDay orarioSelezionato = TimeOfDay.now();
-  late DateTime data_selezionata = sm.inizio_scheda!.toDate();
+  late DateTime data_selezionata = DateUtils.dateOnly(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                     fontSize: 18.0,
                   ))),
               locale: "it_IT",
-              initialDate: sm.inizio_scheda!.toDate(),
+              initialDate: DateTime.now(),
               onDateChange: (selectedDate) {
                 setState(() {
                   data_selezionata = selectedDate;
@@ -118,6 +118,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
             ListView.builder(
               padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               itemCount: sm.allenamenti!.length,
               itemBuilder: (context, index) {
@@ -188,9 +189,9 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                     ),
                     ListView.builder(
                       itemCount: sm.allenamenti![index]!.nomi_es!.length,
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index_esercizi) {
                         return Theme(
                           data: ThemeData()

@@ -31,8 +31,10 @@ class MyApp extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
             child: child!);
       },
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        
           useMaterial3: false,
           primaryColor: Colors.orange.shade700,
           primarySwatch: Colors.teal,
