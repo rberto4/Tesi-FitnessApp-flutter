@@ -116,8 +116,10 @@ class paginaSchedaCorrente extends StatefulWidget {
 }
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
+
   late Timestamp selectedDay = Timestamp.now();
   List<Allenamento?> lista_sedute_allenamenti = new List.empty(growable: true);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,210 +132,203 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
               icon: Icon(Icons.sports_score_rounded),
             )
           : null,
-      body: StreamBuilder(
-          stream: _dbs.getSchedaCorrente(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-              // CONTROLLO SULLO STREAM DI DATI
-              List lista = snapshot.data!.docs;
-              sm = lista[0].data();
-
-              lista_sedute_allenamenti.clear();
-              // caricamento dati nella lista locale in base al giorno di allenamento selezionato
-              sm.allenamenti!.forEach((element_allenamento) =>
-                  element_allenamento.giorniAssegnati!.forEach(
-                      (element_giorno) => DateUtils.dateOnly(
-                                  element_giorno.toDate()) ==
-                              DateUtils.dateOnly(selectedDay.toDate())
-                          ? {lista_sedute_allenamenti.add(element_allenamento)}
-                          : ()));
-
-              return lista_sedute_allenamenti.isNotEmpty
-                  ? Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: getDatePicker(),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: lista_sedute_allenamenti.length,
-                            itemBuilder: (context, index_allenamenti) {
-                              return Card(
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Column(children: [
-                                  ListTile(
-                                    trailing: Visibility(
-                                      visible: true,
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1, color: Colors.teal),
-                                              shape: BoxShape.rectangle,
-                                              borderRadius:
-                                                  BorderRadius.circular(48)),
-                                          child: const Wrap(
-                                              crossAxisAlignment:
-                                                  WrapCrossAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text("18:30",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.teal,
-                                                          fontSize: 12)),
-                                                ),
-                                              ])),
-                                    ),
-                                    title: Text(
-                                      lista_sedute_allenamenti[
-                                              index_allenamenti]!
-                                          .nomeAllenamento!,
-                                      style: const TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  ListView.builder(
-                                    itemCount: lista_sedute_allenamenti[
-                                            index_allenamenti]!
-                                        .nomi_es!
-                                        .length,
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-
-                                    //scrollDirection: Axis.vertical,
-                                    //physics: const BouncingScrollPhysics(),
-                                    itemBuilder: (context, index_esercizi) {
-                                      return Theme(
-                                        data: ThemeData().copyWith(
-                                            dividerColor: Colors.transparent),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 8, right: 8, left: 8),
-                                          child: ExpansionTile(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(48))),
-                                            leading: CircleAvatar(
-                                                radius: 16,
-                                                backgroundColor: Colors.teal,
-                                                child: Text(
-                                                  "${index_esercizi + 1}.",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16),
-                                                )),
-                                            title: Text(
-                                              lista_sedute_allenamenti[
-                                                      index_allenamenti]!
-                                                  .nomi_es![index_esercizi],
-                                            ),
-                                            children: [
-                                              ListTile(
-                                                  title: Text(
-                                                      "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
-                                              ListTile(
-                                                  title: Text(
-                                                      "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
-                                            ],
+      body: Column(
+          children: [
+            getDatePicker(),
+            StreamBuilder(
+                stream: _dbs.getSchedaCorrente(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                    // CONTROLLO SULLO STREAM DI DATI
+                    List lista = snapshot.data!.docs;
+                    sm = lista[0].data();
+            
+                    lista_sedute_allenamenti.clear();
+                    // caricamento dati nella lista locale in base al giorno di allenamento selezionato
+                    sm.allenamenti!.forEach((element_allenamento) =>
+                        element_allenamento.giorniAssegnati!.forEach(
+                            (element_giorno) => DateUtils.dateOnly(
+                                        element_giorno.toDate()) ==
+                                    DateUtils.dateOnly(selectedDay.toDate())
+                                ? {lista_sedute_allenamenti.add(element_allenamento)}
+                                : ()));
+            
+                    return lista_sedute_allenamenti.isNotEmpty
+                        ? Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.all(8),
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  itemCount: lista_sedute_allenamenti.length,
+                                  itemBuilder: (context, index_allenamenti) {
+                                    return Card(
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Column(children: [
+                                        ListTile(
+                                          trailing: Visibility(
+                                            visible: true,
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1, color: Colors.teal),
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius:
+                                                        BorderRadius.circular(48)),
+                                                child: const Wrap(
+                                                    crossAxisAlignment:
+                                                        WrapCrossAlignment.center,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(8.0),
+                                                        child: Text("18:30",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                                color: Colors.teal,
+                                                                fontSize: 12)),
+                                                      ),
+                                                    ])),
+                                          ),
+                                          title: Text(
+                                            lista_sedute_allenamenti[
+                                                    index_allenamenti]!
+                                                .nomeAllenamento!,
+                                            style: const TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                  ListTile(
-                                      trailing: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStatePropertyAll(
-                                                Colors.orange.shade700)),
-                                    child: Text("Dettagli"),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => dettagliScheda(
-                                                  allenamento:
-                                                      lista_sedute_allenamenti[
-                                                          index_allenamenti]!,
-                                                  id: snapshot
-                                                      .data!.docs[0].id)));
-                                    },
-                                  )),
-                                ]),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      children: [
-                        getDatePicker(),
-                        const Expanded(
-                            child: Center(
-                                child: Wrap(
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    direction: Axis.vertical,
-                                    children: [
-                              Icon(
-                                Icons.hotel_rounded,
-                                size: 108,
-                                color: Colors.grey,
-                              ),
-                              Text("Giorno di riposo",
-                                  style: TextStyle(
-                                      fontSize: 24,
+                                        ListView.builder(
+                                          itemCount: lista_sedute_allenamenti[
+                                                  index_allenamenti]!
+                                              .nomi_es!
+                                              .length,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+            
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (context, index_esercizi) {
+                                            return Theme(
+                                              data: ThemeData().copyWith(
+                                                  dividerColor: Colors.transparent),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 8, right: 8, left: 8),
+                                                child: ExpansionTile(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.all(
+                                                          Radius.circular(48))),
+                                                  leading: CircleAvatar(
+                                                      radius: 16,
+                                                      backgroundColor: Colors.teal,
+                                                      child: Text(
+                                                        "${index_esercizi + 1}.",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16),
+                                                      )),
+                                                  title: Text(
+                                                    lista_sedute_allenamenti[
+                                                            index_allenamenti]!
+                                                        .nomi_es![index_esercizi],
+                                                  ),
+                                                  children: [
+                                                    ListTile(
+                                                        title: Text(
+                                                            "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
+                                                    ListTile(
+                                                        title: Text(
+                                                            "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        ListTile(
+                                            trailing: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStatePropertyAll(
+                                                      Colors.orange.shade700)),
+                                          child: Text("Dettagli"),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => dettagliScheda(
+                                                        allenamento:
+                                                            lista_sedute_allenamenti[
+                                                                index_allenamenti]!,
+                                                        id: snapshot
+                                                            .data!.docs[0].id)));
+                                          },
+                                        )),
+                                      ]),
+                                    );
+                                  },
+                                ),                     
+                          )
+                        : 
+                      const Expanded(
+                                  child: Center(
+                                      child: Wrap(
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.center,
+                                          direction: Axis.vertical,
+                                          children: [
+                                    Icon(
+                                      Icons.hotel_rounded,
+                                      size: 108,
                                       color: Colors.grey,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text.rich(
-                                textAlign: TextAlign.center,
-                                TextSpan(
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold),
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          "Se vuoi modificare i tuoi programmi\n clicca sull'icona ",
                                     ),
-                                    WidgetSpan(
-                                      child: Icon(
-                                        Icons.edit_calendar_rounded,
-                                        size: 18,
-                                        color: Colors.grey,
+                                    Text("Giorno di riposo",
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text.rich(
+                                      textAlign: TextAlign.center,
+                                      TextSpan(
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold),
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                "Se vuoi modificare i tuoi programmi\n clicca sull'icona ",
+                                          ),
+                                          WidgetSpan(
+                                            child: Icon(
+                                              Icons.edit_calendar_rounded,
+                                              size: 18,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: " in alto ",
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    TextSpan(
-                                      text: " in alto ",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ]))),
-                      ],
-                    );
-            } else {
-              return Text("");
-            }
-          }),
+                                  ])));                       
+                  } else {
+                    return Text("");
+                  }
+                }),
+          ],
+        ),
+      
     );
   }
 
@@ -361,7 +356,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
             fontSize: 18.0,
           ))),
       locale: "it_IT",
-      initialDate: DateTime.now(),
+      initialDate: selectedDay.toDate(),
       onDateChange: (selectedDate) {
         setState(() {
           selectedDay = Timestamp.fromDate(selectedDate);
