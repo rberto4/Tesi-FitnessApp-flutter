@@ -266,8 +266,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                         allenamento:
                                                             lista_sedute_allenamenti[
                                                                 index_allenamenti]!,
-                                                        id: snapshot
-                                                            .data!.docs[0].id)));
+                                                        id: sm.id_scheda!)));
                                           },
                                         )),
                                       ]),
@@ -528,7 +527,7 @@ class _paginaProgressiState extends State<paginaProgressi> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => progressioneEsercizio()));
+                            builder: (context) => progressioneEsercizio(sm: sm, nome_es: lista_esercizi_scheda[index])));
                   },
                   child: Card(
                     elevation: 1,

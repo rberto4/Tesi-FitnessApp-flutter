@@ -118,29 +118,33 @@ class Carico {
 }
 
 class esercizio {
-  final String nome_esercizio;
-  final String carico;
-  final Timestamp? giorno_esecuzione;
+  final String? nome_esercizio;
+  final List<String>? lista_carichi;
+  final List<Timestamp>? giorni_esecuzioni;
 
   esercizio({
     required this.nome_esercizio,
-    required this.carico,
-    required this.giorno_esecuzione,
+    required this.lista_carichi,
+    required this.giorni_esecuzioni,
   });
 
   factory esercizio.fromFirestore(Map<String, dynamic> json) {
     return esercizio(
       nome_esercizio: json['nome_esercizio'],
-      carico: json['carico'],
-      giorno_esecuzione: json['giorno_esecuzione'],
+     lista_carichi: json['lista_carichi'] is Iterable
+          ? List.from(json['lista_carichi'])
+          : null,
+      giorni_esecuzioni: json['giorni_esecuzioni'] is Iterable
+          ? List.from(json['giorni_esecuzioni'])
+          : null,
     );
   }
 
   Map<String, Object?> toFirestore() {
     return {
       if (nome_esercizio != null) "nome_esercizio": nome_esercizio,
-      if (carico != null) "carico": carico,
-      if (giorno_esecuzione != null) "giorno_esecuzione": giorno_esecuzione,
+      if (lista_carichi != null) "lista_carichi": lista_carichi,
+      if (giorni_esecuzioni != null) "giorni_esecuzioni": giorni_esecuzioni,
     };
   }
 }
