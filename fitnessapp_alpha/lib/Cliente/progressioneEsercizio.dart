@@ -1,8 +1,11 @@
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class progressioneEsercizio extends StatefulWidget {
   late String nome_es;
   late SchedaModel sm;
@@ -40,15 +43,9 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
-          LineChart(LineChartData(lineBarsData: [
-            LineChartBarData(
-                isCurved: true,
-                barWidth: 2,
-                color: Theme.of(context).primaryColor,
-                spots: getListaDatiPlottati())
-          ])),
+          Expanded(child: LineChart(getLineChartData())),
           ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.all(16),
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: _es.giorni_esecuzioni!.length,
@@ -59,8 +56,8 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: ListTile(
-                  title: Text("Data"),
-                  subtitle: Text(DateFormat("yMMMMd", "it-IT")
+                  leading: Icon(Icons.calendar_month),
+                  title: Text(DateFormat("yMMMMd", "it-IT")
                       .format(_es.giorni_esecuzioni![index].toDate())),
                   trailing: Text(
                     _es.lista_carichi![index] + " Kg",
@@ -90,6 +87,7 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
         max = double.parse(element);
       }
     });
+    print(max);
     return max;
   }
 
@@ -100,15 +98,62 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
         min = double.parse(element);
       }
     });
+    print(min);
     return min;
   }
 
-  List<FlSpot> getListaDatiPlottati() {
-    List<FlSpot> list = List.generate(
-        _es.lista_carichi!.length,
-        (index) =>
-            FlSpot(index.toDouble(), double.parse(_es.lista_carichi![index])));
+  Timestamp getDataPiuRecente(List<Timestamp> list) {
+    return list.reduce((min, e) => e.toDate().isBefore(min.toDate()) ? e : min);
+  }
 
+  Timestamp getDataMenoRecente(List<Timestamp> list) {
+    return list.reduce((min, e) => e.toDate().isAfter(min.toDate()) ? e : min);
+  }
+
+  List<FlSpot> getChartData() {
+    List<FlSpot> list = new List.empty(growable: true);
+    for (int i = 0; i < _es.giorni_esecuzioni!.length; i++) {
+      list.add(FlSpot(
+          _es.giorni_esecuzioni![i].millisecondsSinceEpoch.toDouble(),
+          double.parse(_es.lista_carichi![i])));
+    }
     return list;
   }
+
+  // grafico
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 16,
+    );
+    Widget text;
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+    text = Text(DateFormat("yMMMMd", "it-IT").format(date));
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 10,
+      child: text,
+    );
+  }
+
+  LineChartData getLineChartData() => LineChartData(
+          titlesData: FlTitlesData(
+              show: true,
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: 1,
+                  getTitlesWidget: bottomTitleWidgets
+                )
+                 )),
+
+          minY: getCaricoMinimo(),
+          maxY: getCaricoMassimo(),
+
+          lineBarsData: [
+            LineChartBarData(spots: getChartData(), isCurved: true, barWidth: 3)
+          ]);
 }
