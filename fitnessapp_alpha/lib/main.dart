@@ -33,15 +33,44 @@ class MyApp extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        
-          useMaterial3: false,
-          primaryColor: Colors.orange.shade700,
-          primarySwatch: Colors.teal,
-          textTheme: GoogleFonts.latoTextTheme(TextTheme())
-          ),
+      theme: temaDark(),
       home: loadingPageMain(),
     );
+  }
+
+  ThemeData temaLight() {
+    return ThemeData(
+        appBarTheme: AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.black),
+            centerTitle: true,
+            titleTextStyle: TextStyle(
+                color: Colors.teal.shade800,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,letterSpacing: 2)),
+        brightness: Brightness.light,
+        useMaterial3: false,
+        primaryColor: Colors.teal.shade800,
+        textTheme: GoogleFonts.latoTextTheme(TextTheme()));
+  }
+
+  ThemeData temaDark() {
+    return ThemeData(
+      appBarTheme: AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            toolbarHeight: 64,
+            iconTheme: const IconThemeData(color: Colors.white),
+            centerTitle: true,
+            titleTextStyle: TextStyle(
+                color: Colors.teal.shade200,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,letterSpacing: 2)),
+        brightness: Brightness.dark,
+        useMaterial3: false,
+        primaryColor: Colors.teal.shade200,
+        textTheme: GoogleFonts.latoTextTheme(TextTheme()));
   }
 }
 

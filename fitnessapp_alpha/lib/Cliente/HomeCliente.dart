@@ -1,7 +1,6 @@
 import 'package:app_fitness_test_2/Cliente/dettagliAllenamento.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
-import 'package:app_fitness_test_2/Cliente/svolgimentoAllenamento.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
@@ -9,6 +8,7 @@ import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 final DatabaseService _dbs = DatabaseService();
@@ -34,15 +34,9 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 4,
-          shadowColor: Colors.black,
-          iconTheme: const IconThemeData(color: Colors.white),
-          centerTitle: false,
+        appBar: AppBar(     
           title: Text(
-            _dbs.getAuth().currentUser!.email.toString(),
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+            "FITNESSAPP"
           ),
           actions: [
             IconButton(
@@ -73,6 +67,9 @@ class _MainPageUtenteState extends State<MainPageUtente> {
 
         // DRAWER NAVIGATION
         drawer: const Drawer(),
+
+        // bottom nav bar
+
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -88,6 +85,9 @@ class _MainPageUtenteState extends State<MainPageUtente> {
               label: 'Archivio',
             ),
           ],
+          type: BottomNavigationBarType.shifting,
+          fixedColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Colors.grey,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
         ),
@@ -107,6 +107,8 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   ];
 }
 
+// TAB SCHEDA CORRENTE E CALENDARIO
+
 // ignore: camel_case_types
 class paginaSchedaCorrente extends StatefulWidget {
   const paginaSchedaCorrente({super.key});
@@ -116,232 +118,427 @@ class paginaSchedaCorrente extends StatefulWidget {
 }
 
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
-
   late Timestamp selectedDay = Timestamp.now();
   List<Allenamento?> lista_sedute_allenamenti = new List.empty(growable: true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _selectedIndex == 0
-          ? FloatingActionButton.extended(
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () {},
-              label: Text("Allenamento"),
-              icon: Icon(Icons.sports_score_rounded),
-            )
-          : null,
+     
       body: Column(
-          children: [
-            getDatePicker(),
-            StreamBuilder(
-                stream: _dbs.getSchedaCorrente(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                    // CONTROLLO SULLO STREAM DI DATI
-                    List lista = snapshot.data!.docs;
-                    sm = lista[0].data();
-            
-                    lista_sedute_allenamenti.clear();
-                    // caricamento dati nella lista locale in base al giorno di allenamento selezionato
-                    sm.allenamenti!.forEach((element_allenamento) =>
-                        element_allenamento.giorniAssegnati!.forEach(
-                            (element_giorno) => DateUtils.dateOnly(
-                                        element_giorno.toDate()) ==
-                                    DateUtils.dateOnly(selectedDay.toDate())
-                                ? {lista_sedute_allenamenti.add(element_allenamento)}
-                                : ()));
-            
-                    return lista_sedute_allenamenti.isNotEmpty
-                        ? Expanded(
-                                child: ListView.builder(
-                                  padding: EdgeInsets.all(8),
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  physics: const AlwaysScrollableScrollPhysics(),
-                                  itemCount: lista_sedute_allenamenti.length,
-                                  itemBuilder: (context, index_allenamenti) {
-                                    return Card(
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Column(children: [
-                                        ListTile(
-                                          trailing: Visibility(
-                                            visible: true,
-                                            child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1, color: Colors.teal),
-                                                    shape: BoxShape.rectangle,
+        children: [
+          getDatePicker(),
+          StreamBuilder(
+              stream: _dbs.getSchedaCorrente(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                  // CONTROLLO SULLO STREAM DI DATI
+                  List lista = snapshot.data!.docs;
+                  sm = lista[0].data();
+
+                  lista_sedute_allenamenti.clear();
+                  // caricamento dati nella lista locale in base al giorno di allenamento selezionato
+                  sm.allenamenti!.forEach((element_allenamento) =>
+                      element_allenamento.giorniAssegnati!.forEach(
+                          (element_giorno) =>
+                              DateUtils.dateOnly(element_giorno.toDate()) ==
+                                      DateUtils.dateOnly(selectedDay.toDate())
+                                  ? {
+                                      lista_sedute_allenamenti
+                                          .add(element_allenamento)
+                                    }
+                                  : ()));
+
+                  return lista_sedute_allenamenti.isNotEmpty
+                      ? Expanded(
+                          child: ListView.builder(
+                            padding: EdgeInsets.all(8),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: lista_sedute_allenamenti.length,
+                            itemBuilder: (context, index_allenamenti) {
+                              return Card(
+                                elevation: 1,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Column(children: [
+                                  // titolo allenamento
+
+                                  ListTile(
+                                    trailing: Visibility(
+                                      visible: true,
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: Colors.teal),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(48)),
+                                          child: const Wrap(
+                                              crossAxisAlignment:
+                                                  WrapCrossAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text("18:30",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.teal,
+                                                          fontSize: 12)),
+                                                ),
+                                              ])),
+                                    ),
+                                    title: Text(
+                                      lista_sedute_allenamenti[
+                                              index_allenamenti]!
+                                          .nomeAllenamento!,
+                                      style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    itemCount: lista_sedute_allenamenti[
+                                            index_allenamenti]!
+                                        .nomi_es!
+                                        .length,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    itemBuilder: (context, index_esercizi) {
+                                      return Theme(
+                                          data: ThemeData().copyWith(
+                                              dividerColor: Colors.transparent),
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8, right: 8, left: 8),
+                                              child: ExpansionTile(
+                                                shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(48)),
-                                                child: const Wrap(
-                                                    crossAxisAlignment:
-                                                        WrapCrossAlignment.center,
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                48))),
+                                                leading: Text(
+                                                  "${index_esercizi + 1}.",
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                                title: Text(
+                                                  lista_sedute_allenamenti[
+                                                          index_allenamenti]!
+                                                      .nomi_es![index_esercizi],
+                                                ),
+                                                children: [
+                                                  // quando espando l'esercizi
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(8.0),
-                                                        child: Text("18:30",
+                                                      Wrap(
+                                                        verticalDirection:
+                                                            VerticalDirection
+                                                                .down,
+                                                        crossAxisAlignment:
+                                                            WrapCrossAlignment
+                                                                .center,
+                                                        direction:
+                                                            Axis.vertical,
+                                                        children: [
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .teal),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            child: const Icon(
+                                                              color:
+                                                                  Colors.white,
+                                                              Icons.replay,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 8,
+                                                          ),
+                                                          Text(
+                                                            lista_sedute_allenamenti[
+                                                                        index_allenamenti]!
+                                                                    .ripetizioni_es![
+                                                                index_esercizi],
                                                             style: TextStyle(
                                                                 fontWeight:
-                                                                    FontWeight.bold,
-                                                                color: Colors.teal,
-                                                                fontSize: 12)),
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 18),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 4,
+                                                          ),
+                                                          Text(
+                                                            "Ripetizioni",
+                                                            style: TextStyle(),
+                                                          )
+                                                        ],
                                                       ),
-                                                    ])),
-                                          ),
-                                          title: Text(
-                                            lista_sedute_allenamenti[
-                                                    index_allenamenti]!
-                                                .nomeAllenamento!,
-                                            style: const TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        ListView.builder(
-                                          itemCount: lista_sedute_allenamenti[
-                                                  index_allenamenti]!
-                                              .nomi_es!
-                                              .length,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-            
-                                          scrollDirection: Axis.vertical,
-                                          itemBuilder: (context, index_esercizi) {
-                                            return Theme(
-                                              data: ThemeData().copyWith(
-                                                  dividerColor: Colors.transparent),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 8, right: 8, left: 8),
-                                                child: ExpansionTile(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.all(
-                                                          Radius.circular(48))),
-                                                  leading: CircleAvatar(
-                                                      radius: 16,
-                                                      backgroundColor: Colors.teal,
-                                                      child: Text(
-                                                        "${index_esercizi + 1}.",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16),
-                                                      )),
-                                                  title: Text(
-                                                    lista_sedute_allenamenti[
-                                                            index_allenamenti]!
-                                                        .nomi_es![index_esercizi],
-                                                  ),
-                                                  children: [
-                                                    ListTile(
-                                                        title: Text(
-                                                            "${lista_sedute_allenamenti[index_allenamenti]!.ripetizioni_es![index_esercizi]} ripetizioni")),
-                                                    ListTile(
-                                                        title: Text(
-                                                            "${lista_sedute_allenamenti[index_allenamenti]!.serie_es![index_esercizi]} serie")),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        ListTile(
-                                            trailing: ElevatedButton(
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStatePropertyAll(
-                                                      Colors.orange.shade700)),
-                                          child: Text("Dettagli"),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => dettagliScheda(
-                                                        allenamento:
+                                                      SizedBox(
+                                                        width: 32,
+                                                      ),
+                                                      Wrap(
+                                                        verticalDirection:
+                                                            VerticalDirection
+                                                                .down,
+                                                        crossAxisAlignment:
+                                                            WrapCrossAlignment
+                                                                .center,
+                                                        direction:
+                                                            Axis.vertical,
+                                                        children: [
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .teal),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            child: const Icon(
+                                                              color:
+                                                                  Colors.white,
+                                                              Icons
+                                                                  .dataset_outlined,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 8,
+                                                          ),
+                                                          Text(
                                                             lista_sedute_allenamenti[
-                                                                index_allenamenti]!,
-                                                        id: sm.id_scheda!)));
-                                          },
-                                        )),
-                                      ]),
-                                    );
-                                  },
-                                ),                     
-                          )
-                        : 
-                      const Expanded(
-                                  child: Center(
-                                      child: Wrap(
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          direction: Axis.vertical,
-                                          children: [
-                                    Icon(
-                                      Icons.hotel_rounded,
-                                      size: 108,
+                                                                        index_allenamenti]!
+                                                                    .serie_es![
+                                                                index_esercizi],
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 18),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 4,
+                                                          ),
+                                                          Text(
+                                                            "Serie",
+                                                            style: TextStyle(),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: 32,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Wrap(
+                                                          verticalDirection:
+                                                              VerticalDirection
+                                                                  .down,
+                                                          crossAxisAlignment:
+                                                              WrapCrossAlignment
+                                                                  .center,
+                                                          direction:
+                                                              Axis.vertical,
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .teal),
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(8),
+                                                              child: const Icon(
+                                                                color: Colors
+                                                                    .white,
+                                                                Icons.timer,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+                                                            Text(
+                                                              "120s",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 18),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 4,
+                                                            ),
+                                                            Text(
+                                                              "Recupero",
+                                                              style:
+                                                                  TextStyle(),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 16,
+                                                            left: 16,
+                                                            right: 16),
+                                                    child: SizedBox(
+                                                      height: 1,
+                                                      child: Container(
+                                                        color: Colors
+                                                            .grey.shade500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  ListTile(
+                                                    minLeadingWidth: 8,
+                                                    leading: Icon(
+                                                      Icons.bookmark,
+                                                      color: Colors.teal,
+                                                    ),
+                                                    title: Text(
+                                                      "Note",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 16,
+                                                            left: 16),
+                                                    child: ListTile(
+                                                      title: Text(
+                                                        "ciao, queste sono note di esempio relative a questo esercizio",
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )));
+                                    },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: ElevatedButton.icon(
+                                        icon: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 8),
+                                          child: Icon(Icons.play_circle_outline),
+                                        ),
+                                          onPressed: () {},
+                                          label: Text("Inizia"),
+                                          style: ButtonStyle(  
+                                            elevation: MaterialStatePropertyAll(1),
+                                            backgroundColor: MaterialStatePropertyAll(Colors.redAccent.shade200),                                      
+                                              shape: MaterialStateProperty.all<
+                                                      RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              48.0),
+                                                      )))),
+                                    ),
+                                  )
+                                ]),
+                              );
+                            },
+                          ),
+                        )
+                      : const Expanded(
+                          child: Center(
+                              child: Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  direction: Axis.vertical,
+                                  children: [
+                              Icon(
+                                Icons.hotel_rounded,
+                                size: 108,
+                                color: Colors.grey,
+                              ),
+                              Text("Giorno di riposo",
+                                  style: TextStyle(
+                                      fontSize: 24,
                                       color: Colors.grey,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text.rich(
+                                textAlign: TextAlign.center,
+                                TextSpan(
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          "Se vuoi modificare i tuoi programmi\n clicca sull'icona ",
                                     ),
-                                    Text("Giorno di riposo",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text.rich(
-                                      textAlign: TextAlign.center,
-                                      TextSpan(
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold),
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                "Se vuoi modificare i tuoi programmi\n clicca sull'icona ",
-                                          ),
-                                          WidgetSpan(
-                                            child: Icon(
-                                              Icons.edit_calendar_rounded,
-                                              size: 18,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: " in alto ",
-                                          ),
-                                        ],
+                                    WidgetSpan(
+                                      child: Icon(
+                                        Icons.edit_calendar_rounded,
+                                        size: 18,
+                                        color: Colors.grey,
                                       ),
                                     ),
-                                  ])));                       
-                  } else {
-                    return Text("");
-                  }
-                }),
-          ],
-        ),
-      
+                                    TextSpan(
+                                      text: " in alto ",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ])));
+                } else {
+                  return Text("");
+                }
+              }),
+        ],
+      ),
     );
   }
 
   Widget getDatePicker() {
     return EasyDateTimeLine(
-      headerProps: const EasyHeaderProps(
+      headerProps:  EasyHeaderProps(
+        centerHeader: false,
+        padding: EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+        monthPickerType: MonthPickerType.dropDown,
+        showSelectedDate: true,
+        selectedDateStyle: Theme.of(context).textTheme.titleMedium,
         dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
       ),
-      dayProps: const EasyDayProps(
+      dayProps: EasyDayProps(
           activeDayStyle: DayStyle(
             borderRadius: 48.0,
             dayNumStyle: TextStyle(
               color: Colors.white,
-              fontSize: 18.0,
+              fontSize: 24.0,
             ),
             dayStrStyle: TextStyle(
               color: Colors.white,
@@ -351,9 +548,18 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
           height: 64.0,
           dayStructure: DayStructure.dayNumDayStr,
           inactiveDayStyle: DayStyle(
-              dayNumStyle: TextStyle(
-            fontSize: 18.0,
-          ))),
+              dayNumStyle: Theme.of(context).textTheme.headlineSmall
+          ),
+          todayStyle: DayStyle(
+             decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Theme.of(context).primaryColor)
+             ),
+              dayNumStyle: Theme.of(context).textTheme.headlineSmall,
+              monthStrStyle: Theme.of(context).textTheme.headlineSmall
+          ),
+          ),
+         
       locale: "it_IT",
       initialDate: selectedDay.toDate(),
       onDateChange: (selectedDate) {
@@ -515,7 +721,10 @@ class _paginaProgressiState extends State<paginaProgressi> {
       child: Column(
         children: [
           ListTile(
-            title: Text("Esercizi in scheda", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+            title: Text(
+              "Esercizi in scheda",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            ),
           ),
           GridView.count(
               scrollDirection: Axis.vertical,
@@ -527,7 +736,9 @@ class _paginaProgressiState extends State<paginaProgressi> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => progressioneEsercizio(sm: sm, nome_es: lista_esercizi_scheda[index])));
+                            builder: (context) => progressioneEsercizio(
+                                sm: sm,
+                                nome_es: lista_esercizi_scheda[index])));
                   },
                   child: Card(
                     elevation: 1,
