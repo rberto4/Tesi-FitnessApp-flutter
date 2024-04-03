@@ -36,6 +36,7 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
         automaticallyImplyLeading: true,
       ),
       body: Column(
+
         children: [
           ListTile(
             title: Text(
@@ -43,10 +44,16 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(child: LineChart(getLineChartData())),
+          Card(
+            child: SizedBox(
+                width: double.infinity,
+                height: 200,
+                child: LineChart(getLineChartData())),
+          ),
           ListView.builder(
             padding: EdgeInsets.all(16),
             scrollDirection: Axis.vertical,
+            physics: AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: _es.giorni_esecuzioni!.length,
             itemBuilder: (context, index) {
@@ -68,7 +75,7 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
             },
           )
         ],
-      ),
+    )
     );
   }
 
@@ -125,35 +132,40 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 16,
+      fontSize: 12,
     );
     Widget text;
     DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-    text = Text(DateFormat("yMMMMd", "it-IT").format(date));
+    text = Text(DateFormat("M/d", "it-IT").format(date));
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 10,
+      angle: 1,
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false, distanceFromEdge: 5),
       child: text,
     );
   }
 
   LineChartData getLineChartData() => LineChartData(
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
               show: true,
               topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles:
+                  AxisTitles(sideTitles: SideTitles(showTitles: false)),
               bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  interval: 1,
-                  getTitlesWidget: bottomTitleWidgets
-                )
-                 )),
-
+                  sideTitles: SideTitles(interval: 604800000,
+                      showTitles: true, getTitlesWidget: bottomTitleWidgets))),
           minY: getCaricoMinimo(),
           maxY: getCaricoMassimo(),
-
           lineBarsData: [
-            LineChartBarData(spots: getChartData(), isCurved: true, barWidth: 3)
-          ]);
+            LineChartBarData(
+                spots: getChartData(),
+                isCurved: true,
+                barWidth: 5,
+                
+                preventCurveOverShooting: true,
+                curveSmoothness: 0.6)
+          ]
+          );
 }
