@@ -237,6 +237,10 @@ class _contenutoStepState extends State<contenutoStep> {
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                     ),
+                     Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: Text("Carico"),
+                    ),
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 16, right: 16, bottom: 8),
@@ -262,6 +266,10 @@ class _contenutoStepState extends State<contenutoStep> {
                           prefixIcon: Icon(Icons.fitness_center_outlined),
                         ),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: Text("Ripetizioni"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
