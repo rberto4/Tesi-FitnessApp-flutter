@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 
@@ -33,43 +34,89 @@ class MyApp extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: temaDark(),
+      theme: temaLight(),
+      darkTheme: temaDark(),
+      themeMode: ThemeMode.system,
       home: loadingPageMain(),
     );
   }
 
+  static const Color colorePrimario = Colors.cyan;
+  static const Color colorePrimarioDark = Colors.cyan;
+
   ThemeData temaLight() {
     return ThemeData(
+        expansionTileTheme: ExpansionTileThemeData(
+            collapsedShape: Border(),
+            tilePadding: EdgeInsets.symmetric(horizontal: 16),
+            textColor: colorePrimario,
+            iconColor: colorePrimario),
+        listTileTheme: ListTileThemeData(minLeadingWidth: 16),
+        cardTheme: CardTheme(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        canvasColor: Colors.grey.shade50,
+        cardColor: Colors.white,
+        shadowColor: ThemeData().shadowColor.withOpacity(0.1),
         appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark),
             backgroundColor: Colors.transparent,
             elevation: 0,
-            iconTheme: const IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(color: Colors.grey.shade800),
             centerTitle: true,
             titleTextStyle: TextStyle(
-                color: Colors.teal.shade800,
+                color: colorePrimario,
                 fontSize: 18,
-                fontWeight: FontWeight.bold,letterSpacing: 2)),
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2)),
         brightness: Brightness.light,
         useMaterial3: false,
-        primaryColor: Colors.teal.shade800,
+        primaryColor: colorePrimario,
         textTheme: GoogleFonts.latoTextTheme(TextTheme()));
   }
 
   ThemeData temaDark() {
+   
     return ThemeData(
-      appBarTheme: AppBarTheme(
+        expansionTileTheme: ExpansionTileThemeData(
+            collapsedShape: Border(),
+            tilePadding: EdgeInsets.symmetric(horizontal: 16),
+            textColor: colorePrimarioDark,
+            iconColor: colorePrimarioDark),
+        listTileTheme: ListTileThemeData(minLeadingWidth: 16),
+        cardTheme: CardTheme(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        
+        canvasColor: Colors.grey.shade900,
+        cardColor: Colors.grey.shade800,
+        shadowColor: ThemeData().shadowColor.withOpacity(0.5),
+        appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.light
+                ),
             backgroundColor: Colors.transparent,
             elevation: 0,
             toolbarHeight: 64,
             iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
             titleTextStyle: TextStyle(
-                color: Colors.teal.shade200,
+                color: colorePrimarioDark,
                 fontSize: 18,
-                fontWeight: FontWeight.bold,letterSpacing: 2)),
+                fontWeight: FontWeight.bold,
+                )),
         brightness: Brightness.dark,
         useMaterial3: false,
-        primaryColor: Colors.teal.shade200,
+        primaryColor: colorePrimarioDark,
         textTheme: GoogleFonts.latoTextTheme(TextTheme()));
   }
 }
