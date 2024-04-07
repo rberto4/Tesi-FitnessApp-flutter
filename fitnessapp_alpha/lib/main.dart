@@ -41,8 +41,8 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  static const Color colorePrimario = Colors.cyan;
-  static const Color colorePrimarioDark = Colors.cyan;
+  static const Color colorePrimario = Colors.lightBlue;
+  static const Color colorePrimarioDark = Colors.lightBlue;
 
   ThemeData temaLight() {
     return ThemeData(
@@ -70,10 +70,8 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: Colors.grey.shade800),
             centerTitle: true,
             titleTextStyle: TextStyle(
-                color: colorePrimario,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2)),
+                fontSize: 24,
+                )),
         brightness: Brightness.light,
         useMaterial3: false,
         primaryColor: colorePrimario,
@@ -98,7 +96,7 @@ class MyApp extends StatelessWidget {
         
         canvasColor: Colors.grey.shade900,
         cardColor: Colors.grey.shade800,
-        shadowColor: ThemeData().shadowColor.withOpacity(0.5),
+        shadowColor: ThemeData().shadowColor.withOpacity(0.3),
         appBarTheme: AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,
@@ -109,11 +107,7 @@ class MyApp extends StatelessWidget {
             toolbarHeight: 64,
             iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
-            titleTextStyle: TextStyle(
-                color: colorePrimarioDark,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                )),
+           ),
         brightness: Brightness.dark,
         useMaterial3: false,
         primaryColor: colorePrimarioDark,

@@ -2,29 +2,27 @@ import 'dart:async';
 
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class svolgimentoAllenamento extends StatefulWidget {
-  late SchedaModel sm;
-  late int i;
-
-  svolgimentoAllenamento({super.key, required this.sm, required this.i});
+  late Allenamento allenamento;
+  svolgimentoAllenamento({super.key, required this.allenamento});
 
   @override
   State<svolgimentoAllenamento> createState() =>
-      _svolgimentoAllenamentoState(this.sm, this.i);
+      _svolgimentoAllenamentoState(this.allenamento);
 }
 
 class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
-  late SchedaModel sm;
-  late int i;
+  late Allenamento allenamento;
+
   late StreamController<int> _recuperoStreamController;
-  _svolgimentoAllenamentoState(this.sm, this.i);
+  _svolgimentoAllenamentoState(this.allenamento);
 
   List<Step> steps = new List.empty(growable: true);
 
+  late ScrollController _scrollController = ScrollController();
   int currentStep = 0;
 
   @override
@@ -36,67 +34,95 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: BackButton(
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MainPageUtente()));
-          },
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(
+            allenamento.nomeAllenamento!,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          centerTitle: false,
+          leading: BackButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MainPageUtente()));
+            },
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              child: ElevatedButton.icon(
+                  icon: Icon(Icons.note_alt_rounded),
+                  onPressed: () {},
+                  label: Text(
+                    "Feedback",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  style: ButtonStyle(
+                      elevation: MaterialStatePropertyAll(1),
+                      backgroundColor: MaterialStatePropertyAll(
+                          Theme.of(context).primaryColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(48.0),
+                      )))),
+            ),
+          ],
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Stepper(
+        body: Stepper(
+          controller: _scrollController,
+          physics: ClampingScrollPhysics(),
           controlsBuilder: (context, ControlsDetails controlsDetails) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Container(
-                  width: double.maxFinite,
-                  child: controlsDetails.currentStep != steps.length - 1
-                      ? ElevatedButton.icon(
-                          icon: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Icon(Icons.timer_rounded),
-                          ),
-                          onPressed: () {
-                            controlsDetails.onStepContinue;
-                            setState(() {
-                              //mostraDialogRecupero(context,_recuperoStreamController);
-                              currentStep++;
-                            });
-                          },
-                          label: Text("Avvia recupero"),
-                          style: ButtonStyle(
-                              elevation: MaterialStatePropertyAll(1),
-                              backgroundColor:
-                                  MaterialStatePropertyAll(Colors.red),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(48.0),
-                              ))))
+              child: Visibility(
+                visible: true,
+                child: Container(
+                    width: double.maxFinite,
+                    child: controlsDetails.currentStep != steps.length - 1
+                        ? ElevatedButton.icon(
+                            icon: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Icon(Icons.timer_rounded),
+                            ),
+                            onPressed: () {
+                                          controlsDetails.onStepContinue;
+                              setState(() {
+                                currentStep++;
+                              });
+                            },
+                            label: Text("Avvia recupero"),
+                            style: ButtonStyle(
+                                elevation: MaterialStatePropertyAll(1),
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.red),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(48.0),
+                                ))))
 
-                      // Pulsante fine workout
+                        // Pulsante fine workout
 
-                      : ElevatedButton.icon(
-                          icon: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Icon(Icons.sports_score),
-                          ),
-                          onPressed: () {
-                            controlsDetails.onStepContinue;
-                            setState(() {});
-                          },
-                          label: Text("Fine llenamento"),
-                          style: ButtonStyle(
-                              elevation: MaterialStatePropertyAll(1),
-                              backgroundColor:
-                                  MaterialStatePropertyAll(Colors.green),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(48.0),
-                              ))))),
+                        : ElevatedButton.icon(
+                            icon: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Icon(Icons.sports_score),
+                            ),
+                            onPressed: () {
+                              controlsDetails.onStepContinue;
+                              setState(() {});
+                            },
+                            label: Text("Fine allenamento"),
+                            style: ButtonStyle(
+                                elevation: MaterialStatePropertyAll(1),
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.green),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(48.0),
+                                ))))),
+              ),
             );
           },
           type: StepperType.vertical,
@@ -105,6 +131,7 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
             setState(() {
               if (currentStep < steps.length - 1) {
                 currentStep += 1;
+                print("ciao");
               } else {
                 // You can perform any final actions here
               }
@@ -119,37 +146,38 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
               }
             });
           },
+          onStepTapped: (value) {
+            setState(() {});
+          },
           steps: steps,
-        ),
-      ),
-    );
+        ));
   }
 
   void caricaStepEsercizi() {
     steps.clear;
-    for (int j = 0; j < sm.allenamenti![i].nomi_es!.length; j++) {
-      Step p = new Step(
+    for (var a in allenamento.listaEsercizi!) {
+      Step p = Step(
           title: ListTile(
             contentPadding: EdgeInsets.all(0),
-            trailing: (j == currentStep)
-                ? IconButton.filled(
-                    onPressed: () {},
-                    icon: Icon(Icons.description_rounded),
-                  )
-                : null,
-            subtitle: Text(sm.allenamenti![i].serie_es![j]! + " serie"),
+            subtitle: Text(a.serieEsercizio! + " Serie"),
             title: Text(
-              sm.allenamenti![i].nomi_es![j],
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              a.nomeEsercizio!,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
           content: contenutoStep(
-            sm: sm,
-            i: i,
-            index: j,
+            esercizio: a,
+            note: allenamento.noteAllenamento,
+            notifyParent: aggiornaStato,
           ));
       steps.add(p);
     }
+  }
+
+  void aggiornaStato() {
+    setState(() {
+      currentStep++;
+    });
   }
 }
 
@@ -179,31 +207,61 @@ void mostraDialogRecupero(context, StreamController controller) {
 */
 
 class contenutoStep extends StatefulWidget {
-  late int index;
-  late SchedaModel sm;
-  late int i;
+  late Esercizio esercizio;
+  late String? note;
+  late Function() notifyParent;
 
   contenutoStep(
-      {super.key, required this.index, required this.sm, required this.i});
+      {super.key,
+      required this.esercizio,
+      required this.note,
+      required this.notifyParent});
 
   @override
   State<contenutoStep> createState() =>
-      _contenutoStepState(this.index, this.sm, this.i);
+      _contenutoStepState(this.esercizio, this.note, this.notifyParent);
 }
 
 class _contenutoStepState extends State<contenutoStep> {
-  late int index;
-  late SchedaModel sm;
-  late int i;
+  late Esercizio esercizio;
+  late String? note;
+  late Function() notifyParent;
 
   int serieCorrente = 0;
+
+  late Timer _timer;
+  late int tempoRimasto = esercizio.recuperoEsercizio!;
 
   late List<TextEditingController> _lista_controllers_ripetizioni =
       new List.empty(growable: true);
   late List<TextEditingController> _lista_controllers_carichi =
       new List.empty(growable: true);
 
-  _contenutoStepState(this.index, this.sm, this.i);
+  _contenutoStepState(this.esercizio, this.note, this.notifyParent);
+
+  void startTimer() {
+    const oneMilliSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneMilliSec,
+      (Timer timer) {
+        if (tempoRimasto == 0) {
+          setState(() {
+            timer.cancel();
+            tempoRimasto = esercizio.recuperoEsercizio!;
+            if (serieCorrente < int.parse(esercizio.serieEsercizio!) - 1) {
+              serieCorrente++;
+            } else {
+              print("dovresti aggiornare");
+            }
+          });
+        } else {
+          setState(() {
+            tempoRimasto--;
+          });
+        }
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -216,7 +274,8 @@ class _contenutoStepState extends State<contenutoStep> {
     return Column(
       children: [
         ListView.builder(
-          itemCount: int.parse(sm.allenamenti![i].serie_es![index]),
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: int.parse(esercizio.serieEsercizio.toString()),
           shrinkWrap: true,
           itemBuilder: (context, index_serie) {
             if (index_serie == serieCorrente) {
@@ -231,15 +290,22 @@ class _contenutoStepState extends State<contenutoStep> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ListTile(
+                      contentPadding: EdgeInsets.only(right: 8, left: 16),
                       title: Text(
                         "${index_serie + 1}°  Serie",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
+                      trailing: IconButton(
+                          icon: Icon(Icons.description_rounded),
+                          onPressed: () {
+                            dialogNoteCoach(note!);
+                          }),
                     ),
-                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: Text("Carico"),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
+                      child: Text("Carico (Kg)"),
                     ),
                     Padding(
                       padding:
@@ -248,7 +314,7 @@ class _contenutoStepState extends State<contenutoStep> {
                         textAlign: TextAlign.right,
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
-                        controller: null,
+                        controller: _lista_controllers_carichi[index_serie],
                         decoration: const InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide.none,
@@ -268,7 +334,8 @@ class _contenutoStepState extends State<contenutoStep> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: Text("Ripetizioni"),
                     ),
                     Padding(
@@ -278,7 +345,7 @@ class _contenutoStepState extends State<contenutoStep> {
                         textAlign: TextAlign.right,
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
-                        controller: _lista_controllers_ripetizioni[index],
+                        controller: _lista_controllers_ripetizioni[index_serie],
                         decoration: const InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide.none,
@@ -306,7 +373,7 @@ class _contenutoStepState extends State<contenutoStep> {
                 child: Card(
                   child: ListTile(
                     trailing: Text(
-                      "120Kg",
+                      esercizio.carichiEsercizio![index_serie] + " Kg",
                       style: TextStyle(color: Theme.of(context).hintColor),
                     ),
                     title: Text(
@@ -319,48 +386,106 @@ class _contenutoStepState extends State<contenutoStep> {
             }
           },
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Container(
+        SizedBox(
+          height: 16,
+        ),
+        LinearPercentIndicator(
+          center: Container(
             width: double.maxFinite,
-            child: ElevatedButton.icon(
-                icon: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Icon(Icons.timer_rounded),
-                ),
-                onPressed: () {
-                  setState(() {
-                    serieCorrente++;
-                  });
-                },
-                label: Text("Prossima serie"),
-                style: ButtonStyle(
-                    elevation: MaterialStatePropertyAll(1),
-                    backgroundColor: MaterialStatePropertyAll(
-                        Theme.of(context).primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(48.0),
-                    )))),
+            child: SizedBox(
+              height: 85,
+              child: ElevatedButton.icon(
+                  icon: Icon(Icons.timer_rounded),
+                  onPressed: () {
+                    startTimer();
+                  },
+                  label: Text(
+                    esercizio.recuperoEsercizio!.toDouble() != tempoRimasto
+                        ? (tempoRimasto + 1).toStringAsFixed(0)
+                        : "Avvia recupero  -  " +
+                            (tempoRimasto).toStringAsFixed(0) +
+                            "s",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                      elevation: MaterialStatePropertyAll(0),
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.transparent),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(48.0),
+                      )))),
+            ),
           ),
+          lineHeight: 85,
+          percent: getPercentualeAvanzamento(),
+          progressColor: Colors.red,
+          backgroundColor: Theme.of(context).disabledColor,
+          barRadius: Radius.circular(48),
         ),
       ],
     );
   }
 
   void inizializzaTextControllers() {
-    for (var a in sm.allenamenti![i].nomi_es!) {
-      for (int j = 0; j < sm.allenamenti![i].serie_es![index].length; j++) {
-        TextEditingController t = TextEditingController.fromValue(
-            TextEditingValue(text: sm.allenamenti![i].ripetizioni_es![index]));
-        _lista_controllers_ripetizioni.add(t);
-      }
+    for (int i = 0; i < esercizio.ripetizioniEsercizio!.length; i++) {
+      TextEditingController t = TextEditingController.fromValue(
+          TextEditingValue(text: esercizio.ripetizioniEsercizio![i]));
+
+      _lista_controllers_ripetizioni.add(t);
     }
 
-    _lista_controllers_ripetizioni.forEach((element) {
-      print(element.text);
-    });
+    for (int i = 0; i < esercizio.carichiEsercizio!.length; i++) {
+      TextEditingController t = TextEditingController.fromValue(
+          TextEditingValue(text: esercizio.carichiEsercizio![i]));
 
+      _lista_controllers_carichi.add(t);
+    }
   }
 
+  void salvaDatiFineAllenamento() {}
+
+  void dialogNoteCoach(String note) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            actionsAlignment: MainAxisAlignment.end,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            icon: Icon(Icons.description_rounded),
+            title: Text(
+              "Note dal coach",
+            ),
+            content: Text(note),
+            actions: [
+              ElevatedButton.icon(
+                  icon: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Icon(Icons.close),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  label: Text("Chiudi"),
+                  style: ButtonStyle(
+                      elevation: MaterialStatePropertyAll(1),
+                      backgroundColor: MaterialStatePropertyAll(Colors.red),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(48.0),
+                      ))))
+            ],
+          );
+        });
+  }
+
+  double getPercentualeAvanzamento() {
+    double p = (tempoRimasto) / (esercizio.recuperoEsercizio!);
+    return p;
+  }
 }

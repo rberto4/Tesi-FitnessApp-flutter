@@ -1,3 +1,4 @@
+/*
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -319,3 +320,4 @@ class _dettagliSchedaState extends State<dettagliScheda> {
   }
   */
 }
+*/

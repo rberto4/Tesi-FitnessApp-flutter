@@ -1,3 +1,5 @@
+/*
+
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -169,3 +171,4 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
           ]
           );
 }
+*/

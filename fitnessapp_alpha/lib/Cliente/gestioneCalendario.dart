@@ -1,3 +1,4 @@
+/*
 import 'package:app_fitness_test_2/Cliente/dettagliAllenamento.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
@@ -15,17 +16,18 @@ List<DateTime?> listaGiorniScheda = new List.empty(growable: true);
 List<String> listaAssegnazioni = new List.empty(growable: true);
 
 class gestioneCalendario extends StatefulWidget {
-  late SchedaModel sm;
 
-  gestioneCalendario({super.key, required this.sm});
+  late Scheda scheda;
+
+  gestioneCalendario({super.key, required this.scheda});
 
   @override
-  State<gestioneCalendario> createState() => _gestioneCalendarioState(this.sm);
+  State<gestioneCalendario> createState() => _gestioneCalendarioState(this.scheda);
 }
 
 class _gestioneCalendarioState extends State<gestioneCalendario> {
-  late SchedaModel sm;
-  _gestioneCalendarioState(this.sm);
+  late Scheda scheda;
+  _gestioneCalendarioState(this.scheda);
 
   TimeOfDay orarioSelezionato = TimeOfDay.now();
   late DateTime data_selezionata = DateUtils.dateOnly(DateTime.now());
@@ -570,3 +572,4 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
         );
   }
 }
+*/

@@ -15,11 +15,7 @@ class DatabaseService {
   late final DocumentReference _doc_reference;
   late final Query _col_reference_schedacorrente;
 
-  DatabaseService() {
-
-  }
-
-
+  DatabaseService() {}
 
 // OTTIENI ISTANZA DB FIRESTORE
   FirebaseFirestore getInstanceDb() {
@@ -60,12 +56,12 @@ class DatabaseService {
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
         .collection(COLLEZIONE_SCHEDE)
-        .withConverter<SchedaModel>(
+        .withConverter<Scheda>(
           fromFirestore: (snapshot, options) =>
-              SchedaModel.fromFirestore(snapshot.data()!),
+              Scheda.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
-        .where("fine_scheda", isGreaterThanOrEqualTo: Timestamp.now())
+        .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
         .limit(1)
         .snapshots();
   }
@@ -77,12 +73,12 @@ class DatabaseService {
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
         .collection(COLLEZIONE_SCHEDE)
-        .withConverter<SchedaModel>(
+        .withConverter<Scheda>(
           fromFirestore: (snapshot, options) =>
-              SchedaModel.fromFirestore(snapshot.data()!),
+              Scheda.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
-        .orderBy("inizio_scheda", descending: true)
+        .orderBy("inizioScheda", descending: true)
         .snapshots();
   }
 
