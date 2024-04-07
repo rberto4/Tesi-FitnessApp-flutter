@@ -5,9 +5,13 @@ import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
+
+GlobalKey stepStateKey= GlobalKey();
+  int currentStep = 0;
+
 class svolgimentoAllenamento extends StatefulWidget {
   late Allenamento allenamento;
-  svolgimentoAllenamento({super.key, required this.allenamento});
+  svolgimentoAllenamento({required this.allenamento}) : super(key: stepStateKey);
 
   @override
   State<svolgimentoAllenamento> createState() =>
@@ -23,12 +27,18 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
   List<Step> steps = new List.empty(growable: true);
 
   late ScrollController _scrollController = ScrollController();
-  int currentStep = 0;
+
 
   @override
   void initState() {
     caricaStepEsercizi();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    currentStep = 0;
+    super.dispose();
   }
 
   @override
@@ -43,7 +53,7 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
           centerTitle: false,
           leading: BackButton(
             onPressed: () {
-              Navigator.push(context,
+              Navigator.pop(context,
                   MaterialPageRoute(builder: (context) => MainPageUtente()));
             },
           ),
@@ -52,7 +62,8 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               child: ElevatedButton.icon(
                   icon: Icon(Icons.note_alt_rounded),
-                  onPressed: () {},
+                  onPressed: () {
+                  },
                   label: Text(
                     "Feedback",
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -72,7 +83,9 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
           controller: _scrollController,
           physics: ClampingScrollPhysics(),
           controlsBuilder: (context, ControlsDetails controlsDetails) {
-            return Padding(
+            return Container();
+            /*
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Visibility(
                 visible: true,
@@ -124,6 +137,7 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
                                 ))))),
               ),
             );
+            */
           },
           type: StepperType.vertical,
           currentStep: currentStep,
@@ -168,65 +182,32 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
           content: contenutoStep(
             esercizio: a,
             note: allenamento.noteAllenamento,
-            notifyParent: aggiornaStato,
           ));
       steps.add(p);
     }
   }
-
-  void aggiornaStato() {
-    setState(() {
-      currentStep++;
-    });
-  }
 }
 
-/*
-void mostraDialogRecupero(context, StreamController controller) {
-  Timer _timer;
-  final int durationMiliseconds = 200; 
-
-  controller = new StreamController<int>();
-  controller.add(20);
-  
-  showDialog(
-      context: context,
-      builder: (context) => Dialog.fullscreen(
-            child: StreamBuilder(stream: controller.stream, builder: (context, snapshot) {
-              
-            },)           
-          ));
-            /*
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    */  
-                    
-}
-*/
 
 class contenutoStep extends StatefulWidget {
   late Esercizio esercizio;
   late String? note;
-  late Function() notifyParent;
 
+  
   contenutoStep(
       {super.key,
       required this.esercizio,
-      required this.note,
-      required this.notifyParent});
+      required this.note, 
+      });
 
   @override
   State<contenutoStep> createState() =>
-      _contenutoStepState(this.esercizio, this.note, this.notifyParent);
+      _contenutoStepState(this.esercizio, this.note,);
 }
 
 class _contenutoStepState extends State<contenutoStep> {
   late Esercizio esercizio;
   late String? note;
-  late Function() notifyParent;
-
   int serieCorrente = 0;
 
   late Timer _timer;
@@ -237,7 +218,9 @@ class _contenutoStepState extends State<contenutoStep> {
   late List<TextEditingController> _lista_controllers_carichi =
       new List.empty(growable: true);
 
-  _contenutoStepState(this.esercizio, this.note, this.notifyParent);
+
+  _contenutoStepState(this.esercizio, this.note,);
+
 
   void startTimer() {
     const oneMilliSec = Duration(seconds: 1);
@@ -251,7 +234,12 @@ class _contenutoStepState extends State<contenutoStep> {
             if (serieCorrente < int.parse(esercizio.serieEsercizio!) - 1) {
               serieCorrente++;
             } else {
-              print("dovresti aggiornare");
+              if (stepStateKey.currentState != null) {
+    stepStateKey.currentState!.setState(() {
+      _timer.cancel();
+      currentStep++;
+    });
+  }
             }
           });
         } else {
@@ -266,7 +254,12 @@ class _contenutoStepState extends State<contenutoStep> {
   @override
   void initState() {
     inizializzaTextControllers();
+    
     super.initState();
+  }
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -431,6 +424,7 @@ class _contenutoStepState extends State<contenutoStep> {
   }
 
   void inizializzaTextControllers() {
+
     for (int i = 0; i < esercizio.ripetizioniEsercizio!.length; i++) {
       TextEditingController t = TextEditingController.fromValue(
           TextEditingValue(text: esercizio.ripetizioniEsercizio![i]));
