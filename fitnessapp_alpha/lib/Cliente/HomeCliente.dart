@@ -9,7 +9,6 @@ import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 final DatabaseService _dbs = DatabaseService();

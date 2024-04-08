@@ -1,5 +1,4 @@
 /*
-
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -47,10 +46,7 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
             ),
           ),
           Card(
-            child: SizedBox(
-                width: double.infinity,
-                height: 200,
-                child: LineChart(getLineChartData())),
+            
           ),
           ListView.builder(
             padding: EdgeInsets.all(16),
@@ -171,4 +167,5 @@ class _progressioneEsercizioState extends State<progressioneEsercizio> {
           ]
           );
 }
+
 */

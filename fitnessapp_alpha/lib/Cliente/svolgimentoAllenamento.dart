@@ -10,7 +10,7 @@ GlobalKey stepStateKey= GlobalKey();
   int currentStep = 0;
 
 class svolgimentoAllenamento extends StatefulWidget {
-  late Allenamento allenamento;
+  late final Allenamento allenamento;
   svolgimentoAllenamento({required this.allenamento}) : super(key: stepStateKey);
 
   @override
@@ -19,9 +19,8 @@ class svolgimentoAllenamento extends StatefulWidget {
 }
 
 class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
-  late Allenamento allenamento;
+  late final Allenamento allenamento;
 
-  late StreamController<int> _recuperoStreamController;
   _svolgimentoAllenamentoState(this.allenamento);
 
   List<Step> steps = new List.empty(growable: true);
@@ -46,9 +45,10 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          titleSpacing: 0,
           title: Text(
             allenamento.nomeAllenamento!,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            
           ),
           centerTitle: false,
           leading: BackButton(
@@ -83,8 +83,7 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
           controller: _scrollController,
           physics: ClampingScrollPhysics(),
           controlsBuilder: (context, ControlsDetails controlsDetails) {
-            return Container();
-            /*
+            return 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Visibility(
@@ -137,7 +136,7 @@ class _svolgimentoAllenamentoState extends State<svolgimentoAllenamento> {
                                 ))))),
               ),
             );
-            */
+            
           },
           type: StepperType.vertical,
           currentStep: currentStep,

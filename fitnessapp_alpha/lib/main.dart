@@ -70,7 +70,8 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: Colors.grey.shade800),
             centerTitle: true,
             titleTextStyle: TextStyle(
-                fontSize: 24,
+                fontSize: 18,
+               color: Colors.grey.shade800
                 )),
         brightness: Brightness.light,
         useMaterial3: false,
@@ -106,8 +107,11 @@ class MyApp extends StatelessWidget {
             elevation: 0,
             toolbarHeight: 64,
             iconTheme: const IconThemeData(color: Colors.white),
-            centerTitle: true,
-           ),
+             titleTextStyle: TextStyle(
+                fontSize: 18,
+               color: Colors.white
+                )),
+           
         brightness: Brightness.dark,
         useMaterial3: false,
         primaryColor: colorePrimarioDark,
