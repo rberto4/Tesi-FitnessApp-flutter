@@ -462,7 +462,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        svolgimentoAllenamento(
+                                                        sedutaAllenamento(
                                                           allenamento: scheda
                                                                   .allenamentiScheda![
                                                               index_allenamenti],
@@ -492,6 +492,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   direction: Axis.vertical,
                                   children: [
+                                    SizedBox(
+                                      height: 64,
+                                    ),
                                 Icon(
                                   Icons.hotel_rounded,
                                   size: 108,

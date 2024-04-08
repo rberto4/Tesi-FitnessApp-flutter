@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
+        
         canvasColor: Colors.grey.shade50,
         cardColor: Colors.white,
         shadowColor: ThemeData().shadowColor.withOpacity(0.1),
