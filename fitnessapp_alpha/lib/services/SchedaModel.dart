@@ -48,13 +48,16 @@ class Allenamento {
   final List<Esercizio>? listaEsercizi;
   final List<Timestamp>? giorniAssegnati;
   final String? noteAllenamento;
+  final String? feedbackAllenamento;
 
   // super set
   Allenamento(
       {required this.nomeAllenamento,
       required this.listaEsercizi,
       required this.noteAllenamento,
-      required this.giorniAssegnati});
+      required this.giorniAssegnati,
+      required this.feedbackAllenamento
+      });
 
   factory Allenamento.fromFirestore(Map<String, dynamic> json) {
     var _listaEsercizi = json['listaEsercizi'] as List;
@@ -62,6 +65,7 @@ class Allenamento {
         _listaEsercizi.map((i) => Esercizio.fromFirestore(i)).toList();
 
     return Allenamento(
+      feedbackAllenamento: json['feedbackAllenamento'],
       nomeAllenamento: json['nomeAllenamento'],
       noteAllenamento: json['noteAllenamento'],
       giorniAssegnati: json['giorniAssegnati'] is Iterable
@@ -73,6 +77,7 @@ class Allenamento {
 
   Map<String, dynamic> toFirestore() {
     return {
+            if (feedbackAllenamento != null) "feedbackAllenamento": feedbackAllenamento,
       if (nomeAllenamento != null) "nomeAllenamento": nomeAllenamento,
       if (noteAllenamento != null) "noteAllenamento": noteAllenamento,
       if (giorniAssegnati != null) "giorniAssegnati": giorniAssegnati,
@@ -88,7 +93,6 @@ class Esercizio {
   final List<String>? ripetizioniEsercizio;
   final List<String>? carichiEsercizio;
   final int? recuperoEsercizio;
-  final Timestamp? dataSvolgimentoEsercizio;
 
   Esercizio({
     required this.nomeEsercizio,
@@ -96,18 +100,17 @@ class Esercizio {
     required this.ripetizioniEsercizio,
     required this.carichiEsercizio,
     required this.recuperoEsercizio,
-    required this.dataSvolgimentoEsercizio,
   });
 
   factory Esercizio.fromFirestore(Map<String, dynamic> json) {
     return Esercizio(
-      dataSvolgimentoEsercizio: json['dataSvolgimentoEsercizio'],
       recuperoEsercizio: json['recuperoEsercizio'],
       nomeEsercizio: json['nomeEsercizio'],
       serieEsercizio: json['serieEsercizio'],
       ripetizioniEsercizio: json['ripetizioniEsercizio'] is Iterable
           ? List.from(json['ripetizioniEsercizio'])
           : null,
+     
       carichiEsercizio: json['carichiEsercizio'] is Iterable
           ? List.from(json['carichiEsercizio'])
           : null,
@@ -116,8 +119,7 @@ class Esercizio {
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (dataSvolgimentoEsercizio != null)
-        "dataSvolgimentoEsercizio": dataSvolgimentoEsercizio,
+      
       if (nomeEsercizio != null) "nomeEsercizio": nomeEsercizio,
       if (recuperoEsercizio != null) "recuperoEsercizio": recuperoEsercizio,
       if (serieEsercizio != null) "serieEsercizio": serieEsercizio,
