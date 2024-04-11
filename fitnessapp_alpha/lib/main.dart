@@ -41,8 +41,9 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  static const Color colorePrimario = Colors.lightBlue;
-  static const Color colorePrimarioDark = Colors.lightBlue;
+  static  Color colorePrimario = Color.fromARGB(255, 8, 198, 179);
+  static  Color colorePrimarioDark = Color.fromARGB(255, 8, 198, 179);
+  static  Color coloreSwatch = Color.fromARGB(255, 8, 198, 179);
 
   ThemeData temaLight() {
     return ThemeData(
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        
+        primarySwatch: Colors.teal,
         canvasColor: Colors.grey.shade50,
         cardColor: Colors.white,
         shadowColor: ThemeData().shadowColor.withOpacity(0.1),
@@ -95,7 +96,8 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        
+                primarySwatch: Colors.teal,
+
         canvasColor: Colors.grey.shade900,
         cardColor: Colors.grey.shade800,
         shadowColor: ThemeData().shadowColor.withOpacity(0.3),

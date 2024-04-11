@@ -8,7 +8,6 @@ const String COLLEZIONE_SCHEDE = "schede";
 const String COLLEZIONE_COACHES = "coaches";
 
 class DatabaseService {
-
   late final FirebaseAuth _auth = FirebaseAuth.instance;
   late String uid_user_loggato = _auth.currentUser!.uid;
   final FirebaseFirestore _instance = FirebaseFirestore.instance;
@@ -30,10 +29,11 @@ class DatabaseService {
     return COLLEZIONE_COACHES;
   }
 
- String getCollezioneSchede() {
+  String getCollezioneSchede() {
     return COLLEZIONE_SCHEDE;
   }
-  FirebaseAuth getAuth (){
+
+  FirebaseAuth getAuth() {
     return _auth;
   }
 
@@ -49,7 +49,7 @@ class DatabaseService {
         )
         .snapshots();
   }
-    // stream per recuperare l'ultima scheda ricevuta
+  // stream per recuperare l'ultima scheda ricevuta
 
   Stream<QuerySnapshot> getSchedaCorrente() {
     return _instance
@@ -66,7 +66,7 @@ class DatabaseService {
         .snapshots();
   }
 
-      // stream per recuperare elenco di tutte le schede, non faccio query, ordino solo per data
+  // stream per recuperare elenco di tutte le schede, non faccio query, ordino solo per data
 
   Stream<QuerySnapshot> getTotaleSchede() {
     return _instance
@@ -82,14 +82,50 @@ class DatabaseService {
         .snapshots();
   }
 
-  Future<DocumentSnapshot> isCoach() async {
+  Scheda getSchedaById(String id) {
+    /*
+    final ref = db.collection("cities").doc("LA").withConverter(
+      fromFirestore: City.fromFirestore,
+      toFirestore: (City city, _) => city.toFirestore(),
+    );
+final docSnap = await ref.get();
+final city = docSnap.data(); // Convert to City object
+if (city != null) {
+  print(city);
+} else {
+  print("No such document.");
+}
+*/
+    late Scheda scheda = Scheda(
+        nomeScheda: null,
+        allenamentiScheda: null,
+        inizioScheda: null,
+        fineScheda: null,
+        idScheda: null,
+        allenamentiSvolti: null);
 
-    // va a guardare nella collezione dei coaches, se esiste il docuemento relativo all'utente loggato, allora è un coach e returna true
-    _doc_reference = _instance.collection(COLLEZIONE_COACHES).doc(_auth.currentUser?.uid);
-    DocumentSnapshot ds = await _doc_reference.get(); 
-    
-    return ds;
+    final ref = _instance
+        .collection(COLLEZIONE_UTENTI)
+        .doc(uid_user_loggato)
+        .collection(COLLEZIONE_SCHEDE)
+        .withConverter(
+          fromFirestore: (snapshot, options) =>
+              Scheda.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
+        .get()
+        .then((value) {
+      scheda = value.docs.first.data();
+    });
+    return scheda;
   }
 
-  
+  Future<DocumentSnapshot> isCoach() async {
+    // va a guardare nella collezione dei coaches, se esiste il docuemento relativo all'utente loggato, allora è un coach e returna true
+    _doc_reference =
+        _instance.collection(COLLEZIONE_COACHES).doc(_auth.currentUser?.uid);
+    DocumentSnapshot ds = await _doc_reference.get();
+
+    return ds;
+  }
 }
