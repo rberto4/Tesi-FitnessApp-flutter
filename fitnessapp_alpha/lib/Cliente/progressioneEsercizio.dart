@@ -1,171 +1,148 @@
-/*
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-// ignore: must_be_immutable
-class progressioneEsercizio extends StatefulWidget {
-  late String nome_es;
-  late SchedaModel sm;
-  progressioneEsercizio({super.key, required this.nome_es, required this.sm});
+class progressioneEsercizio extends StatelessWidget {
+  late List<Esercizio> list_esercizi;
+  late List<Timestamp> list_date;
 
-  @override
-  State<progressioneEsercizio> createState() =>
-      _progressioneEsercizioState(this.sm, this.nome_es);
-}
-
-class _progressioneEsercizioState extends State<progressioneEsercizio> {
-  late String _nome_es;
-  late SchedaModel sm;
-  late esercizio _es = new esercizio(
-      nome_esercizio: null, lista_carichi: null, giorni_esecuzioni: null);
-  _progressioneEsercizioState(this.sm, this._nome_es);
-
-  @override
-  void initState() {
-    recuperaStoricoEs();
-    super.initState();
-  }
+  progressioneEsercizio(
+      {super.key, required this.list_esercizi, required this.list_date});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: true,
+        title: Text(
+          list_esercizi.first.nomeEsercizio!,
+        ),
+        centerTitle: false,
       ),
       body: Column(
-
         children: [
-          ListTile(
-            title: Text(
-              _nome_es,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Card(
-            
-          ),
-          ListView.builder(
-            padding: EdgeInsets.all(16),
-            scrollDirection: Axis.vertical,
-            physics: AlwaysScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _es.giorni_esecuzioni!.length,
-            itemBuilder: (context, index) {
-              return Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: ListTile(
-                  leading: Icon(Icons.calendar_month),
-                  title: Text(DateFormat("yMMMMd", "it-IT")
-                      .format(_es.giorni_esecuzioni![index].toDate())),
-                  trailing: Text(
-                    _es.lista_carichi![index] + " Kg",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                ),
-              );
-            },
+          Expanded(
+            child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: list_esercizi.length,
+                itemBuilder: (context, index_esercizi) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        leading: Icon(
+                          Icons.calendar_month_rounded,
+                          color: Theme.of(context).hintColor,
+                        ),
+                        title: Text(
+                          list_date[index_esercizi].toDate().day.toString() +
+                              "/" +
+                              list_date[index_esercizi]
+                                  .toDate()
+                                  .month
+                                  .toString() +
+                              "/" +
+                              list_date[index_esercizi]
+                                  .toDate()
+                                  .year
+                                  .toString(),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        trailing: IconButton(
+                            icon: Icon(Icons.description_rounded),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () {
+                              dialogFeedback(index_esercizi);
+                            }),
+                      ),
+                      Card(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: DataTable(
+                              dividerThickness: 1,
+                              columnSpacing: 16,
+                              columns: [
+                                DataColumn(
+                                  label: Text(controlloCaricoFisso(index_esercizi)? "Serie" : "N° Serie"),
+                                ),
+                                DataColumn(
+                                  label: Text('Ripetizioni'),
+                                ),
+                                DataColumn(
+                                  label: Text('Carico'),
+                                ),
+                              ],
+                              rows: getTableData(index_esercizi)),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Divider()
+                    ],
+                  );
+                }),
           )
         ],
-    )
+      ),
     );
   }
 
-  void recuperaStoricoEs() {
-    sm.storico_esercizi!.forEach((element) {
-      if (_nome_es == element.nome_esercizio) {
-        _es = element;
+  List<DataRow> getTableData(int index_esercizi) {
+    List<DataRow> list = new List.empty(growable: true);
+
+    if (controlloCaricoFisso(index_esercizi)) {
+      list.add(DataRow(cells: [
+        DataCell(Text(list_esercizi[index_esercizi].serieEsercizio!)),
+        DataCell(Text(list_esercizi[index_esercizi].ripetizioniEsercizio![0])),
+        DataCell(
+            Text(list_esercizi[index_esercizi].carichiEsercizio![0] + " Kg"))
+      ]));
+    } else {
+      for (int i = 0;
+          i < int.parse(list_esercizi[index_esercizi].serieEsercizio!);
+          i++) {
+        list.add(DataRow(cells: [
+          DataCell(Text("#" + (i + 1).toString())),
+          DataCell(
+              Text(list_esercizi[index_esercizi].ripetizioniEsercizio![i])),
+          DataCell(
+              Text(list_esercizi[index_esercizi].carichiEsercizio![i] + " Kg"))
+        ]));
       }
-    });
-  }
-
-  double getCaricoMassimo() {
-    late double max = 0;
-    _es.lista_carichi!.forEach((element) {
-      if (double.parse(element) > max) {
-        max = double.parse(element);
-      }
-    });
-    print(max);
-    return max;
-  }
-
-  double getCaricoMinimo() {
-    late double min = 100000;
-    _es.lista_carichi!.forEach((element) {
-      if (double.parse(element) < min) {
-        min = double.parse(element);
-      }
-    });
-    print(min);
-    return min;
-  }
-
-  Timestamp getDataPiuRecente(List<Timestamp> list) {
-    return list.reduce((min, e) => e.toDate().isBefore(min.toDate()) ? e : min);
-  }
-
-  Timestamp getDataMenoRecente(List<Timestamp> list) {
-    return list.reduce((min, e) => e.toDate().isAfter(min.toDate()) ? e : min);
-  }
-
-  List<FlSpot> getChartData() {
-    List<FlSpot> list = new List.empty(growable: true);
-    for (int i = 0; i < _es.giorni_esecuzioni!.length; i++) {
-      list.add(FlSpot(
-          _es.giorni_esecuzioni![i].millisecondsSinceEpoch.toDouble(),
-          double.parse(_es.lista_carichi![i])));
     }
+
     return list;
   }
 
-  // grafico
+  bool controlloCaricoFisso(int index_esercizi) {
+    bool check = true;
+    int? temp_carichi =
+        int.tryParse(list_esercizi[index_esercizi].carichiEsercizio!.first);
+    int? temp_reps =
+        int.tryParse(list_esercizi[index_esercizi].ripetizioniEsercizio!.first);
+    for (var a in list_esercizi[index_esercizi].carichiEsercizio!) {
+      if (int.tryParse(a) != temp_carichi) {
+        check = false;
+      }
+    }
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 12,
-    );
-    Widget text;
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-    text = Text(DateFormat("M/d", "it-IT").format(date));
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      angle: 1,
-      fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false, distanceFromEdge: 5),
-      child: text,
-    );
+     for (var a in list_esercizi[index_esercizi].ripetizioniEsercizio!) {
+      if (int.tryParse(a) != temp_reps) {
+        check = false;
+      }
+    }
+
+    return check;
   }
 
-  LineChartData getLineChartData() => LineChartData(
-          gridData: FlGridData(show: false),
-          borderData: FlBorderData(show: false),
-          titlesData: FlTitlesData(
-              show: true,
-              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles:
-                  AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(interval: 604800000,
-                      showTitles: true, getTitlesWidget: bottomTitleWidgets))),
-          minY: getCaricoMinimo(),
-          maxY: getCaricoMassimo(),
-          lineBarsData: [
-            LineChartBarData(
-                spots: getChartData(),
-                isCurved: true,
-                barWidth: 5,
-                
-                preventCurveOverShooting: true,
-                curveSmoothness: 0.6)
-          ]
-          );
+  void dialogFeedback(int index_esercizi) {}
 }
-
-*/

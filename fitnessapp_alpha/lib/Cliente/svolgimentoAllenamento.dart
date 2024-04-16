@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class sedutaAllenamento extends StatefulWidget {
-  
   late Allenamento allenamento;
   late Scheda scheda;
   late Timestamp dataSelezionata;
@@ -52,10 +51,13 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
   late TextEditingController _controller;
 
 // oggetto per lo scorrimento
-final _focusNode = FocusNode();
+  final _focusNode = FocusNode();
+
+  late bool modalitaAllenamento;
 
   @override
   void initState() {
+    modalitaAllenamento = siamoInAllenamento();
     inizializzaTextControllers();
     _controller = TextEditingController.fromValue(
         TextEditingValue(text: _allenamento.feedbackAllenamento!));
@@ -67,6 +69,34 @@ final _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Visibility(
+        visible: !modalitaAllenamento,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SizedBox(
+            width: double.infinity,
+            height: 64,
+            child: FloatingActionButton.extended(
+              icon: Icon(
+                Icons.save_rounded,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                salvaDatiFineAllenamento();
+              },
+              label: Text(
+                "Salva",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 18),
+              ),
+              backgroundColor: Colors.green,
+            ),
+          ),
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 2,
@@ -77,7 +107,11 @@ final _focusNode = FocusNode();
         ),
         centerTitle: false,
         leading: BackButton(onPressed: () {
-          dialogConfermaEsci();
+          if (modalitaAllenamento) {
+            dialogConfermaEsci();
+          } else {
+            Navigator.pop(context);
+          }
         }),
         actions: [
           Padding(
@@ -113,16 +147,23 @@ final _focusNode = FocusNode();
             children: [
               // Tile esercizio
               ListTile(
+                onTap: () {
+                  if (!_timer.isActive) {
+                    selezionaEsercizioAlTocco(index_esercizi);
+                  }
+                },
                 leading: Container(
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                         color: esercizioCorrente >= 0 &&
-                                index_esercizi <= esercizioCorrente
+                                index_esercizi <= esercizioCorrente &&
+                                modalitaAllenamento
                             ? Theme.of(context).primaryColor
                             : Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(48)),
                     child: esercizioCorrente > 0 &&
-                            index_esercizi < esercizioCorrente
+                            index_esercizi < esercizioCorrente &&
+                            modalitaAllenamento
                         ? Icon(
                             Icons.done_rounded,
                             color: Colors.white,
@@ -133,7 +174,7 @@ final _focusNode = FocusNode();
                             style: TextStyle(
                                 color: esercizioCorrente != index_esercizi
                                     ? Theme.of(context).hintColor
-                                    : Colors.white,
+                                    : null,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18),
                           )),
@@ -160,7 +201,6 @@ final _focusNode = FocusNode();
                     _allenamento.listaEsercizi![index_esercizi].serieEsercizio!,
                   ),
                   itemBuilder: (context, index_serie) {
-
                     // in base alla serie corrente mostro la scheda SELEZIONATA oppure no
 
                     if (index_serie == serieCorrente) {
@@ -261,34 +301,38 @@ final _focusNode = FocusNode();
                         ),
                       );
                     } else {
-
                       // scheda esercizio non selezionato
-
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Card(
-                          child: ListTile(
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16),
-                            horizontalTitleGap: 8,
-                            trailing: Text(
-                               "${_lista_controllers_carichi[
-                                    getIndexControllers(
-                                        index_esercizi, index_serie)].text}Kg",
-                              style:
-                                  TextStyle(color: Theme.of(context).hintColor),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (!_timer.isActive) {
+                              selezionaSerieAlTocco(index_serie);
+                            }
+                          },
+                          child: Card(
+                            child: ListTile(
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 16),
+                              horizontalTitleGap: 8,
+                              trailing: Text(
+                                "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
+                                style: TextStyle(
+                                    color: Theme.of(context).hintColor),
+                              ),
+                              title: Text(
+                                "${index_serie + 1}°  Serie",
+                                style: TextStyle(
+                                    color: Theme.of(context).hintColor),
+                              ),
+                              leading: serieCorrente > index_serie &&
+                                      modalitaAllenamento
+                                  ? Icon(
+                                      Icons.done_rounded,
+                                      color: Theme.of(context).hintColor,
+                                    )
+                                  : null,
                             ),
-                            title: Text(
-                              "${index_serie + 1}°  Serie",
-                              style:
-                                  TextStyle(color: Theme.of(context).hintColor),
-                            ),
-                            leading: serieCorrente > index_serie
-                                ? Icon(
-                                    Icons.done_rounded,
-                                    color: Theme.of(context).hintColor,
-                                  )
-                                : null,
                           ),
                         ),
                       );
@@ -297,7 +341,10 @@ final _focusNode = FocusNode();
                 ),
               ),
               Visibility(
-                visible: esercizioCorrente == index_esercizi ? true : false,
+                visible:
+                    esercizioCorrente == index_esercizi && modalitaAllenamento
+                        ? true
+                        : false,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
@@ -380,6 +427,46 @@ final _focusNode = FocusNode();
     );
   }
 
+  bool siamoInAllenamento() {
+    bool check = true;
+    scheda.allenamentiSvolti!.forEach((element) {
+      if (element.nomeAllenamento == _allenamento.nomeAllenamento &&
+          DateUtils.dateOnly(element.giorniAssegnati!.first.toDate()) ==
+              DateUtils.dateOnly(dataSelezionata.toDate())) {
+        check = false;
+      }
+    });
+    return check;
+  }
+
+  Allenamento recuperaDatiDaStorico() {
+    late Allenamento a;
+    scheda.allenamentiSvolti!.forEach((element) {
+      if (element.nomeAllenamento == _allenamento.nomeAllenamento &&
+          DateUtils.dateOnly(element.giorniAssegnati!.first.toDate()) ==
+              DateUtils.dateOnly(dataSelezionata.toDate())) {
+        a = element;
+      }
+    });
+    return a;
+  }
+
+  void selezionaSerieAlTocco(int i) {
+    setState(() {
+      serieCorrente = i;
+    });
+  }
+
+  void selezionaEsercizioAlTocco(int i) {
+    setState(() {
+      esercizioCorrente = i;
+      serieCorrente = 0;
+    });
+  }
+
+/*
+  METODI VARI, PER LO SVOLGIMENTO DELL'ALLENAMENTO
+*/
   void proseguiScheda() {
     if (int.parse(_allenamento
                 .listaEsercizi![esercizioCorrente].serieEsercizio!) -
@@ -456,7 +543,7 @@ final _focusNode = FocusNode();
     scheda.allenamentiSvolti!.removeWhere((element) =>
         element.nomeAllenamento == _allenamento.nomeAllenamento &&
         DateUtils.dateOnly(element.giorniAssegnati!.first.toDate()) ==
-            dataSelezionata.toDate());
+            DateUtils.dateOnly(dataSelezionata.toDate()));
 
     // carico l'allenamento nel campo array allenamentiSvolti.
     scheda.allenamentiSvolti!.add(_allenamento);
@@ -508,7 +595,8 @@ final _focusNode = FocusNode();
                     label: Text("Chiudi"),
                     style: ButtonStyle(
                         elevation: MaterialStatePropertyAll(1),
-                        backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
+                        backgroundColor: MaterialStatePropertyAll(
+                            Theme.of(context).primaryColor),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -567,7 +655,8 @@ final _focusNode = FocusNode();
                     label: Text("Chiudi"),
                     style: ButtonStyle(
                         elevation: MaterialStatePropertyAll(1),
-                        backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
+                        backgroundColor: MaterialStatePropertyAll(
+                            Theme.of(context).primaryColor),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -602,9 +691,9 @@ final _focusNode = FocusNode();
                       child: Icon(Icons.close),
                     ),
                     onPressed: () {
+                      _timer.cancel();
                       Navigator.pop(context);
                       Navigator.pop(context);
-                         
                     },
                     label: Text("Esci da allenamento"),
                     style: ButtonStyle(
@@ -625,19 +714,39 @@ final _focusNode = FocusNode();
     _lista_controllers_carichi.clear();
     _lista_controllers_ripetizioni.clear();
 
-    for (var a in _allenamento.listaEsercizi!) {
-      for (int b = 0; b < a.ripetizioniEsercizio!.length; b++) {
-        TextEditingController t = TextEditingController.fromValue(
-            TextEditingValue(text: a.ripetizioniEsercizio![b]));
+    if (modalitaAllenamento) {
+      for (var a in _allenamento.listaEsercizi!) {
+        for (int b = 0; b < a.ripetizioniEsercizio!.length; b++) {
+          TextEditingController t = TextEditingController.fromValue(
+              TextEditingValue(text: a.ripetizioniEsercizio![b]));
 
-        _lista_controllers_ripetizioni.add(t);
+          _lista_controllers_ripetizioni.add(t);
+        }
+
+        for (int c = 0; c < a.carichiEsercizio!.length; c++) {
+          TextEditingController t = TextEditingController.fromValue(
+              TextEditingValue(text: a.carichiEsercizio![c]));
+
+          _lista_controllers_carichi.add(t);
+        }
       }
+    } else {
+      Allenamento allenamento_storico = recuperaDatiDaStorico();
 
-      for (int c = 0; c < a.carichiEsercizio!.length; c++) {
-        TextEditingController t = TextEditingController.fromValue(
-            TextEditingValue(text: a.carichiEsercizio![c]));
+      for (var a in allenamento_storico.listaEsercizi!) {
+        for (int b = 0; b < a.ripetizioniEsercizio!.length; b++) {
+          TextEditingController t = TextEditingController.fromValue(
+              TextEditingValue(text: a.ripetizioniEsercizio![b]));
 
-        _lista_controllers_carichi.add(t);
+          _lista_controllers_ripetizioni.add(t);
+        }
+
+        for (int c = 0; c < a.carichiEsercizio!.length; c++) {
+          TextEditingController t = TextEditingController.fromValue(
+              TextEditingValue(text: a.carichiEsercizio![c]));
+
+          _lista_controllers_carichi.add(t);
+        }
       }
     }
 
