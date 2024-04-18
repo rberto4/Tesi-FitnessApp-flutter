@@ -1,0 +1,28 @@
+{
+    // Usare IntelliSense per informazioni sui possibili attributi.
+    // Al passaggio del mouse vengono visualizzate le descrizioni degli attributi esistenti.
+    // Per altre informazioni, visitare: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "fitnessapp_alpha",
+            "cwd": "fitnessapp_alpha",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "fitnessapp_alpha (profile mode)",
+            "cwd": "fitnessapp_alpha",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "fitnessapp_alpha (release mode)",
+            "cwd": "fitnessapp_alpha",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

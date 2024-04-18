@@ -41,9 +41,9 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  static  Color colorePrimario = Color.fromARGB(255, 8, 198, 179);
-  static  Color colorePrimarioDark = Color.fromARGB(255, 8, 198, 179);
-  static  Color coloreSwatch = Color.fromARGB(255, 8, 198, 179);
+  static Color colorePrimario = Color.fromARGB(255, 8, 198, 179);
+  static Color colorePrimarioDark = Color.fromARGB(255, 8, 198, 179);
+  static Color coloreSwatch = Color.fromARGB(255, 8, 198, 179);
 
   ThemeData temaLight() {
     return ThemeData(
@@ -71,10 +71,8 @@ class MyApp extends StatelessWidget {
             elevation: 0,
             iconTheme: IconThemeData(color: Colors.grey.shade800),
             centerTitle: true,
-            titleTextStyle: TextStyle(
-                fontSize: 18,
-               color: Colors.grey.shade800
-                )),
+            titleTextStyle:
+                TextStyle(fontSize: 18, color: Colors.grey.shade800)),
         brightness: Brightness.light,
         useMaterial3: false,
         primaryColor: colorePrimario,
@@ -82,7 +80,6 @@ class MyApp extends StatelessWidget {
   }
 
   ThemeData temaDark() {
-   
     return ThemeData(
         expansionTileTheme: ExpansionTileThemeData(
             collapsedShape: Border(),
@@ -96,25 +93,19 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-                primarySwatch: Colors.teal,
-
+        primarySwatch: Colors.teal,
         canvasColor: Colors.grey.shade900,
         cardColor: Colors.grey.shade800,
         shadowColor: ThemeData().shadowColor.withOpacity(0.3),
         appBarTheme: AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.light
-                ),
+                statusBarIconBrightness: Brightness.light),
             backgroundColor: Colors.transparent,
             elevation: 0,
             toolbarHeight: 64,
             iconTheme: const IconThemeData(color: Colors.white),
-             titleTextStyle: TextStyle(
-                fontSize: 18,
-               color: Colors.white
-                )),
-           
+            titleTextStyle: TextStyle(fontSize: 18, color: Colors.white)),
         brightness: Brightness.dark,
         useMaterial3: false,
         primaryColor: colorePrimarioDark,
@@ -134,8 +125,8 @@ class loadingPageMain extends StatelessWidget {
           if (user == null) {
             return LoginPage();
           } else {
-            return FutureBuilder(
-              future: _dbs.isCoach(),
+            return FutureBuilder<DocumentSnapshot>(
+              future: _dbs.checkIsCoach(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data!.exists) {
@@ -144,7 +135,12 @@ class loadingPageMain extends StatelessWidget {
                     return MainPageUtente();
                   }
                 } else {
-                  return MainPageUtente();
+                  return SizedBox(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Center(child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).canvasColor,
+                      )));
                 }
               },
             );

@@ -83,19 +83,7 @@ class DatabaseService {
   }
 
   Scheda getSchedaById(String id) {
-    /*
-    final ref = db.collection("cities").doc("LA").withConverter(
-      fromFirestore: City.fromFirestore,
-      toFirestore: (City city, _) => city.toFirestore(),
-    );
-final docSnap = await ref.get();
-final city = docSnap.data(); // Convert to City object
-if (city != null) {
-  print(city);
-} else {
-  print("No such document.");
-}
-*/
+   
     late Scheda scheda = Scheda(
         nomeScheda: null,
         allenamentiScheda: null,
@@ -120,12 +108,11 @@ if (city != null) {
     return scheda;
   }
 
-  Future<DocumentSnapshot> isCoach() async {
-    // va a guardare nella collezione dei coaches, se esiste il docuemento relativo all'utente loggato, allora è un coach e returna true
-    _doc_reference =
-        _instance.collection(COLLEZIONE_COACHES).doc(_auth.currentUser?.uid);
-    DocumentSnapshot ds = await _doc_reference.get();
-
-    return ds;
+ Future<DocumentSnapshot> checkIsCoach() async {
+    return await _instance
+        .collection(COLLEZIONE_COACHES)
+        .doc(_auth.currentUser!.uid)
+        .get();
   }
+  
 }

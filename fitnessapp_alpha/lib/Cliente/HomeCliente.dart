@@ -797,15 +797,17 @@ class paginaProgressiState extends State<paginaProgressi> {
                 _lista_esercizi = getListaEsercizi();
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => progressioneEsercizio(
-                              list_esercizi: getListaEserciziSvolti(
-                                  _lista_esercizi[index]),
-                              list_date: getDateEserciziSvolti(
-                                  _lista_esercizi[index]))),
-                    );
+                    getAvanzamentoEsercizio(_lista_esercizi[index]) != 0
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => progressioneEsercizio(
+                                    list_esercizi: getListaEserciziSvolti(
+                                        _lista_esercizi[index]),
+                                    list_date: getDateEserciziSvolti(
+                                        _lista_esercizi[index]))),
+                          )
+                        : null;
                   },
                   child: Card(
                     child: Row(
@@ -850,7 +852,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                               percent: getAvanzamentoEsercizio(
                                   _lista_esercizi[index]),
                               animation: true,
-                              animationDuration: 500,
+                              animationDuration: 1000,
                               progressColor: Theme.of(context).primaryColor,
                               addAutomaticKeepAlive: false,
                               lineWidth: 12,

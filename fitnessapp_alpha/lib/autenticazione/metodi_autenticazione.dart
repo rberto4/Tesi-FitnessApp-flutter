@@ -3,6 +3,7 @@ import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationHelper {
+  
   final DatabaseService _dbs = DatabaseService();
   //SIGN UP METHOD
 

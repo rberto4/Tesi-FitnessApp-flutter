@@ -1,7 +1,7 @@
-
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'registrazione.dart';
@@ -19,13 +19,14 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordcontroller = TextEditingController();
   final DatabaseService _dbs = DatabaseService();
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 4,
-          shadowColor: Colors.black,
+          shadowColor: Theme.of(context).shadowColor,
           // shape: const RoundedRectangleBorder(borderRadius: BorderRadiusDirectional.only(bottomEnd: Radius.circular(16),bottomStart: Radius.circular(16))),
           toolbarHeight: 220,
           centerTitle: true,
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       width: double.infinity,
                       child: Padding(
                         padding: EdgeInsetsDirectional.only(top: 16, bottom: 8),
@@ -55,19 +56,12 @@ class _LoginPageState extends State<LoginPage> {
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: Theme.of(context).hintColor,
                               fontSize: 16),
                         ),
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade200,
-                          blurRadius:
-                              8.0, // You can set this blurRadius as per your requirement
-                        ),
-                      ]),
                       child: TextFormField(
                           controller: mailcontroller,
                           validator: (value) {
@@ -103,11 +97,10 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            fillColor: Colors.white,
                             filled: true,
-                            prefixIcon: const Icon(
+                            prefixIcon: Icon(
                               Icons.mail_rounded,
-                              color: Colors.black,
+                              color: Theme.of(context).hintColor,
                             ),
                           )),
                     ),
@@ -119,20 +112,11 @@ class _LoginPageState extends State<LoginPage> {
                           "Password",
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 16),
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade200,
-                          blurRadius:
-                              16.0, // You can set this blurRadius as per your requirement
-                        ),
-                      ]),
                       child: TextFormField(
                         controller: passwordcontroller,
                         validator: (value) {
@@ -167,11 +151,10 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.0)),
                           ),
-                          fillColor: Colors.white,
                           filled: true,
                           prefixIcon: Icon(
                             Icons.lock_rounded,
-                            color: Colors.black,
+                            color: Theme.of(context).hintColor,
                           ),
                           suffixIcon: IconButton(
                             color: Theme.of(context).primaryColor,
@@ -206,15 +189,25 @@ class _LoginPageState extends State<LoginPage> {
                                 if (result == null) {
                                   Navigator.pushReplacement(context,
                                       MaterialPageRoute(builder: (context) {
-                                    return FutureBuilder(
-                                        future: _dbs.isCoach(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
+                                    return FutureBuilder<DocumentSnapshot>(
+                                      future: _dbs.checkIsCoach(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          if (snapshot.data!.exists) {
                                             return MainPageCoach();
                                           } else {
                                             return MainPageUtente();
                                           }
-                                        });
+                                        } else {
+                                          return SizedBox(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            child: 
+                                            Center(
+                                              child: CircularProgressIndicator()));
+                                        }
+                                      },
+                                    );
                                   }));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -247,9 +240,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text(
                         "Non sei ancora registrato?",
                         style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black,
-                            fontSize: 12),
+                            fontWeight: FontWeight.normal, fontSize: 12),
                       ),
                     ),
                     Container(
@@ -263,7 +254,6 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           },
                           style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8.0))),
