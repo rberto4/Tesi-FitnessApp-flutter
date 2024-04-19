@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 class HomeTablet extends StatefulWidget {
@@ -10,7 +12,7 @@ class HomeTablet extends StatefulWidget {
 class _HomeTabletState extends State<HomeTablet> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.red,
     );
   }

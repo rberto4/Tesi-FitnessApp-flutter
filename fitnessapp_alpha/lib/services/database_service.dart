@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names, unused_field
+
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +17,7 @@ class DatabaseService {
   late final DocumentReference _doc_reference;
   late final Query _col_reference_schedacorrente;
 
-  DatabaseService() {}
+  DatabaseService();
 
 // OTTIENI ISTANZA DB FIRESTORE
   FirebaseFirestore getInstanceDb() {
@@ -93,7 +95,7 @@ class DatabaseService {
         idScheda: null,
         allenamentiSvolti: null);
 
-    final ref = _instance
+    _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
         .collection(COLLEZIONE_SCHEDE)

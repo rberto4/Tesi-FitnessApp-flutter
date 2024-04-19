@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
@@ -41,18 +43,18 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  static Color colorePrimario = Color.fromARGB(255, 8, 198, 179);
-  static Color colorePrimarioDark = Color.fromARGB(255, 8, 198, 179);
-  static Color coloreSwatch = Color.fromARGB(255, 8, 198, 179);
+  static Color colorePrimario = const Color.fromARGB(255, 8, 198, 179);
+  static Color colorePrimarioDark = const Color.fromARGB(255, 8, 198, 179);
+  static Color coloreSwatch = const Color.fromARGB(255, 8, 198, 179);
 
   ThemeData temaLight() {
     return ThemeData(
         expansionTileTheme: ExpansionTileThemeData(
-            collapsedShape: Border(),
-            tilePadding: EdgeInsets.symmetric(horizontal: 16),
+            collapsedShape: const Border(),
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16),
             textColor: colorePrimario,
             iconColor: colorePrimario),
-        listTileTheme: ListTileThemeData(minLeadingWidth: 16),
+        listTileTheme: const ListTileThemeData(minLeadingWidth: 16),
         cardTheme: CardTheme(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -64,7 +66,7 @@ class MyApp extends StatelessWidget {
         cardColor: Colors.white,
         shadowColor: ThemeData().shadowColor.withOpacity(0.1),
         appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
+            systemOverlayStyle: const SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,
                 statusBarIconBrightness: Brightness.dark),
             backgroundColor: Colors.transparent,
@@ -76,17 +78,17 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         useMaterial3: false,
         primaryColor: colorePrimario,
-        textTheme: GoogleFonts.latoTextTheme(TextTheme()));
+        textTheme: GoogleFonts.latoTextTheme(const TextTheme()));
   }
 
   ThemeData temaDark() {
     return ThemeData(
         expansionTileTheme: ExpansionTileThemeData(
-            collapsedShape: Border(),
-            tilePadding: EdgeInsets.symmetric(horizontal: 16),
+            collapsedShape: const Border(),
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16),
             textColor: colorePrimarioDark,
             iconColor: colorePrimarioDark),
-        listTileTheme: ListTileThemeData(minLeadingWidth: 16),
+        listTileTheme: const ListTileThemeData(minLeadingWidth: 16),
         cardTheme: CardTheme(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -97,24 +99,26 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.grey.shade900,
         cardColor: Colors.grey.shade800,
         shadowColor: ThemeData().shadowColor.withOpacity(0.3),
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,
                 statusBarIconBrightness: Brightness.light),
             backgroundColor: Colors.transparent,
             elevation: 0,
             toolbarHeight: 64,
-            iconTheme: const IconThemeData(color: Colors.white),
+            iconTheme: IconThemeData(color: Colors.white),
             titleTextStyle: TextStyle(fontSize: 18, color: Colors.white)),
         brightness: Brightness.dark,
         useMaterial3: false,
         primaryColor: colorePrimarioDark,
-        textTheme: GoogleFonts.latoTextTheme(TextTheme()));
+        textTheme: GoogleFonts.latoTextTheme(const TextTheme()));
   }
 }
 
 class loadingPageMain extends StatelessWidget {
   final DatabaseService _dbs = DatabaseService();
+
+  loadingPageMain({super.key});
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -123,16 +127,16 @@ class loadingPageMain extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           User? user = snapshot.data;
           if (user == null) {
-            return LoginPage();
+            return const LoginPage();
           } else {
             return FutureBuilder<DocumentSnapshot>(
               future: _dbs.checkIsCoach(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data!.exists) {
-                    return MainPageCoach();
+                    return const MainPageCoach();
                   } else {
-                    return MainPageUtente();
+                    return const MainPageUtente();
                   }
                 } else {
                   return SizedBox(

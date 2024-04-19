@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 /*
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

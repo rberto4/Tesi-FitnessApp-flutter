@@ -5,7 +5,7 @@ class ResponsiveLayout extends StatelessWidget{
   final Widget tabletScaffold;
   final Widget desktopScaffold;
 
-  ResponsiveLayout({
+  const ResponsiveLayout({super.key, 
     required this.smartphoneScaffold,
     required this.tabletScaffold,
     required this.desktopScaffold
@@ -13,7 +13,6 @@ class ResponsiveLayout extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return LayoutBuilder(builder: (context, constraints) {
       if(constraints.maxWidth < 500){
         return smartphoneScaffold;

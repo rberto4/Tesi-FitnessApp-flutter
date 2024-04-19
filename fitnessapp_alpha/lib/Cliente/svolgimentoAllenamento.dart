@@ -1,5 +1,6 @@
-import 'dart:async';
+// ignore_for_file: file_names, must_be_immutable, camel_case_types, no_logic_in_create_state, unnecessary_this, non_constant_identifier_names, unused_field
 
+import 'dart:async';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,8 @@ class sedutaAllenamento extends StatefulWidget {
   late Timestamp dataSelezionata;
 
   sedutaAllenamento(
-      {super.key,
+      {
+      super.key,
       required this.allenamento,
       required this.scheda,
       required this.dataSelezionata});
@@ -23,7 +25,8 @@ class sedutaAllenamento extends StatefulWidget {
 }
 
 class _sedutaAllenamentoState extends State<sedutaAllenamento> {
-  late Allenamento _allenamento;
+  
+  late final Allenamento _allenamento;
   late Scheda scheda;
   late Timestamp dataSelezionata;
 
@@ -40,10 +43,10 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 
 // controllers per ripetizioni e serie
 
-  late List<TextEditingController> _lista_controllers_ripetizioni =
-      new List.empty(growable: true);
-  late List<TextEditingController> _lista_controllers_carichi =
-      new List.empty(growable: true);
+  late final List<TextEditingController> _lista_controllers_ripetizioni =
+      List.empty(growable: true);
+  late final List<TextEditingController> _lista_controllers_carichi =
+      List.empty(growable: true);
 
 // controller per il campo di testo dei feedback
   late TextEditingController _controller;
@@ -59,7 +62,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     inizializzaTextControllers();
     _controller = TextEditingController.fromValue(
         TextEditingValue(text: _allenamento.feedbackAllenamento!));
-    _timer = Timer(Duration(milliseconds: 1), () {});
+    _timer = Timer(const Duration(milliseconds: 1), () {});
     super.initState();
   }
 
@@ -77,7 +80,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                   width: double.infinity,
                   height: 64,
                   child: FloatingActionButton.extended(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.save_rounded,
                       color: Colors.white,
                     ),
@@ -85,7 +88,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                       salvaDatiFineAllenamento();
                       Navigator.pop(context);
                     },
-                    label: Text(
+                    label: const Text(
                       "Salva",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -109,12 +112,12 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                         height: 64,
                         width: double.maxFinite,
                         child: ElevatedButton.icon(
-                          icon: Icon(Icons.sports_score_rounded),
+                          icon: const Icon(Icons.sports_score_rounded),
                           onPressed: () {
                             salvaDatiFineAllenamento();
                             Navigator.pop(context);
                           },
-                          label: Text(
+                          label: const Text(
                             "Termina allenamento",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -122,9 +125,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                             ),
                           ),
                           style: ButtonStyle(
-                              elevation: MaterialStatePropertyAll(0),
+                              elevation: const MaterialStatePropertyAll(0),
                               backgroundColor:
-                                  MaterialStatePropertyAll(Colors.green),
+                                  const MaterialStatePropertyAll(Colors.green),
                               shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -137,24 +140,22 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                           width: double.maxFinite,
                           height: 70,
                           child: ElevatedButton.icon(
-                            icon: Icon(Icons.timer_outlined),
+                            icon: const Icon(Icons.timer_outlined),
                             onPressed: () {
                               if (!_timer.isActive) {
                                 startTimer();
                               }
                             },
                             label: Text(
-                              "Timer recupero - " +
-                                  tempoRimasto.toString() +
-                                  "s",
-                              style: TextStyle(
+                              "Timer recupero - ${tempoRimasto}s",
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
                             ),
                             style: ButtonStyle(
-                                elevation: MaterialStatePropertyAll(0),
-                                backgroundColor: MaterialStatePropertyAll(
+                                elevation: const MaterialStatePropertyAll(0),
+                                backgroundColor: const MaterialStatePropertyAll(
                                     Colors.transparent),
                                 shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
@@ -167,7 +168,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                         percent: getPercentualeAvanzamento(),
                         progressColor: Colors.red,
                         backgroundColor: Theme.of(context).disabledColor,
-                        barRadius: Radius.circular(48),
+                        barRadius: const Radius.circular(48),
                       ),
               ),
         resizeToAvoidBottomInset: false,
@@ -190,16 +191,16 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               child: ElevatedButton.icon(
-                  icon: Icon(Icons.note_alt_rounded),
+                  icon: const Icon(Icons.note_alt_rounded),
                   onPressed: () {
                     dialogFeedback();
                   },
-                  label: Text(
+                  label: const Text(
                     "Note",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   style: ButtonStyle(
-                      elevation: MaterialStatePropertyAll(1),
+                      elevation: const MaterialStatePropertyAll(1),
                       backgroundColor: MaterialStatePropertyAll(
                           Theme.of(context).primaryColor),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -226,7 +227,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     }
                   },
                   leading: Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           color: esercizioCorrente >= 0 &&
                                   index_esercizi <= esercizioCorrente &&
@@ -237,13 +238,13 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                       child: esercizioCorrente > 0 &&
                               index_esercizi < esercizioCorrente &&
                               modalitaAllenamento
-                          ? Icon(
+                          ? const Icon(
                               Icons.done_rounded,
                               color: Colors.white,
                               size: 20,
                             )
                           : Text(
-                              "#" + (index_esercizi + 1).toString(),
+                              "#${index_esercizi + 1}",
                               style: TextStyle(
                                   color: esercizioCorrente != index_esercizi
                                       ? Theme.of(context).hintColor
@@ -256,9 +257,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    _allenamento
-                            .listaEsercizi![index_esercizi].serieEsercizio! +
-                        " Serie",
+                    "${_allenamento
+                            .listaEsercizi![index_esercizi].serieEsercizio!} Serie",
                     style: TextStyle(color: Theme.of(context).hintColor),
                   ),
                 ),
@@ -268,7 +268,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                 Visibility(
                   visible: esercizioCorrente == index_esercizi ? true : false,
                   child: ListView.builder(
-                    padding: EdgeInsets.only(left: 16, right: 16),
+                    padding: const EdgeInsets.only(left: 16, right: 16),
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: int.parse(
@@ -281,7 +281,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                       if (index_serie == serieCorrente) {
                         return Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            borderRadius: const BorderRadius.all(Radius.circular(16)),
                             side: BorderSide(
                                 color: Theme.of(context).primaryColor,
                                 width: 2.0),
@@ -292,22 +292,22 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                             children: [
                               ListTile(
                                 contentPadding:
-                                    EdgeInsets.only(right: 8, left: 16),
+                                    const EdgeInsets.only(right: 8, left: 16),
                                 title: Text(
                                   "${index_serie + 1}°  Serie",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
                                 trailing: IconButton(
-                                    icon: Icon(Icons.description_rounded),
+                                    icon: const Icon(Icons.description_rounded),
                                     onPressed: () {
                                       dialogNoteCoach(
                                           _allenamento.noteAllenamento!);
                                     }),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 4),
                                 child: Text("Carico (Kg)"),
                               ),
@@ -319,7 +319,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       getIndexControllers(
                                           index_esercizi, index_serie)],
                                   textAlign: TextAlign.right,
-                                  keyboardType: TextInputType.numberWithOptions(
+                                  keyboardType: const TextInputType.numberWithOptions(
                                       decimal: true),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -340,8 +340,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 4),
                                 child: Text("Ripetizioni"),
                               ),
@@ -353,7 +353,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       getIndexControllers(
                                           index_esercizi, index_serie)],
                                   textAlign: TextAlign.right,
-                                  keyboardType: TextInputType.numberWithOptions(
+                                  keyboardType: const TextInputType.numberWithOptions(
                                       decimal: true),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -389,7 +389,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                             child: Card(
                               child: ListTile(
                                 contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 16),
+                                    const EdgeInsets.symmetric(horizontal: 16),
                                 horizontalTitleGap: 8,
                                 trailing: Text(
                                   "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
@@ -426,25 +426,25 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 
   bool siamoInAllenamento() {
     bool check = true;
-    scheda.allenamentiSvolti!.forEach((element) {
+    for (var element in scheda.allenamentiSvolti!) {
       if (element.nomeAllenamento == _allenamento.nomeAllenamento &&
           DateUtils.dateOnly(element.giorniAssegnati!.first.toDate()) ==
               DateUtils.dateOnly(dataSelezionata.toDate())) {
         check = false;
       }
-    });
+    }
     return check;
   }
 
   Allenamento recuperaDatiDaStorico() {
     late Allenamento a;
-    scheda.allenamentiSvolti!.forEach((element) {
+    for (var element in scheda.allenamentiSvolti!) {
       if (element.nomeAllenamento == _allenamento.nomeAllenamento &&
           DateUtils.dateOnly(element.giorniAssegnati!.first.toDate()) ==
               DateUtils.dateOnly(dataSelezionata.toDate())) {
         a = element;
       }
-    });
+    }
     return a;
   }
 
@@ -501,7 +501,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 // metodo per salvare dati su db
 
   void salvaDatiFineAllenamento() {
-    DatabaseService _dbs = DatabaseService();
+    DatabaseService dbs = DatabaseService();
 
     // carico esercizi con i nuovi valori
     int i = 0;
@@ -517,12 +517,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
         i++;
       }
     }
-    print("stampo esercizi, in teoria, caricati di valori da editext");
 
-    for (var a in _allenamento.listaEsercizi!) {
-      print(a.carichiEsercizio);
-      print(a.ripetizioniEsercizio);
-    }
+  
     /*
     List<Timestamp> giorno_allenamento = new List.empty(growable: true);
     giorno_allenamento.add(Timestamp.now());
@@ -531,8 +527,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     _allenamento.giorniAssegnati!.add(dataSelezionata);
     _allenamento.feedbackAllenamento = _controller.text;
 
-    print(dataSelezionata.toDate());
-    print(scheda.toFirestore());
 
     // logica per capire se eliminare il campo e ricreare l'esercizio svolto, basandosi su nome esercizio e data, se già presente lo vado ad
     // eliminare prima di aggiornare allenamentiSvolti con _allenamento
@@ -547,11 +541,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 
     // salvo tutta la scheda ma solo il campo viene aggiornato.
 
-    _dbs
+    dbs
         .getInstanceDb()
-        .collection(_dbs.getCollezioneUtenti())
-        .doc(_dbs.getAuth().currentUser!.uid)
-        .collection(_dbs.getCollezioneSchede())
+        .collection(dbs.getCollezioneUtenti())
+        .doc(dbs.getAuth().currentUser!.uid)
+        .collection(dbs.getCollezioneSchede())
         .doc(scheda.idScheda!)
         .set(scheda.toFirestore(),
             SetOptions(mergeFields: ['allenamentiSvolti']));
@@ -573,8 +567,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             ),
-            icon: Icon(Icons.description_rounded),
-            title: Text(
+            icon: const Icon(Icons.description_rounded),
+            title: const Text(
               "Note dal coach",
             ),
             content: Text(note),
@@ -582,16 +576,16 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                    icon: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    icon: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
                       child: Icon(Icons.close),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    label: Text("Chiudi"),
+                    label: const Text("Chiudi"),
                     style: ButtonStyle(
-                        elevation: MaterialStatePropertyAll(1),
+                        elevation: const MaterialStatePropertyAll(1),
                         backgroundColor: MaterialStatePropertyAll(
                             Theme.of(context).primaryColor),
                         shape:
@@ -614,8 +608,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             ),
-            icon: Icon(Icons.note_alt_rounded),
-            title: Text(
+            icon: const Icon(Icons.note_alt_rounded),
+            title: const Text(
               "Note personali",
             ),
             content: TextFormField(
@@ -642,16 +636,16 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                    icon: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    icon: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
                       child: Icon(Icons.close),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    label: Text("Chiudi"),
+                    label: const Text("Chiudi"),
                     style: ButtonStyle(
-                        elevation: MaterialStatePropertyAll(1),
+                        elevation: const MaterialStatePropertyAll(1),
                         backgroundColor: MaterialStatePropertyAll(
                             Theme.of(context).primaryColor),
                         shape:
@@ -674,17 +668,17 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             ),
-            icon: Icon(Icons.gpp_maybe_outlined),
-            title: Text(
+            icon: const Icon(Icons.gpp_maybe_outlined),
+            title: const Text(
               "Attenzione",
             ),
-            content: Text("Sei in una seduta di allenamento"),
+            content: const Text("Sei in una seduta di allenamento"),
             actions: [
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                    icon: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    icon: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
                       child: Icon(Icons.close),
                     ),
                     onPressed: () {
@@ -692,10 +686,10 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                       Navigator.pop(context);
                       Navigator.pop(context);
                     },
-                    label: Text("Esci da allenamento"),
+                    label: const Text("Esci da allenamento"),
                     style: ButtonStyle(
-                        elevation: MaterialStatePropertyAll(1),
-                        backgroundColor: MaterialStatePropertyAll(Colors.red),
+                        elevation: const MaterialStatePropertyAll(1),
+                        backgroundColor: const MaterialStatePropertyAll(Colors.red),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -746,17 +740,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
         }
       }
     }
-
-    for (var a in _lista_controllers_carichi) {
-      print(a.text);
-    }
-    for (var a in _lista_controllers_ripetizioni) {
-      print(a.text);
-    }
-
-    print("dimensioni:");
-    print(_lista_controllers_carichi.length);
-    print(_lista_controllers_ripetizioni.length);
   }
 
   int getIndexControllers(int index_esercizi, int index_serie) {

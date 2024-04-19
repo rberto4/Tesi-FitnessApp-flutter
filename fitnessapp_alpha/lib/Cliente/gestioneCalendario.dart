@@ -1,4 +1,7 @@
 
+
+// ignore_for_file: no_logic_in_create_state, camel_case_types, non_constant_identifier_names, unnecessary_set_literal, avoid_function_literals_in_foreach_calls, file_names, must_be_immutable
+
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,15 +19,15 @@ class gestioneCalendario extends StatefulWidget {
   gestioneCalendario({super.key, required this.scheda});
 
   @override
-  State<gestioneCalendario> createState() => _gestioneCalendarioState(this.scheda);
+  State<gestioneCalendario> createState() => _gestioneCalendarioState(scheda);
 }
 
 class _gestioneCalendarioState extends State<gestioneCalendario> {
   late Scheda scheda;
   _gestioneCalendarioState(this.scheda);
 
-List<DateTime?> listaGiorniScheda = new List.empty(growable: true);
-List<String> listaAssegnazioni = new List.empty(growable: true);
+List<DateTime?> listaGiorniScheda = List.empty(growable: true);
+List<String> listaAssegnazioni = List.empty(growable: true);
 
   TimeOfDay orarioSelezionato = TimeOfDay.now();
   late DateTime data_selezionata = DateUtils.dateOnly(DateTime.now());
@@ -36,14 +39,14 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           centerTitle: false,
-          title: Text(
+          title: const Text(
             "Calendario scheda",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           automaticallyImplyLeading: true,
           actions: [
             IconButton(
-              icon: Icon(Icons.event_repeat_rounded),
+              icon: const Icon(Icons.event_repeat_rounded),
               onPressed: () {
                 setState(() {
                   autoAssegnaAllenamenti();
@@ -63,7 +66,7 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
               itemBuilder: (BuildContext context) {
                 return {'Ripristina assegnazioni'}.map((String choice) {
                   return PopupMenuItem<String>(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     value: choice,
                     child: Text(choice),
                   );
@@ -78,14 +81,14 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
             EasyDateTimeLine(
               headerProps: EasyHeaderProps(
                 centerHeader: false,
-                padding: EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+                padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
                 monthPickerType: MonthPickerType.dropDown,
                 showSelectedDate: true,
                 selectedDateStyle: Theme.of(context).textTheme.titleMedium,
-                dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
+                dateFormatter: const DateFormatter.fullDateDMonthAsStrY(),
               ),
               dayProps: EasyDayProps(
-                activeDayStyle: DayStyle(
+                activeDayStyle: const DayStyle(
                   borderRadius: 48.0,
                   dayNumStyle: TextStyle(
                     color: Colors.white,
@@ -129,7 +132,7 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
             // lista card di sedute allenamenti
 
             ListView.builder(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
@@ -152,7 +155,7 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                           });
                         },
                         title:  Text(
-                        scheda.allenamentiScheda![index]!.nomeAllenamento!,
+                        scheda.allenamentiScheda![index].nomeAllenamento!,
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
@@ -161,17 +164,17 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                       // pulsante selezione orario
                     
                     ListView.builder(
-                      itemCount: scheda.allenamentiScheda![index]!.listaEsercizi!.length,
+                      itemCount: scheda.allenamentiScheda![index].listaEsercizi!.length,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (context, index_esercizi) {
                         return ExpansionTile(
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(48))),
                           leading: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -180,11 +183,11 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                             child: Text(
                               "#"
                               "${index_esercizi + 1}",
-                              style: TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
                           title: Text(
-                            scheda.allenamentiScheda![index]!.listaEsercizi![index_esercizi].nomeEsercizio!,
+                            scheda.allenamentiScheda![index].listaEsercizi![index_esercizi].nomeEsercizio!,
                           ),
                           children: [
                             Row(
@@ -196,10 +199,10 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                   direction: Axis.vertical,
                                   children: [
                                     Container(
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.teal),
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       child: const Icon(
                                         color: Colors.white,
                                         Icons.replay,
@@ -211,20 +214,20 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                     Text(
                                       scheda.allenamentiScheda![index]
                                           .listaEsercizi![index_esercizi].ripetizioniEsercizio!.first,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
                                     ),
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    Text(
+                                    const Text(
                                       "Ripetizioni",
                                       style: TextStyle(),
                                     )
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 32,
                                 ),
                                 Wrap(
@@ -233,10 +236,10 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                   direction: Axis.vertical,
                                   children: [
                                     Container(
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.teal),
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       child: const Icon(
                                         color: Colors.white,
                                         Icons.dataset_outlined,
@@ -248,20 +251,20 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                     Text(
                                       scheda.allenamentiScheda![index]
                                           .listaEsercizi![index_esercizi].serieEsercizio!,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
                                     ),
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    Text(
+                                    const Text(
                                       "Serie",
                                       style: TextStyle(),
                                     )
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 32,
                                 ),
                                 Padding(
@@ -273,10 +276,10 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                     direction: Axis.vertical,
                                     children: [
                                       Container(
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: Colors.teal),
-                                        padding: EdgeInsets.all(8),
+                                        padding: const EdgeInsets.all(8),
                                         child: const Icon(
                                           color: Colors.white,
                                           Icons.timer,
@@ -287,14 +290,14 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                       ),
                                       Text(
                                         scheda.allenamentiScheda![index].listaEsercizi![index_esercizi].recuperoEsercizio.toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18),
                                       ),
                                       const SizedBox(
                                         height: 4,
                                       ),
-                                      Text(
+                                      const Text(
                                         "Recupero",
                                         style: TextStyle(),
                                       )
@@ -313,7 +316,7 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                 ),
                               ),
                             ),
-                            ListTile(
+                            const ListTile(
                               minLeadingWidth: 8,
                               leading: Icon(
                                 Icons.bookmark,
@@ -324,9 +327,9 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
-                            Padding(
+                            const Padding(
                               padding:
-                                  const EdgeInsets.only(right: 16, left: 16),
+                                  EdgeInsets.only(right: 16, left: 16),
                               child: ListTile(
                                 title: Text(
                                   "ciao, queste sono note di esempio relative a questo esercizio",
@@ -357,7 +360,7 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                                     
                                   ),
                                   IconButton(
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.alarm_add_rounded,
                                       color: Colors.white,
                                     ),
@@ -370,7 +373,7 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 4,
                     )
                   ]),
@@ -403,7 +406,6 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
       });
     }
 
-    print(orarioSelezionato.toString());
   }
 
   bool isChecked(List<Timestamp> l) {
@@ -437,23 +439,18 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
           DateUtils.dateOnly(data_selezionata)) {
         if (a.toDate().hour != 0 || a.toDate().minute != 0) {
           if (a.toDate().hour < 10 && a.toDate().minute > 10) {
-            b = "0" +
-                a.toDate().hour.toString() +
-                ":" +
-                a.toDate().minute.toString();
+            b = "0${a.toDate().hour}:${a.toDate().minute}";
           } else if (a.toDate().hour > 10 && a.toDate().minute < 10) {
-            b = a.toDate().hour.toString() +
-                ":0" +
-                a.toDate().minute.toString();
+            b = "${a.toDate().hour}:0${a.toDate().minute}";
           } else {
-            b = a.toDate().hour.toString() + ":" + a.toDate().minute.toString();
+            b = "${a.toDate().hour}:${a.toDate().minute}";
           }
         }
       }
     }
     return Text(
       b,
-      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
 
@@ -467,7 +464,6 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
       }
       s.allenamentiScheda![index].giorniAssegnati!.add(Timestamp.fromDate(d));
     } else {
-      print(b);
       for (var a in s.allenamentiScheda![index].giorniAssegnati!) {
         if (DateUtils.dateOnly(a.toDate()) == DateUtils.dateOnly(d)) {
           s.allenamentiScheda![index].giorniAssegnati!.remove(a);
@@ -488,20 +484,20 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
-          icon: Icon(Icons.event_repeat_rounded),
+          icon: const Icon(Icons.event_repeat_rounded),
           iconColor: Colors.teal,
-          title: Text(
+          title: const Text(
             'Assegnazione automatica',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: Text(
+          content: const Text(
               'Questa opzione replicherà gli allenamenti che hai già assegnato, impostandoli automaticamente ogni 7 giorni, fino alla fine del periodo previsto dalla tua scheda.\n\nPotrai comunque modifichiare date e orari, ogni volta che lo desideri '),
           actions: [
             OutlinedButton(
               style: ButtonStyle(
                   textStyle: MaterialStatePropertyAll(
                       TextStyle(color: Theme.of(context).primaryColor))),
-              child: Text('Annulla'),
+              child: const Text('Annulla'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -510,26 +506,23 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStatePropertyAll(Theme.of(context).primaryColor)),
-              child: Text('Assegna'),
+              child: const Text('Assegna'),
               onPressed: () {
                 for (var a in scheda.allenamentiScheda!) {
                   List<Timestamp> lista_nuove_date =
-                      new List.empty(growable: true);
+                      List.empty(growable: true);
                   for (var b in a.giorniAssegnati!) {
                     late DateTime newdate = b.toDate();
-                    while (DateUtils.dateOnly(newdate.add(Duration(
+                    while (DateUtils.dateOnly(newdate.add(const Duration(
                                 days: 7, minutes: 0, seconds: 0, hours: 0)))
                             .isBefore(
                                 DateUtils.dateOnly(scheda.fineScheda!.toDate())) ||
-                        DateUtils.dateOnly(newdate.add(Duration(
+                        DateUtils.dateOnly(newdate.add(const Duration(
                                 days: 7, minutes: 0, seconds: 0, hours: 0)))
                             .isAtSameMomentAs(
                                 DateUtils.dateOnly(scheda.fineScheda!.toDate()))) {
                       newdate = newdate.add(const Duration(
                           days: 7, minutes: 0, seconds: 0, hours: 0));
-                      print(a.nomeAllenamento.toString() +
-                          ":" +
-                          newdate.toString());
                       lista_nuove_date.add(Timestamp.fromDate(newdate));
                     }
                   }
@@ -538,7 +531,6 @@ List<String> listaAssegnazioni = new List.empty(growable: true);
                   lista_nuove_date.clear();
 
                   for (int i = 0; i < a.giorniAssegnati!.length; i++) {
-                    print(a.giorniAssegnati![i].toDate());
                   }
                 }
                 Navigator.of(context).pop();

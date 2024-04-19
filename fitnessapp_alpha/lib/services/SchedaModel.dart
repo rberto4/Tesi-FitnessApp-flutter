@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // OGGETTO MODELLIZZATO PER DB
@@ -22,20 +24,21 @@ class Scheda {
 
   factory Scheda.fromFirestore(Map<String, dynamic> json) {
 
-    var list_allenamento = json['allenamentiScheda'] as List;
-    List<Allenamento> allenamentiScheda =
-        list_allenamento.map((i) => Allenamento.fromFirestore(i)).toList();
+    var allenamentiScheda = json['allenamentiScheda'] as List;
+    List<Allenamento> allenamentiSchedaLocal =
+        allenamentiScheda.map((i) => Allenamento.fromFirestore(i)).toList();
 
-    var list_allenamenti_svolti = json['allenamentiSvolti'] as List;
-    List<Allenamento> allenamentiSvolti =
-        list_allenamenti_svolti.map((i) => Allenamento.fromFirestore(i)).toList();
+    var allenamentiSvolti = json['allenamentiSvolti'] as List;
+    List<Allenamento> allenamentiSvoltiLocal =
+        allenamentiSvolti.map((i) => Allenamento.fromFirestore(i)).toList();
     return Scheda(
         inizioScheda: json['inizioScheda'],
         fineScheda: json['fineScheda'],
         nomeScheda: json['nomeScheda'],
         idScheda: json['idScheda'],
-        allenamentiScheda: allenamentiScheda,
-        allenamentiSvolti: allenamentiSvolti);
+        allenamentiScheda: allenamentiSchedaLocal,
+        allenamentiSvolti: allenamentiSvoltiLocal
+        );
   }
 
   Map<String, Object?> toFirestore() {
@@ -68,9 +71,9 @@ class Allenamento {
       required this.feedbackAllenamento});
 
   factory Allenamento.fromFirestore(Map<String, dynamic> json) {
-    var _listaEsercizi = json['listaEsercizi'] as List;
-    List<Esercizio> listaEsercizi =
-        _listaEsercizi.map((i) => Esercizio.fromFirestore(i)).toList();
+    var listaEsercizi = json['listaEsercizi'] as List;
+    List<Esercizio> listaEserciziLocal =
+        listaEsercizi.map((i) => Esercizio.fromFirestore(i)).toList();
 
     return Allenamento(
       feedbackAllenamento: json['feedbackAllenamento'],
@@ -79,7 +82,7 @@ class Allenamento {
       giorniAssegnati: json['giorniAssegnati'] is Iterable
           ? List.from(json['giorniAssegnati'])
           : null,
-      listaEsercizi: listaEsercizi,
+      listaEsercizi: listaEserciziLocal,
     );
   }
 

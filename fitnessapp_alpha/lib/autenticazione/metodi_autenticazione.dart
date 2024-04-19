@@ -48,7 +48,6 @@ class AuthenticationHelper {
   //SIGN OUT METHOD
   Future signOut() async {
     await _dbs.getAuth().signOut();
-    print('signout');
   }
 
   // check se è loggato

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_const
+
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
@@ -50,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       width: double.infinity,
                       child: Padding(
-                        padding: EdgeInsetsDirectional.only(top: 16, bottom: 8),
+                        padding: const EdgeInsetsDirectional.only(top: 16, bottom: 8),
                         child: Text(
                           "E-mail",
                           textAlign: TextAlign.start,
@@ -61,49 +63,47 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    Container(
-                      child: TextFormField(
-                          controller: mailcontroller,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Devi inserire una e-mail';
-                            }
-                            return null;
-                          },
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                            errorBorder: const OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 2, color: Colors.red),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                            filled: true,
-                            prefixIcon: Icon(
-                              Icons.mail_rounded,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          )),
-                    ),
+                    TextFormField(
+                        controller: mailcontroller,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Devi inserire una e-mail';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2,
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 2, color: Colors.red),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2,
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          filled: true,
+                          prefixIcon: Icon(
+                            Icons.mail_rounded,
+                            color: Theme.of(context).hintColor,
+                          ),
+                        )),
                     const SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -116,67 +116,65 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    Container(
-                      child: TextFormField(
-                        controller: passwordcontroller,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Devi inserire una password';
-                          }
-                          return null;
-                        },
-                        obscureText: passwordVisible,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2,
-                                color: Theme.of(context).primaryColor),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          errorBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(width: 2, color: Colors.red),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2,
-                                color: Theme.of(context).primaryColor),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          filled: true,
-                          prefixIcon: Icon(
-                            Icons.lock_rounded,
-                            color: Theme.of(context).hintColor,
-                          ),
-                          suffixIcon: IconButton(
-                            color: Theme.of(context).primaryColor,
-                            icon: Icon(!passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                            onPressed: () {
-                              setState(
-                                () {
-                                  passwordVisible = !passwordVisible;
-                                },
-                              );
-                            },
-                          ),
-                          alignLabelWithHint: false,
+                    TextFormField(
+                      controller: passwordcontroller,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Devi inserire una password';
+                        }
+                        return null;
+                      },
+                      obscureText: passwordVisible,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).primaryColor),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8.0)),
                         ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 2, color: Colors.red),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).primaryColor),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        filled: true,
+                        prefixIcon: Icon(
+                          Icons.lock_rounded,
+                          color: Theme.of(context).hintColor,
+                        ),
+                        suffixIcon: IconButton(
+                          color: Theme.of(context).primaryColor,
+                          icon: Icon(!passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
+                            setState(
+                              () {
+                                passwordVisible = !passwordVisible;
+                              },
+                            );
+                          },
+                        ),
+                        alignLabelWithHint: false,
                       ),
                     ),
                     Container(
                       height: 16,
                     ),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () {
@@ -194,12 +192,12 @@ class _LoginPageState extends State<LoginPage> {
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
                                           if (snapshot.data!.exists) {
-                                            return MainPageCoach();
+                                            return const MainPageCoach();
                                           } else {
-                                            return MainPageUtente();
+                                            return const MainPageUtente();
                                           }
                                         } else {
-                                          return SizedBox(
+                                          return const SizedBox(
                                             width: double.infinity,
                                             height: double.infinity,
                                             child: 
@@ -243,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                             fontWeight: FontWeight.normal, fontSize: 12),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
                           onPressed: () {

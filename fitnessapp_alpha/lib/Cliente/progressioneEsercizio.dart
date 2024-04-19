@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, must_be_immutable, non_constant_identifier_names, camel_case_types
+
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,6 @@ class progressioneEsercizio extends StatelessWidget {
 
   late List<Esercizio> list_esercizi;
   late List<Timestamp> list_date;
-  final ScrollController _controller = ScrollController();
 
   progressioneEsercizio(
       {super.key, required this.list_esercizi, required this.list_date});
@@ -34,7 +35,7 @@ class progressioneEsercizio extends StatelessWidget {
                 Icons.bar_chart_rounded,
                 color: Theme.of(context).hintColor.withOpacity(0.6),
               ),
-              title: Text(
+              title: const Text(
                 "Progressione carichi",
                 style: TextStyle(
                     fontSize: 18,
@@ -42,13 +43,13 @@ class progressioneEsercizio extends StatelessWidget {
                     ),
               ),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height / 3.3,
               child: Center(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemCount: list_date.length,
                   itemBuilder: (context, index_esercizi) {
@@ -79,23 +80,19 @@ class progressioneEsercizio extends StatelessWidget {
                                   quarterTurns: 1,
                                     child: 
                                       Text(
-                                        list_date[index_esercizi]
+                                        "${list_date[index_esercizi]
                                                 .toDate()
-                                                .day
-                                                .toString() +
-                                            "/" +
-                                            list_date[index_esercizi]
+                                                .day}/${list_date[index_esercizi]
                                                 .toDate()
-                                                .month
-                                                .toString(),
-                                        style: TextStyle(fontSize: 12),
+                                                .month}",
+                                        style: const TextStyle(fontSize: 12),
                                       ),
                                   ),
                                 percent: getPercentGrafico(index_esercizi),
                                 progressColor: getPercentGrafico(index_esercizi) == 1 ? Theme.of(context).primaryColor : Theme.of(context).primaryColor,
                                 animation: true,
                                 animationDuration: 1000,
-                                barRadius: Radius.circular(48),
+                                barRadius: const Radius.circular(48),
                                 lineHeight: 24,
                               ),
                               SizedBox(
@@ -106,7 +103,7 @@ class progressioneEsercizio extends StatelessWidget {
                 ),
               ),
             ),
-           SizedBox(
+           const SizedBox(
             height: 16,
            ),
             ListTile(
@@ -114,17 +111,17 @@ class progressioneEsercizio extends StatelessWidget {
                             Icons.calendar_month_rounded,
                             color: Theme.of(context).hintColor.withOpacity(0.6),
                           ),
-              title: Text(
+              title: const Text(
                 "Storico esercizio",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             Flexible(
               child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: list_esercizi.length,
                   itemBuilder: (context, index_esercizi) {
                     return Column(
@@ -134,20 +131,14 @@ class progressioneEsercizio extends StatelessWidget {
                         ListTile(
                          
                           title: Text(
-                            list_date[index_esercizi].toDate().day.toString() +
-                                "/" +
-                                list_date[index_esercizi]
+                            "${list_date[index_esercizi].toDate().day}/${list_date[index_esercizi]
                                     .toDate()
-                                    .month
-                                    .toString() +
-                                "/" +
-                                list_date[index_esercizi]
+                                    .month}/${list_date[index_esercizi]
                                     .toDate()
-                                    .year
-                                    .toString(),
+                                    .year}",
                           ),
                           trailing: IconButton(
-                              icon: Icon(Icons.description_rounded),
+                              icon: const Icon(Icons.description_rounded),
                               color: Theme.of(context).primaryColor,
                               onPressed: () {
                                 dialogFeedback(index_esercizi);
@@ -169,10 +160,10 @@ class progressioneEsercizio extends StatelessWidget {
                                               ? "Serie"
                                               : "N° Serie"),
                                     ),
-                                    DataColumn(
+                                    const DataColumn(
                                       label: Text('Ripetizioni'),
                                     ),
-                                    DataColumn(
+                                    const DataColumn(
                                       label: Text('Carico'),
                                     ),
                                   ],
@@ -180,10 +171,10 @@ class progressioneEsercizio extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 16,
                         ),
-                        Divider()
+                        const Divider()
                       ],
                     );
                   }),
@@ -195,25 +186,25 @@ class progressioneEsercizio extends StatelessWidget {
   }
 
   List<DataRow> getTableData(int index_esercizi) {
-    List<DataRow> list = new List.empty(growable: true);
+    List<DataRow> list = List.empty(growable: true);
 
     if (controlloCaricoFisso(index_esercizi)) {
       list.add(DataRow(cells: [
         DataCell(Text(list_esercizi[index_esercizi].serieEsercizio!)),
         DataCell(Text(list_esercizi[index_esercizi].ripetizioniEsercizio![0])),
         DataCell(
-            Text(list_esercizi[index_esercizi].carichiEsercizio![0] + " Kg"))
+            Text("${list_esercizi[index_esercizi].carichiEsercizio![0]} Kg"))
       ]));
     } else {
       for (int i = 0;
           i < int.parse(list_esercizi[index_esercizi].serieEsercizio!);
           i++) {
         list.add(DataRow(cells: [
-          DataCell(Text("#" + (i + 1).toString())),
+          DataCell(Text("#${i + 1}")),
           DataCell(
               Text(list_esercizi[index_esercizi].ripetizioniEsercizio![i])),
           DataCell(
-              Text(list_esercizi[index_esercizi].carichiEsercizio![i] + " Kg"))
+              Text("${list_esercizi[index_esercizi].carichiEsercizio![i]} Kg"))
         ]));
       }
     }
@@ -252,7 +243,7 @@ class progressioneEsercizio extends StatelessWidget {
 
     // recupero il carico massimo mai usato tra tutte le serie e tutti gli esercizi
 
-    for (var a in list_esercizi!) {
+    for (var a in list_esercizi) {
       for (var b in a.carichiEsercizio!) {
         if (double.tryParse(b)! > temp) {
           temp = double.tryParse(b)!;
