@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, non_constant_identifier_names, no_leading_underscores_for_local_identifiers, duplicate_ignore, file_names
+
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
 import 'package:app_fitness_test_2/Cliente/svolgimentoAllenamento.dart';
@@ -7,16 +9,13 @@ import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 final DatabaseService _dbs = DatabaseService();
 
-late Scheda schedaGlobal = Scheda(
+Scheda schedaGlobal = Scheda(
     nomeScheda: null,
     allenamentiScheda: null,
     inizioScheda: null,
@@ -25,20 +24,18 @@ late Scheda schedaGlobal = Scheda(
     allenamentiSvolti: null);
 
 class MainPageUtente extends StatefulWidget {
-  MainPageUtente({super.key});
+  const MainPageUtente({super.key});
 
   @override
   State<MainPageUtente> createState() => _MainPageUtenteState();
 }
 
 class _MainPageUtenteState extends State<MainPageUtente> {
-  late List<Widget> tabPages = new List.empty(growable: true);
+  late List<Widget> tabPages = List.empty(growable: true);
   int _selectedIndex = 0;
   bool _isVisible = true;
 
   updateBottomNavVisibility(bool b) {
-    print("dovresti nascondere");
-
     setState(() {
       _isVisible = b;
     });
@@ -47,9 +44,9 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   @override
   void initState() {
     tabPages = [
-      paginaSchedaCorrente(),
-      paginaProgressi(),
-      paginaArchivioSchede(),
+      const paginaSchedaCorrente(),
+      const paginaProgressi(),
+      const paginaArchivioSchede(),
     ];
     super.initState();
   }
@@ -58,7 +55,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "FITNESSAPP",
             style: TextStyle(letterSpacing: 2),
           ),
@@ -73,7 +70,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                             )),
                   );
                 },
-                icon: Icon(Icons.edit_calendar_rounded)),
+                icon: const Icon(Icons.edit_calendar_rounded)),
           ],
         ),
 
@@ -86,11 +83,11 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8),
                     child: CircleAvatar(
                       radius: 40,
                       child: Text(
@@ -100,23 +97,23 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   ListTile(
                     title: Text(
                       _dbs.getAuth().currentUser!.displayName!,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 26, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                       _dbs.getAuth().currentUser!.email!,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Spacer(),
-                  Divider(),
+                  const Spacer(),
+                  const Divider(),
                   ListTile(
                       onTap: () {
                         AuthenticationHelper().signOut().then((result) {
@@ -124,7 +121,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                                    builder: (context) => const LoginPage()));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(result)),
@@ -133,7 +130,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                         });
                       },
                       leading: const Icon(Icons.logout_rounded),
-                      title: Text(
+                      title: const Text(
                         "Logout",
                         style: TextStyle(fontSize: 18),
                       ))
@@ -149,7 +146,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Container(
-              constraints: BoxConstraints(minWidth: 300, maxWidth: 300),
+              constraints: const BoxConstraints(minWidth: 300, maxWidth: 300),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(48),
@@ -167,9 +164,9 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                 gap: 6,
                 activeColor: Colors.white,
                 iconSize: 24,
-                tabMargin: EdgeInsets.all(8),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-                duration: Duration(milliseconds: 300),
+                tabMargin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+                duration: const Duration(milliseconds: 500),
                 tabBackgroundColor: Theme.of(context).primaryColor,
                 color: Colors.grey,
                 tabs: const [
@@ -200,26 +197,25 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         body: tabPages[_selectedIndex]);
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 }
 
 // TAB SCHEDA CORRENTE E CALENDARIO
 
+// ignore: camel_case_types
 class paginaSchedaCorrente extends StatefulWidget {
-  paginaSchedaCorrente({super.key});
+  const paginaSchedaCorrente({super.key});
 
   @override
   State<paginaSchedaCorrente> createState() => _paginaSchedaCorrenteState();
 }
 
+// ignore: camel_case_types
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   late Timestamp selectedDay = Timestamp.now();
-  List<Allenamento?> lista_sedute_allenamenti = new List.empty(growable: true);
+  // ignore: non_constant_identifier_names
+  List<Allenamento?> lista_sedute_allenamenti = List.empty(growable: true);
   final ScrollController scrollController = ScrollController();
+  // ignore: non_constant_identifier_names
   bool btn_nav_bar_visibility = true;
   _paginaSchedaCorrenteState();
 
@@ -231,11 +227,11 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
           EasyDateTimeLine(
             headerProps: EasyHeaderProps(
               centerHeader: false,
-              padding: EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
               monthPickerType: MonthPickerType.dropDown,
               showSelectedDate: true,
               selectedDateStyle: Theme.of(context).textTheme.titleMedium,
-              dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
+              dateFormatter: const DateFormatter.fullDateDMonthAsStrY(),
             ),
             dayProps: EasyDayProps(
               activeDayStyle: const DayStyle(
@@ -278,29 +274,29 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                   List lista = snapshot.data!.docs;
                   Scheda scheda = lista[0].data();
                   schedaGlobal = scheda;
-                  List<Allenamento> lista_allenamenti_selezionati =
-                      new List.empty(growable: true);
+                  List<Allenamento> listaAllenamentiSelezionati =
+                      List.empty(growable: true);
 
                   // ASSEGNAZIONE ALLENAMENTI PER LA GIORNATA, IN LISTA LOCALE
 
-                  lista_allenamenti_selezionati =
+                  listaAllenamentiSelezionati =
                       allenamentiPerIlGiornoSelezionato(
                           scheda, selectedDay.toDate());
 
-                  if (lista_allenamenti_selezionati.isNotEmpty) {
+                  if (listaAllenamentiSelezionati.isNotEmpty) {
                     return ListView.builder(
                       controller: scrollController,
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: lista_allenamenti_selezionati.length,
-                      itemBuilder: (context, index_allenamenti) {
+                      itemCount: listaAllenamentiSelezionati.length,
+                      itemBuilder: (context, indexAllenamenti) {
                         return Card(
                           child: Column(children: [
                             // titolo allenamento
                             ListTile(
-                              trailing: Visibility(
+                              trailing: const Visibility(
                                   visible: true,
                                   child: Text(
                                     "",
@@ -308,16 +304,16 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                         TextStyle(fontWeight: FontWeight.bold),
                                   )),
                               title: Text(
-                                lista_allenamenti_selezionati![
-                                        index_allenamenti]
+                                listaAllenamentiSelezionati[
+                                        indexAllenamenti]
                                     .nomeAllenamento!,
                                 style: const TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold),
                               ),
                             ),
                             ListView.builder(
-                              itemCount: lista_allenamenti_selezionati![
-                                      index_allenamenti]
+                              itemCount: listaAllenamentiSelezionati[
+                                      indexAllenamenti]
                                   .listaEsercizi!
                                   .length,
                               shrinkWrap: true,
@@ -325,11 +321,11 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                               scrollDirection: Axis.vertical,
                               itemBuilder: (context, index_esercizi) {
                                 return ExpansionTile(
-                                  shape: RoundedRectangleBorder(
+                                  shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(48))),
                                   leading: Container(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 8, vertical: 8),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -338,11 +334,11 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                     child: Text(
                                       "#"
                                       "${index_esercizi + 1}",
-                                      style: TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                     ),
                                   ),
-                                  title: Text(lista_allenamenti_selezionati![
-                                          index_allenamenti]
+                                  title: Text(listaAllenamentiSelezionati[
+                                          indexAllenamenti]
                                       .listaEsercizi![index_esercizi]
                                       .nomeEsercizio!),
                                   children: [
@@ -363,7 +359,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                   shape: BoxShape.circle,
                                                   color: Theme.of(context)
                                                       .primaryColor),
-                                              padding: EdgeInsets.all(8),
+                                              padding: const EdgeInsets.all(8),
                                               child: const Icon(
                                                 color: Colors.white,
                                                 Icons.replay,
@@ -373,26 +369,26 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                               height: 8,
                                             ),
                                             Text(
-                                              lista_allenamenti_selezionati![
-                                                      index_allenamenti]
+                                              listaAllenamentiSelezionati[
+                                                      indexAllenamenti]
                                                   .listaEsercizi![
                                                       index_esercizi]
                                                   .ripetizioniEsercizio!
                                                   .first,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18),
                                             ),
                                             const SizedBox(
                                               height: 4,
                                             ),
-                                            Text(
+                                            const Text(
                                               "Ripetizioni",
                                               style: TextStyle(),
                                             )
                                           ],
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 32,
                                         ),
                                         Wrap(
@@ -407,7 +403,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                   shape: BoxShape.circle,
                                                   color: Theme.of(context)
                                                       .primaryColor),
-                                              padding: EdgeInsets.all(8),
+                                              padding: const EdgeInsets.all(8),
                                               child: const Icon(
                                                 color: Colors.white,
                                                 Icons.dataset_outlined,
@@ -417,25 +413,25 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                               height: 8,
                                             ),
                                             Text(
-                                              lista_allenamenti_selezionati![
-                                                      index_allenamenti]
+                                              listaAllenamentiSelezionati[
+                                                      indexAllenamenti]
                                                   .listaEsercizi![
                                                       index_esercizi]
                                                   .serieEsercizio!,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18),
                                             ),
                                             const SizedBox(
                                               height: 4,
                                             ),
-                                            Text(
+                                            const Text(
                                               "Serie",
                                               style: TextStyle(),
                                             )
                                           ],
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 32,
                                         ),
                                         Padding(
@@ -452,7 +448,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                     shape: BoxShape.circle,
                                                     color: Theme.of(context)
                                                         .primaryColor),
-                                                padding: EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(8),
                                                 child: const Icon(
                                                   color: Colors.white,
                                                   Icons.timer,
@@ -462,15 +458,15 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                 height: 8,
                                               ),
                                               Text(
-                                                "${lista_allenamenti_selezionati![index_allenamenti].listaEsercizi![index_esercizi].recuperoEsercizio!}s",
-                                                style: TextStyle(
+                                                "${listaAllenamentiSelezionati[indexAllenamenti].listaEsercizi![index_esercizi].recuperoEsercizio!}s",
+                                                style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 18),
                                               ),
                                               const SizedBox(
                                                 height: 4,
                                               ),
-                                              Text(
+                                              const Text(
                                                 "Recupero",
                                                 style: TextStyle(),
                                               )
@@ -495,7 +491,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                         Icons.bookmark,
                                         color: Theme.of(context).primaryColor,
                                       ),
-                                      title: Text(
+                                      title: const Text(
                                         "Note",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
@@ -506,8 +502,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                           right: 16, left: 16),
                                       child: ListTile(
                                         title: Text(
-                                          lista_allenamenti_selezionati![
-                                                  index_allenamenti]
+                                          listaAllenamentiSelezionati[
+                                                  indexAllenamenti]
                                               .noteAllenamento!,
                                         ),
                                       ),
@@ -516,9 +512,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 );
                               },
                             ),
-                            Padding(
+                            const Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
+                                  EdgeInsets.symmetric(horizontal: 8),
                               child: Divider(),
                             ),
                             Align(
@@ -530,15 +526,15 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   height: 48,
                                   child: allenamentoGiaSvolto(
                                           scheda,
-                                          lista_allenamenti_selezionati![
-                                              index_allenamenti],
+                                          listaAllenamentiSelezionati[
+                                              indexAllenamenti],
                                           selectedDay.toDate())
                                       ? ElevatedButton.icon(
                                           style: ButtonStyle(
                                               elevation:
-                                                  MaterialStatePropertyAll(1),
+                                                  const MaterialStatePropertyAll(1),
                                               backgroundColor:
-                                                  MaterialStatePropertyAll(
+                                                  const MaterialStatePropertyAll(
                                                       Colors.red),
                                               shape: MaterialStateProperty.all<
                                                       RoundedRectangleBorder>(
@@ -546,7 +542,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                 borderRadius:
                                                     BorderRadius.circular(16.0),
                                               ))),
-                                          icon: Icon(
+                                          icon: const Icon(
                                               Icons.sports_esports_rounded),
                                           onPressed: () {
                                             Navigator.push(
@@ -555,13 +551,13 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                     builder: (context) =>
                                                         sedutaAllenamento(
                                                             allenamento:
-                                                                lista_allenamenti_selezionati![
-                                                                    index_allenamenti],
+                                                                listaAllenamentiSelezionati[
+                                                                    indexAllenamenti],
                                                             scheda: scheda,
                                                             dataSelezionata:
                                                                 selectedDay)));
                                           },
-                                          label: Text(
+                                          label: const Text(
                                             "Allenamento",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
@@ -570,7 +566,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                       : ElevatedButton.icon(
                                           style: ButtonStyle(
                                               elevation:
-                                                  MaterialStatePropertyAll(1),
+                                                  const MaterialStatePropertyAll(1),
                                               backgroundColor:
                                                   MaterialStatePropertyAll(
                                                       Colors.blue.shade700),
@@ -580,7 +576,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                 borderRadius:
                                                     BorderRadius.circular(16.0),
                                               ))),
-                                          icon: Icon(Icons.edit_document),
+                                          icon: const Icon(Icons.edit_document),
                                           onPressed: () {
                                             Navigator.push(
                                                 context,
@@ -588,13 +584,13 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                     builder: (context) =>
                                                         sedutaAllenamento(
                                                             allenamento:
-                                                                lista_allenamenti_selezionati![
-                                                                    index_allenamenti],
+                                                                listaAllenamentiSelezionati[
+                                                                    indexAllenamenti],
                                                             scheda: scheda,
                                                             dataSelezionata:
                                                                 selectedDay)));
                                           },
-                                          label: Text(
+                                          label: const Text(
                                             "Resoconto",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
@@ -613,7 +609,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                             crossAxisAlignment: WrapCrossAlignment.center,
                             direction: Axis.vertical,
                             children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 64,
                           ),
                           Icon(
@@ -626,7 +622,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   fontSize: 24,
                                   color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold)),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text.rich(
@@ -637,7 +633,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold),
                               children: [
-                                TextSpan(
+                                const TextSpan(
                                   text:
                                       "Se vuoi modificare i tuoi programmi\n clicca sull'icona ",
                                 ),
@@ -648,7 +644,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: " in alto ",
                                 ),
                               ],
@@ -659,7 +655,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                 } else {
                   // LOGICA PER SCHEDA NON PRESENTE.
 
-                  return Text("");
+                  return const Text("");
                 }
               })
         ],
@@ -668,7 +664,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   }
 
   List<Allenamento> allenamentiPerIlGiornoSelezionato(Scheda s, DateTime d) {
-    List<Allenamento> list = new List.empty(growable: true);
+    List<Allenamento> list = List.empty(growable: true);
 
     for (int i = 0; i < s.allenamentiScheda!.length; i++) {
       for (int j = 0;
@@ -687,13 +683,13 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
   bool allenamentoGiaSvolto(Scheda s, Allenamento a, DateTime d) {
     bool check = true;
 
-    s.allenamentiSvolti!.forEach((element) {
+    for (var element in s.allenamentiSvolti!) {
       if (a.nomeAllenamento == element.nomeAllenamento &&
           DateUtils.dateOnly(d) ==
               DateUtils.dateOnly(element.giorniAssegnati!.first.toDate())) {
         check = false;
       }
-    });
+    }
 
     return check;
   }
@@ -709,7 +705,7 @@ class paginaProgressi extends StatefulWidget {
 }
 
 class paginaProgressiState extends State<paginaProgressi> {
-  int? _index_allenamento_filtrato = null;
+  int? _index_allenamento_filtrato;
 
   @override
   Widget build(BuildContext context) {
@@ -718,7 +714,7 @@ class paginaProgressiState extends State<paginaProgressi> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-            title: Text(
+            title: const Text(
               "Progressi esercizi",
               style: TextStyle(fontSize: 24),
             ),
@@ -737,7 +733,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                       _index_allenamento_filtrato = null;
                     });
                   },
-                  icon: Icon(Icons.filter_list_off_rounded),
+                  icon: const Icon(Icons.filter_list_off_rounded),
                   color: Colors.white,
                 ),
               ),
@@ -760,7 +756,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                 return ChoiceChip(
                   showCheckmark: true,
                   checkmarkColor: Colors.white,
-                  labelPadding: EdgeInsets.all(8),
+                  labelPadding: const EdgeInsets.all(8),
                   selectedColor: Theme.of(context).primaryColor,
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   label: Text(
@@ -791,7 +787,7 @@ class paginaProgressiState extends State<paginaProgressi> {
               itemCount: getLenghtEsercizi(),
               itemBuilder: (context, index) {
                 List<Esercizio> _lista_esercizi =
-                    new List.empty(growable: true);
+                    List.empty(growable: true);
                 _lista_esercizi = getListaEsercizi();
                 return GestureDetector(
                   onTap: () {
@@ -817,21 +813,19 @@ class paginaProgressiState extends State<paginaProgressi> {
                             title: Padding(
                               padding: const EdgeInsets.only(bottom: 2),
                               child: Text(_lista_esercizi[index].nomeEsercizio!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold)),
                             ),
                             subtitle: getAvanzamentoEsercizio(
                                         _lista_esercizi[index]) ==
                                     0
-                                ? Text("Mai eseguito")
+                                ? const Text("Mai eseguito")
                                 : Text(
-                                    (getAvanzamentoEsercizio(
+                                    "${(getAvanzamentoEsercizio(
                                                     _lista_esercizi[index]) *
                                                 100)
-                                            .toStringAsFixed(0) +
-                                        "%" +
-                                        "  Eseguiti",
+                                            .toStringAsFixed(0)}%  Eseguiti",
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   ),
@@ -856,14 +850,12 @@ class paginaProgressiState extends State<paginaProgressi> {
                               lineWidth: 12,
                               circularStrokeCap: CircularStrokeCap.round,
                               center: Text(
-                                getNumeroEsecuzioniSvolte(
+                                "${getNumeroEsecuzioniSvolte(
                                             _lista_esercizi[index])
-                                        .toStringAsFixed(0) +
-                                    "/" +
-                                    getNumeroEsecuzioniInScheda(
+                                        .toStringAsFixed(0)}/${getNumeroEsecuzioniInScheda(
                                             _lista_esercizi[index])
-                                        .toStringAsFixed(0),
-                                style: TextStyle(
+                                        .toStringAsFixed(0)}",
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ),
@@ -884,9 +876,9 @@ class paginaProgressiState extends State<paginaProgressi> {
   int getLenghtEsercizi() {
     int lenght = 0;
     if (_index_allenamento_filtrato == null) {
-      schedaGlobal.allenamentiScheda!.forEach((element) {
+      for (var element in schedaGlobal.allenamentiScheda!) {
         lenght = lenght + element.listaEsercizi!.length;
-      });
+      }
     } else {
       lenght = schedaGlobal.allenamentiScheda![_index_allenamento_filtrato!]
           .listaEsercizi!.length;
@@ -895,11 +887,11 @@ class paginaProgressiState extends State<paginaProgressi> {
   }
 
   List<Esercizio> getListaEsercizi() {
-    List<Esercizio> list = new List.empty(growable: true);
+    List<Esercizio> list = List.empty(growable: true);
     if (_index_allenamento_filtrato == null) {
-      schedaGlobal.allenamentiScheda!.forEach((element) {
+      for (var element in schedaGlobal.allenamentiScheda!) {
         list.addAll(element.listaEsercizi!);
-      });
+      }
     } else {
       list.addAll(schedaGlobal
           .allenamentiScheda![_index_allenamento_filtrato!].listaEsercizi!);
@@ -908,53 +900,53 @@ class paginaProgressiState extends State<paginaProgressi> {
   }
 
   List<Esercizio> getListaEserciziSvolti(Esercizio es) {
-    List<Esercizio> list = new List.empty(growable: true);
+    List<Esercizio> list = List.empty(growable: true);
 
-    schedaGlobal.allenamentiSvolti!.forEach((element) {
-      element.listaEsercizi!.forEach((element) {
+    for (var element in schedaGlobal.allenamentiSvolti!) {
+      for (var element in element.listaEsercizi!) {
         if (element.nomeEsercizio == es.nomeEsercizio) {
           list.add(element);
         }
-      });
-    });
+      }
+    }
 
     return list;
   }
 
   List<Timestamp> getDateEserciziSvolti(Esercizio es) {
-    List<Timestamp> list = new List.empty(growable: true);
+    List<Timestamp> list = List.empty(growable: true);
 
-    schedaGlobal.allenamentiSvolti!.forEach((element_allenamento) {
-      element_allenamento.listaEsercizi!.forEach((element_esercizio) {
+    for (var element_allenamento in schedaGlobal.allenamentiSvolti!) {
+      for (var element_esercizio in element_allenamento.listaEsercizi!) {
         if (element_esercizio.nomeEsercizio == es.nomeEsercizio) {
           list.add(element_allenamento.giorniAssegnati!.first);
         }
-      });
-    });
+      }
+    }
 
     return list;
   }
 
   double getNumeroEsecuzioniInScheda(Esercizio es) {
     double n = 0;
-    schedaGlobal.allenamentiScheda!.forEach((element) {
+    for (var element in schedaGlobal.allenamentiScheda!) {
       if (element.listaEsercizi!.contains(es)) {
         n = n + 1;
         n = n * element.giorniAssegnati!.length;
       }
-    });
+    }
     return n;
   }
 
   double getNumeroEsecuzioniSvolte(Esercizio es) {
     double n = 0;
-    schedaGlobal.allenamentiSvolti!.forEach((element) {
-      element.listaEsercizi!.forEach((element_es) {
+    for (var element in schedaGlobal.allenamentiSvolti!) {
+      for (var element_es in element.listaEsercizi!) {
         if (element_es.nomeEsercizio == es.nomeEsercizio) {
           n = n + 1;
         }
-      });
-    });
+      }
+    }
     return n;
   }
 
@@ -974,7 +966,6 @@ class paginaProgressiState extends State<paginaProgressi> {
       return 1;
     } else {
       avanzamento = giaSvolti / daSvolgere;
-      print(avanzamento);
       return avanzamento;
     }
   }
@@ -993,6 +984,6 @@ class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
   TextEditingController searchbar_controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return const Placeholder();
   }
 }
