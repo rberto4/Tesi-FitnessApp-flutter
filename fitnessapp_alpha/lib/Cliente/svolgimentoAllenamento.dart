@@ -38,8 +38,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 
 // timer e tempoRimasto
   late Timer _timer;
-  late int tempoRimasto =
-      _allenamento.listaEsercizi![esercizioCorrente].recuperoEsercizio!;
+  late int tempoRimasto = 0;
+      
 
 // controllers per ripetizioni e serie
 
@@ -63,6 +63,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     _controller = TextEditingController.fromValue(
         TextEditingValue(text: _allenamento.feedbackAllenamento!));
     _timer = Timer(const Duration(milliseconds: 1), () {});
+    tempoRimasto = _allenamento.listaEsercizi![esercizioCorrente].recuperoEsercizio!;
     super.initState();
   }
 
@@ -541,6 +542,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 
     // salvo tutta la scheda ma solo il campo viene aggiornato.
 
+    scheda.allenamentiSvolti!.sort(
+      (b, a) => a.giorniAssegnati!.first.compareTo(b.giorniAssegnati!.first),
+    );
+
+    print(scheda.allenamentiSvolti);
     dbs
         .getInstanceDb()
         .collection(dbs.getCollezioneUtenti())
@@ -548,7 +554,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
         .collection(dbs.getCollezioneSchede())
         .doc(scheda.idScheda!)
         .set(scheda.toFirestore(),
-            SetOptions(mergeFields: ['allenamentiSvolti']));
+            SetOptions(mergeFields: ['allenamentiSvolti'])
+            
+            );
   }
 
   double getPercentualeAvanzamento() {

@@ -48,6 +48,7 @@ class progressioneEsercizio extends StatelessWidget {
               height: MediaQuery.of(context).size.height / 3.3,
               child: Center(
                 child: ListView.builder(
+                  reverse: true,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
@@ -64,7 +65,7 @@ class progressioneEsercizio extends StatelessWidget {
                               ),
                               LinearPercentIndicator(
                                 backgroundColor: Colors.transparent,
-                                center: getPercentGrafico(index_esercizi) == 1 ? Text("Più alto", style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, fontWeight: FontWeight.bold),) : null,
+                                center: getPercentGrafico(index_esercizi) == 1 ? Text("Massimale", style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, fontWeight: FontWeight.bold),) : null,
                                 trailing: RotatedBox(
                                     quarterTurns: 1,
                                     child: Text(
