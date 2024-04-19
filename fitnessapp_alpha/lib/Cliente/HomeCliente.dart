@@ -82,64 +82,62 @@ class _MainPageUtenteState extends State<MainPageUtente> {
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 32,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: CircleAvatar(
-                        radius: 40,
-                        child: Text(
-                          "R",
-                          style: TextStyle(
-                              fontSize: 36, fontWeight: FontWeight.bold),
-                        ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 32,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: CircleAvatar(
+                      radius: 40,
+                      child: Text(
+                        "R",
+                        style: TextStyle(
+                            fontSize: 36, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    SizedBox(
-                      height: 8,
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  ListTile(
+                    title: Text(
+                      _dbs.getAuth().currentUser!.displayName!,
+                      style: TextStyle(
+                          fontSize: 26, fontWeight: FontWeight.bold),
                     ),
-                    ListTile(
+                    subtitle: Text(
+                      _dbs.getAuth().currentUser!.email!,
+                      style: TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Spacer(),
+                  Divider(),
+                  ListTile(
+                      onTap: () {
+                        AuthenticationHelper().signOut().then((result) {
+                          if (result == null) {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result)),
+                            );
+                          }
+                        });
+                      },
+                      leading: const Icon(Icons.logout_rounded),
                       title: Text(
-                        _dbs.getAuth().currentUser!.displayName!,
-                        style: TextStyle(
-                            fontSize: 26, fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        _dbs.getAuth().currentUser!.email!,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Spacer(),
-                    Divider(),
-                    ListTile(
-                        onTap: () {
-                          AuthenticationHelper().signOut().then((result) {
-                            if (result == null) {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginPage()));
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(result)),
-                              );
-                            }
-                          });
-                        },
-                        leading: const Icon(Icons.logout_rounded),
-                        title: Text(
-                          "Logout",
-                          style: TextStyle(fontSize: 18),
-                        ))
-                  ],
-                ),
+                        "Logout",
+                        style: TextStyle(fontSize: 18),
+                      ))
+                ],
               ),
             ),
           ),
@@ -784,7 +782,7 @@ class paginaProgressiState extends State<paginaProgressi> {
           ),
         ),
 
-        Expanded(
+        Flexible(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: ListView.builder(

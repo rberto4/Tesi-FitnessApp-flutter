@@ -8,6 +8,7 @@ const String COLLEZIONE_SCHEDE = "schede";
 const String COLLEZIONE_COACHES = "coaches";
 
 class DatabaseService {
+  
   late final FirebaseAuth _auth = FirebaseAuth.instance;
   late String uid_user_loggato = _auth.currentUser!.uid;
   final FirebaseFirestore _instance = FirebaseFirestore.instance;

@@ -1,3 +1,5 @@
+import 'package:app_fitness_test_2/autenticazione/login.dart';
+import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:flutter/material.dart';
 
 class HomeDesktop extends StatefulWidget {
@@ -11,6 +13,23 @@ class _HomeDesktopState extends State<HomeDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton( onPressed: () {
+            AuthenticationHelper().signOut().then((result) {
+              if (result == null) {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(result)),
+                );
+              }
+            });
+          },
+           icon: Icon(Icons.logout_rounded))
+        ],
+      ),
       backgroundColor: Colors.amber,
     );
   }

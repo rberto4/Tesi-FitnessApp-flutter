@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -61,368 +59,367 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     inizializzaTextControllers();
     _controller = TextEditingController.fromValue(
         TextEditingValue(text: _allenamento.feedbackAllenamento!));
-
     _timer = Timer(Duration(milliseconds: 1), () {});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Visibility(
-        visible: !modalitaAllenamento,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SizedBox(
-            width: double.infinity,
-            height: 64,
-            child: FloatingActionButton.extended(
-              icon: Icon(
-                Icons.save_rounded,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                salvaDatiFineAllenamento();
-              },
-              label: Text(
-                "Salva",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 18),
-              ),
-              backgroundColor: Colors.green,
-            ),
-          ),
-        ),
-      ),
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        elevation: 2,
-        backgroundColor: Theme.of(context).canvasColor,
-        titleSpacing: 0,
-        title: Text(
-          _allenamento.nomeAllenamento!,
-        ),
-        centerTitle: false,
-        leading: BackButton(onPressed: () {
-          if (modalitaAllenamento) {
-            dialogConfermaEsci();
-          } else {
-            Navigator.pop(context);
-          }
-        }),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-            child: ElevatedButton.icon(
-                icon: Icon(Icons.note_alt_rounded),
-                onPressed: () {
-                  dialogFeedback();
-                },
-                label: Text(
-                  "Note",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                style: ButtonStyle(
-                    elevation: MaterialStatePropertyAll(1),
-                    backgroundColor: MaterialStatePropertyAll(
-                        Theme.of(context).primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(48.0),
-                    )))),
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        scrollDirection: Axis.vertical,
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: _allenamento.listaEsercizi!.length,
-        itemBuilder: (context, index_esercizi) {
-          return Column(
-            children: [
-              // Tile esercizio
-              ListTile(
-                onTap: () {
-                  if (!_timer.isActive) {
-                    selezionaEsercizioAlTocco(index_esercizi);
-                  }
-                },
-                leading: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: esercizioCorrente >= 0 &&
-                                index_esercizi <= esercizioCorrente &&
-                                modalitaAllenamento
-                            ? Theme.of(context).primaryColor
-                            : Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(48)),
-                    child: esercizioCorrente > 0 &&
-                            index_esercizi < esercizioCorrente &&
-                            modalitaAllenamento
-                        ? Icon(
-                            Icons.done_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          )
-                        : Text(
-                            "#" + (index_esercizi + 1).toString(),
-                            style: TextStyle(
-                                color: esercizioCorrente != index_esercizi
-                                    ? Theme.of(context).hintColor
-                                    : null,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                          )),
-                title: Text(
-                  _allenamento.listaEsercizi![index_esercizi].nomeEsercizio!,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  _allenamento.listaEsercizi![index_esercizi].serieEsercizio! +
-                      " Serie",
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                ),
-              ),
-
-              // lista serie
-
-              Visibility(
-                visible: esercizioCorrente == index_esercizi ? true : false,
-                child: ListView.builder(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: int.parse(
-                    _allenamento.listaEsercizi![index_esercizi].serieEsercizio!,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async => (false),
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: !modalitaAllenamento
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 64,
+                  child: FloatingActionButton.extended(
+                    icon: Icon(
+                      Icons.save_rounded,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      salvaDatiFineAllenamento();
+                      Navigator.pop(context);
+                    },
+                    label: Text(
+                      "Salva",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
+                    backgroundColor: Colors.green,
                   ),
-                  itemBuilder: (context, index_serie) {
-                    // in base alla serie corrente mostro la scheda SELEZIONATA oppure no
-
-                    if (index_serie == serieCorrente) {
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          side: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 2.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              contentPadding:
-                                  EdgeInsets.only(right: 8, left: 16),
-                              title: Text(
-                                "${index_serie + 1}°  Serie",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              trailing: IconButton(
-                                  icon: Icon(Icons.description_rounded),
-                                  onPressed: () {
-                                    dialogNoteCoach(
-                                        _allenamento.noteAllenamento!);
-                                  }),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 4),
-                              child: Text("Carico (Kg)"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, right: 16, bottom: 8),
-                              child: TextFormField(
-                                controller: _lista_controllers_carichi[
-                                    getIndexControllers(
-                                        index_esercizi, index_serie)],
-                                textAlign: TextAlign.right,
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
-                                decoration: const InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8.0),
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                  filled: true,
-                                  alignLabelWithHint: false,
-                                  prefixIcon:
-                                      Icon(Icons.fitness_center_outlined),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 4),
-                              child: Text("Ripetizioni"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, right: 16, bottom: 16),
-                              child: TextFormField(
-                                controller: _lista_controllers_ripetizioni[
-                                    getIndexControllers(
-                                        index_esercizi, index_serie)],
-                                textAlign: TextAlign.right,
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
-                                decoration: const InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8.0),
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                  filled: true,
-                                  alignLabelWithHint: false,
-                                  prefixIcon: Icon(Icons.restart_alt_rounded),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      // scheda esercizio non selezionato
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (!_timer.isActive) {
-                              selezionaSerieAlTocco(index_serie);
-                            }
+                ),
+              )
+            : Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+                child: esercizioCorrente ==
+                            _allenamento.listaEsercizi!.length - 1 &&
+                        serieCorrente ==
+                            int.parse(_allenamento
+                                    .listaEsercizi!.last.serieEsercizio!) -
+                                1
+                    ? SizedBox(
+                        height: 64,
+                        width: double.maxFinite,
+                        child: ElevatedButton.icon(
+                          icon: Icon(Icons.sports_score_rounded),
+                          onPressed: () {
+                            salvaDatiFineAllenamento();
+                            Navigator.pop(context);
                           },
-                          child: Card(
-                            child: ListTile(
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 16),
-                              horizontalTitleGap: 8,
-                              trailing: Text(
-                                "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
-                                style: TextStyle(
-                                    color: Theme.of(context).hintColor),
-                              ),
-                              title: Text(
-                                "${index_serie + 1}°  Serie",
-                                style: TextStyle(
-                                    color: Theme.of(context).hintColor),
-                              ),
-                              leading: serieCorrente > index_serie &&
-                                      modalitaAllenamento
-                                  ? Icon(
-                                      Icons.done_rounded,
-                                      color: Theme.of(context).hintColor,
-                                    )
-                                  : null,
+                          label: Text(
+                            "Termina allenamento",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
                             ),
                           ),
+                          style: ButtonStyle(
+                              elevation: MaterialStatePropertyAll(0),
+                              backgroundColor:
+                                  MaterialStatePropertyAll(Colors.green),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(48.0),
+                              ))),
                         ),
-                      );
-                    }
-                  },
-                ),
-              ),
-              Visibility(
-                visible:
-                    esercizioCorrente == index_esercizi && modalitaAllenamento
-                        ? true
-                        : false,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-                  child: index_esercizi ==
-                              _allenamento.listaEsercizi!.length - 1 &&
-                          serieCorrente ==
-                              int.parse(_allenamento
-                                      .listaEsercizi!.last.serieEsercizio!) -
-                                  1
-                      ? SizedBox(
-                          height: 70,
+                      )
+                    : LinearPercentIndicator(
+                        center: SizedBox(
                           width: double.maxFinite,
+                          height: 70,
                           child: ElevatedButton.icon(
-                            icon: Icon(Icons.sports_score_rounded),
+                            icon: Icon(Icons.timer_outlined),
                             onPressed: () {
-                              salvaDatiFineAllenamento();
-                              Navigator.pop(context);
+                              if (!_timer.isActive) {
+                                startTimer();
+                              }
                             },
                             label: Text(
-                              "Termina allenamento",
+                              "Timer recupero - " +
+                                  tempoRimasto.toString() +
+                                  "s",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                fontSize: 20,
                               ),
                             ),
                             style: ButtonStyle(
                                 elevation: MaterialStatePropertyAll(0),
-                                backgroundColor:
-                                    MaterialStatePropertyAll(Colors.green),
+                                backgroundColor: MaterialStatePropertyAll(
+                                    Colors.transparent),
                                 shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(48.0),
                                 ))),
                           ),
-                        )
-                      : LinearPercentIndicator(
-                          center: SizedBox(
-                            width: double.maxFinite,
-                            height: 70,
-                            child: ElevatedButton.icon(
-                              icon: Icon(Icons.timer_outlined),
-                              onPressed: () {
-                                if (!_timer.isActive) {
-                                  startTimer();
-                                }
-                              },
-                              label: Text(
-                                "Timer recupero - " +
-                                    tempoRimasto.toString() +
-                                    "s",
-                                style: TextStyle(
+                        ),
+                        lineHeight: 70,
+                        percent: getPercentualeAvanzamento(),
+                        progressColor: Colors.red,
+                        backgroundColor: Theme.of(context).disabledColor,
+                        barRadius: Radius.circular(48),
+                      ),
+              ),
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          elevation: 2,
+          backgroundColor: Theme.of(context).canvasColor,
+          titleSpacing: 0,
+          title: Text(
+            _allenamento.nomeAllenamento!,
+          ),
+          centerTitle: false,
+          leading: BackButton(onPressed: () {
+            if (modalitaAllenamento) {
+              dialogConfermaEsci();
+            } else {
+              Navigator.pop(context);
+            }
+          }),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              child: ElevatedButton.icon(
+                  icon: Icon(Icons.note_alt_rounded),
+                  onPressed: () {
+                    dialogFeedback();
+                  },
+                  label: Text(
+                    "Note",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  style: ButtonStyle(
+                      elevation: MaterialStatePropertyAll(1),
+                      backgroundColor: MaterialStatePropertyAll(
+                          Theme.of(context).primaryColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(48.0),
+                      )))),
+            ),
+          ],
+        ),
+        body: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          scrollDirection: Axis.vertical,
+          physics: const AlwaysScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: _allenamento.listaEsercizi!.length,
+          itemBuilder: (context, index_esercizi) {
+            return Column(
+              children: [
+                // Tile esercizio
+                ListTile(
+                  onTap: () {
+                    if (!_timer.isActive) {
+                      selezionaEsercizioAlTocco(index_esercizi);
+                    }
+                  },
+                  leading: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: esercizioCorrente >= 0 &&
+                                  index_esercizi <= esercizioCorrente &&
+                                  modalitaAllenamento
+                              ? Theme.of(context).primaryColor
+                              : Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(48)),
+                      child: esercizioCorrente > 0 &&
+                              index_esercizi < esercizioCorrente &&
+                              modalitaAllenamento
+                          ? Icon(
+                              Icons.done_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            )
+                          : Text(
+                              "#" + (index_esercizi + 1).toString(),
+                              style: TextStyle(
+                                  color: esercizioCorrente != index_esercizi
+                                      ? Theme.of(context).hintColor
+                                      : null,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 18),
+                            )),
+                  title: Text(
+                    _allenamento.listaEsercizi![index_esercizi].nomeEsercizio!,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    _allenamento
+                            .listaEsercizi![index_esercizi].serieEsercizio! +
+                        " Serie",
+                    style: TextStyle(color: Theme.of(context).hintColor),
+                  ),
+                ),
+
+                // lista serie
+
+                Visibility(
+                  visible: esercizioCorrente == index_esercizi ? true : false,
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: int.parse(
+                      _allenamento
+                          .listaEsercizi![index_esercizi].serieEsercizio!,
+                    ),
+                    itemBuilder: (context, index_serie) {
+                      // in base alla serie corrente mostro la scheda SELEZIONATA oppure no
+
+                      if (index_serie == serieCorrente) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            side: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                                width: 2.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                contentPadding:
+                                    EdgeInsets.only(right: 8, left: 16),
+                                title: Text(
+                                  "${index_serie + 1}°  Serie",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                trailing: IconButton(
+                                    icon: Icon(Icons.description_rounded),
+                                    onPressed: () {
+                                      dialogNoteCoach(
+                                          _allenamento.noteAllenamento!);
+                                    }),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 4),
+                                child: Text("Carico (Kg)"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 8),
+                                child: TextFormField(
+                                  controller: _lista_controllers_carichi[
+                                      getIndexControllers(
+                                          index_esercizi, index_serie)],
+                                  textAlign: TextAlign.right,
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: true),
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.0),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                    ),
+                                    filled: true,
+                                    alignLabelWithHint: false,
+                                    prefixIcon:
+                                        Icon(Icons.fitness_center_outlined),
+                                  ),
                                 ),
                               ),
-                              style: ButtonStyle(
-                                  elevation: MaterialStatePropertyAll(0),
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      Colors.transparent),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(48.0),
-                                  ))),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 4),
+                                child: Text("Ripetizioni"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 16),
+                                child: TextFormField(
+                                  controller: _lista_controllers_ripetizioni[
+                                      getIndexControllers(
+                                          index_esercizi, index_serie)],
+                                  textAlign: TextAlign.right,
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: true),
+                                  decoration: const InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.0),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                    ),
+                                    filled: true,
+                                    alignLabelWithHint: false,
+                                    prefixIcon: Icon(Icons.restart_alt_rounded),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        // scheda esercizio non selezionato
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: GestureDetector(
+                            onTap: () {
+                              if (!_timer.isActive) {
+                                selezionaSerieAlTocco(index_serie);
+                              }
+                            },
+                            child: Card(
+                              child: ListTile(
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 16),
+                                horizontalTitleGap: 8,
+                                trailing: Text(
+                                  "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
+                                  style: TextStyle(
+                                      color: Theme.of(context).hintColor),
+                                ),
+                                title: Text(
+                                  "${index_serie + 1}°  Serie",
+                                  style: TextStyle(
+                                      color: Theme.of(context).hintColor),
+                                ),
+                                leading: serieCorrente > index_serie &&
+                                        modalitaAllenamento
+                                    ? Icon(
+                                        Icons.done_rounded,
+                                        color: Theme.of(context).hintColor,
+                                      )
+                                    : null,
+                              ),
                             ),
                           ),
-                          lineHeight: 70,
-                          percent: getPercentualeAvanzamento(),
-                          progressColor: Colors.red,
-                          backgroundColor: Theme.of(context).disabledColor,
-                          barRadius: Radius.circular(48),
-                        ),
+                        );
+                      }
+                    },
+                  ),
                 ),
-              )
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

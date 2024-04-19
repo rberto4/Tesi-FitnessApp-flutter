@@ -18,32 +18,16 @@ class MainPageCoach extends StatefulWidget {
 
 
 /*
- onPressed: () {
-            AuthenticationHelper().signOut().then((result) {
-              if (result == null) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(result)),
-                );
-              }
-            });
-          },
+
 */
 class _MainPageCoachState extends State<MainPageCoach> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("ciaoooo"),
-      ),
-      body: ResponsiveLayout(
+    return ResponsiveLayout(
             smartphoneScaffold: HomeSmartphone(),
             tabletScaffold: HomeTablet(),
             desktopScaffold: HomeDesktop(),
-          )
-      );
+          );
   }
 }
 
