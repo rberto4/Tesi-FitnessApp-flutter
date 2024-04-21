@@ -546,7 +546,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
       (b, a) => a.giorniAssegnati!.first.compareTo(b.giorniAssegnati!.first),
     );
 
-    print(scheda.allenamentiSvolti);
     dbs
         .getInstanceDb()
         .collection(dbs.getCollezioneUtenti())
