@@ -615,12 +615,12 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                           Icon(
                             Icons.hotel_rounded,
                             size: 108,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).hintColor.withOpacity(0.3),
                           ),
                           Text("Giorno di riposo",
                               style: TextStyle(
                                   fontSize: 24,
-                                  color: Theme.of(context).hintColor,
+                                  color: Theme.of(context).hintColor.withOpacity(0.3),
                                   fontWeight: FontWeight.bold)),
                           const SizedBox(
                             height: 8,
@@ -630,7 +630,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                             TextSpan(
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: Theme.of(context).hintColor,
+                                  color: Theme.of(context).hintColor.withOpacity(0.3),
                                   fontWeight: FontWeight.bold),
                               children: [
                                 const TextSpan(
@@ -641,7 +641,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   child: Icon(
                                     Icons.edit_calendar_rounded,
                                     size: 18,
-                                    color: Theme.of(context).primaryColor,
+                                    color: Theme.of(context).hintColor.withOpacity(0.3),
                                   ),
                                 ),
                                 const TextSpan(

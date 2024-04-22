@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class sedutaAllenamento extends StatefulWidget {
@@ -13,8 +15,7 @@ class sedutaAllenamento extends StatefulWidget {
   late Timestamp dataSelezionata;
 
   sedutaAllenamento(
-      {
-      super.key,
+      {super.key,
       required this.allenamento,
       required this.scheda,
       required this.dataSelezionata});
@@ -25,7 +26,6 @@ class sedutaAllenamento extends StatefulWidget {
 }
 
 class _sedutaAllenamentoState extends State<sedutaAllenamento> {
-  
   late final Allenamento _allenamento;
   late Scheda scheda;
   late Timestamp dataSelezionata;
@@ -39,7 +39,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 // timer e tempoRimasto
   late Timer _timer;
   late int tempoRimasto = 0;
-      
 
 // controllers per ripetizioni e serie
 
@@ -63,7 +62,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     _controller = TextEditingController.fromValue(
         TextEditingValue(text: _allenamento.feedbackAllenamento!));
     _timer = Timer(const Duration(milliseconds: 1), () {});
-    tempoRimasto = _allenamento.listaEsercizi![esercizioCorrente].recuperoEsercizio!;
+    tempoRimasto =
+        _allenamento.listaEsercizi![esercizioCorrente].recuperoEsercizio!;
+        _timer.cancel();
     super.initState();
   }
 
@@ -101,76 +102,116 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                 ),
               )
             : Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-                child: esercizioCorrente ==
-                            _allenamento.listaEsercizi!.length - 1 &&
-                        serieCorrente ==
-                            int.parse(_allenamento
-                                    .listaEsercizi!.last.serieEsercizio!) -
-                                1
-                    ? SizedBox(
-                        height: 64,
-                        width: double.maxFinite,
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.sports_score_rounded),
-                          onPressed: () {
-                            salvaDatiFineAllenamento();
-                            Navigator.pop(context);
-                          },
-                          label: const Text(
-                            "Termina allenamento",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          style: ButtonStyle(
-                              elevation: const MaterialStatePropertyAll(0),
-                              backgroundColor:
-                                  const MaterialStatePropertyAll(Colors.green),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(48.0),
-                              ))),
-                        ),
-                      )
-                    : LinearPercentIndicator(
-                        center: SizedBox(
-                          width: double.maxFinite,
-                          height: 70,
-                          child: ElevatedButton.icon(
-                            icon: const Icon(Icons.timer_outlined),
-                            onPressed: () {
-                              if (!_timer.isActive) {
-                                startTimer();
-                              }
-                            },
-                            label: Text(
-                              "Timer recupero - ${tempoRimasto}s",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      esercizioCorrente ==
+                                  _allenamento.listaEsercizi!.length - 1 &&
+                              serieCorrente ==
+                                  int.parse(_allenamento.listaEsercizi!.last
+                                          .serieEsercizio!) -
+                                      1
+                          ? Flexible(
+                              child: SizedBox(
+                                height: 64,
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.sports_score_rounded),
+                                  onPressed: () {
+                                    salvaDatiFineAllenamento();
+                                    Navigator.pop(context);
+                                  },
+                                  label: const Text(
+                                    "Termina allenamento",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                      elevation:
+                                          const MaterialStatePropertyAll(0),
+                                      backgroundColor:
+                                          const MaterialStatePropertyAll(
+                                              Colors.green),
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(48.0),
+                                      ))),
+                                ),
+                              ),
+                            )
+                          : Flexible(
+                              child: LinearPercentIndicator(
+                                center: SizedBox(
+                                  height: 70,
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    
+                                    icon: !_timer.isActive?
+                                    const Icon(Icons.timer_rounded): const Icon(null),
+                                    onPressed: () {
+                                      if (!_timer.isActive) {
+                                        startTimer();
+                                      }
+                                    },
+                                    label: !_timer.isActive ?
+                                     Text(
+                                      "Avvia recupero - ${tempoRimasto}s",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ):
+                                    Text(
+                                      " ${tempoRimasto}s  ",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 28,
+                                      ),
+                                    ),
+                                    style: ButtonStyle(
+                                        elevation:
+                                            const MaterialStatePropertyAll(0),
+                                        backgroundColor:
+                                            const MaterialStatePropertyAll(
+                                                Colors.transparent),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(48.0),
+                                        ))),
+                                  ),
+                                ),
+                                lineHeight: 70,
+                                percent: getPercentualeAvanzamento(),
+                                progressColor: Colors.red,
+                                backgroundColor:
+                                    Theme.of(context).disabledColor,
+                                barRadius: const Radius.circular(48),
                               ),
                             ),
-                            style: ButtonStyle(
-                                elevation: const MaterialStatePropertyAll(0),
-                                backgroundColor: const MaterialStatePropertyAll(
-                                    Colors.transparent),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(48.0),
-                                ))),
-                          ),
-                        ),
-                        lineHeight: 70,
-                        percent: getPercentualeAvanzamento(),
-                        progressColor: Colors.red,
-                        backgroundColor: Theme.of(context).disabledColor,
-                        barRadius: const Radius.circular(48),
-                      ),
+
+                            // pulsante per skippare il timer
+
+                      Visibility(
+                          visible: _timer.isActive,
+                          child: FloatingActionButton(
+                            backgroundColor: Theme.of(context).primaryColor,
+                              heroTag: "meno_15s",
+                              onPressed: () {
+                                _timer.cancel();
+                                setState(() {
+                                  proseguiScheda();
+                                });
+                              },
+                              child: const Icon(Icons.fast_forward_rounded, color: Colors.white,)))
+                    ]),
               ),
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -258,8 +299,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    "${_allenamento
-                            .listaEsercizi![index_esercizi].serieEsercizio!} Serie",
+                    "${_allenamento.listaEsercizi![index_esercizi].serieEsercizio!} Serie",
                     style: TextStyle(color: Theme.of(context).hintColor),
                   ),
                 ),
@@ -282,7 +322,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                       if (index_serie == serieCorrente) {
                         return Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: const BorderRadius.all(Radius.circular(16)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16)),
                             side: BorderSide(
                                 color: Theme.of(context).primaryColor,
                                 width: 2.0),
@@ -320,8 +361,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       getIndexControllers(
                                           index_esercizi, index_serie)],
                                   textAlign: TextAlign.right,
-                                  keyboardType: const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -354,8 +396,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       getIndexControllers(
                                           index_esercizi, index_serie)],
                                   textAlign: TextAlign.right,
-                                  keyboardType: const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
                                   decoration: const InputDecoration(
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -519,7 +562,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
       }
     }
 
-  
     /*
     List<Timestamp> giorno_allenamento = new List.empty(growable: true);
     giorno_allenamento.add(Timestamp.now());
@@ -527,7 +569,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     _allenamento.giorniAssegnati!.clear();
     _allenamento.giorniAssegnati!.add(dataSelezionata);
     _allenamento.feedbackAllenamento = _controller.text;
-
 
     // logica per capire se eliminare il campo e ricreare l'esercizio svolto, basandosi su nome esercizio e data, se già presente lo vado ad
     // eliminare prima di aggiornare allenamentiSvolti con _allenamento
@@ -546,7 +587,6 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
       (b, a) => a.giorniAssegnati!.first.compareTo(b.giorniAssegnati!.first),
     );
 
-    print(scheda.allenamentiSvolti);
     dbs
         .getInstanceDb()
         .collection(dbs.getCollezioneUtenti())
@@ -554,9 +594,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
         .collection(dbs.getCollezioneSchede())
         .doc(scheda.idScheda!)
         .set(scheda.toFirestore(),
-            SetOptions(mergeFields: ['allenamentiSvolti'])
-            
-            );
+            SetOptions(mergeFields: ['allenamentiSvolti']));
   }
 
   double getPercentualeAvanzamento() {
@@ -697,7 +735,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     label: const Text("Esci da allenamento"),
                     style: ButtonStyle(
                         elevation: const MaterialStatePropertyAll(1),
-                        backgroundColor: const MaterialStatePropertyAll(Colors.red),
+                        backgroundColor:
+                            const MaterialStatePropertyAll(Colors.red),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
