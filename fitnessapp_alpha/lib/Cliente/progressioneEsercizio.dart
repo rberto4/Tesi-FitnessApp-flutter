@@ -65,7 +65,7 @@ class progressioneEsercizio extends StatelessWidget {
                               ),
                               LinearPercentIndicator(
                                 backgroundColor: Colors.transparent,
-                                center: getPercentGrafico(index_esercizi) == 1 ? Text("Massimale", style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, fontWeight: FontWeight.bold),) : null,
+                                center: getPercentGrafico(index_esercizi) == 1 ? Text("Massimale", style: TextStyle(color: Colors.white.withOpacity(0.8),fontSize: 12 , fontWeight: FontWeight.bold),) : null,
                                 trailing: RotatedBox(
                                     quarterTurns: 1,
                                     child: Text(
@@ -90,14 +90,14 @@ class progressioneEsercizio extends StatelessWidget {
                                       ),
                                   ),
                                 percent: getPercentGrafico(index_esercizi),
-                                progressColor: getPercentGrafico(index_esercizi) == 1 ? Theme.of(context).primaryColor : Theme.of(context).primaryColor,
+                                progressColor: getPercentGrafico(index_esercizi) == 1 ? Colors.blue : Theme.of(context).primaryColor,
                                 animation: true,
                                 animationDuration: 1000,
                                 barRadius: const Radius.circular(48),
-                                lineHeight: 24,
+                                lineHeight: MediaQuery.of(context).size.width/20,
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width / 20,
+                                height: MediaQuery.of(context).size.width / 30,
                               )
                             ]));
                   },

@@ -85,6 +85,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                 children: [
                   const SizedBox(
                     height: 32,
+                    
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 8),
@@ -129,7 +130,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                           }
                         });
                       },
-                      leading: const Icon(Icons.logout_rounded),
+                      trailing: const Icon(Icons.logout_rounded),
                       title: const Text(
                         "Logout",
                         style: TextStyle(fontSize: 18),
