@@ -85,7 +85,6 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                 children: [
                   const SizedBox(
                     height: 32,
-                    
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 8),
@@ -166,7 +165,8 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                 activeColor: Colors.white,
                 iconSize: 24,
                 tabMargin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
                 duration: const Duration(milliseconds: 500),
                 tabBackgroundColor: Theme.of(context).primaryColor,
                 color: Colors.grey,
@@ -197,7 +197,6 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         resizeToAvoidBottomInset: true,
         body: tabPages[_selectedIndex]);
   }
-
 }
 
 // TAB SCHEDA CORRENTE E CALENDARIO
@@ -228,7 +227,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
           EasyDateTimeLine(
             headerProps: EasyHeaderProps(
               centerHeader: false,
-              padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+              padding:
+                  const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
               monthPickerType: MonthPickerType.dropDown,
               showSelectedDate: true,
               selectedDateStyle: Theme.of(context).textTheme.titleMedium,
@@ -285,6 +285,72 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                           scheda, selectedDay.toDate());
 
                   if (listaAllenamentiSelezionati.isNotEmpty) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: listaAllenamentiSelezionati.length,
+                      itemBuilder: (context, indexAllenamenti) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              title: Text(
+                                listaAllenamentiSelezionati[indexAllenamenti]
+                                    .nomeAllenamento!,
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(48),
+                                    border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context).primaryColor)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    "18:30",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (context, indexEsercizi) {
+                                return Card(
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: DataTable(
+                                          dividerThickness: 1,
+                                          columnSpacing: 16,
+                                          columns: const [
+                                           
+                                            DataColumn(label: Text("Nome")),
+                                            DataColumn(label: Text("Serie")),
+
+                                          ],
+                                          rows: [],
+                                          ),
+                                    ),
+                                  ),
+                                ); 
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    /*
                     return ListView.builder(
                       controller: scrollController,
                       padding: const EdgeInsets.all(8),
@@ -604,7 +670,10 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                         );
                       },
                     );
+                    */
                   } else {
+                    // schermata , al posto della lista, che mostra la giornata di riposo, di default se non ho assegnato la giornata a nessun allenamento
+
                     return Center(
                         child: Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
@@ -621,7 +690,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                           Text("Giorno di riposo",
                               style: TextStyle(
                                   fontSize: 24,
-                                  color: Theme.of(context).hintColor.withOpacity(0.3),
+                                  color: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.3),
                                   fontWeight: FontWeight.bold)),
                           const SizedBox(
                             height: 8,
@@ -631,7 +702,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                             TextSpan(
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: Theme.of(context).hintColor.withOpacity(0.3),
+                                  color: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.3),
                                   fontWeight: FontWeight.bold),
                               children: [
                                 const TextSpan(
@@ -642,7 +715,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   child: Icon(
                                     Icons.edit_calendar_rounded,
                                     size: 18,
-                                    color: Theme.of(context).hintColor.withOpacity(0.3),
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.3),
                                   ),
                                 ),
                                 const TextSpan(
@@ -787,8 +862,7 @@ class paginaProgressiState extends State<paginaProgressi> {
               shrinkWrap: true,
               itemCount: getLenghtEsercizi(),
               itemBuilder: (context, index) {
-                List<Esercizio> _lista_esercizi =
-                    List.empty(growable: true);
+                List<Esercizio> _lista_esercizi = List.empty(growable: true);
                 _lista_esercizi = getListaEsercizi();
                 return GestureDetector(
                   onTap: () {
@@ -823,10 +897,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                                     0
                                 ? const Text("Mai eseguito")
                                 : Text(
-                                    "${(getAvanzamentoEsercizio(
-                                                    _lista_esercizi[index]) *
-                                                100)
-                                            .toStringAsFixed(0)}%  Eseguiti",
+                                    "${(getAvanzamentoEsercizio(_lista_esercizi[index]) * 100).toStringAsFixed(0)}%  Eseguiti",
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   ),
@@ -851,11 +922,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                               lineWidth: 12,
                               circularStrokeCap: CircularStrokeCap.round,
                               center: Text(
-                                "${getNumeroEsecuzioniSvolte(
-                                            _lista_esercizi[index])
-                                        .toStringAsFixed(0)}/${getNumeroEsecuzioniInScheda(
-                                            _lista_esercizi[index])
-                                        .toStringAsFixed(0)}",
+                                "${getNumeroEsecuzioniSvolte(_lista_esercizi[index]).toStringAsFixed(0)}/${getNumeroEsecuzioniInScheda(_lista_esercizi[index]).toStringAsFixed(0)}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
