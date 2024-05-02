@@ -267,6 +267,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
               });
             },
           ),
+          
           StreamBuilder(
               stream: _dbs.getSchedaCorrente(),
               builder: (context, snapshot) {
@@ -293,6 +294,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                       itemBuilder: (context, indexAllenamenti) {
                         return Column(
                           children: [
+
+                            
                             ListTile(
                               title: Text(
                                 listaAllenamentiSelezionati[indexAllenamenti]
@@ -318,6 +321,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 ),
                               ),
                             ),
+
+                            /*
                             ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
@@ -345,332 +350,14 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 ); 
                               },
                             ),
+                            */
+                            
                           ],
+                          
                         );
                       },
                     );
 
-                    /*
-                    return ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.all(8),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: listaAllenamentiSelezionati.length,
-                      itemBuilder: (context, indexAllenamenti) {
-                        return Card(
-                          child: Column(children: [
-                            // titolo allenamento
-                            ListTile(
-                              trailing: const Visibility(
-                                  visible: true,
-                                  child: Text(
-                                    "",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )),
-                              title: Text(
-                                listaAllenamentiSelezionati[
-                                        indexAllenamenti]
-                                    .nomeAllenamento!,
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            ListView.builder(
-                              itemCount: listaAllenamentiSelezionati[
-                                      indexAllenamenti]
-                                  .listaEsercizi!
-                                  .length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (context, index_esercizi) {
-                                return ExpansionTile(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(48))),
-                                  leading: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                                    child: Text(
-                                      "#"
-                                      "${index_esercizi + 1}",
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  title: Text(listaAllenamentiSelezionati[
-                                          indexAllenamenti]
-                                      .listaEsercizi![index_esercizi]
-                                      .nomeEsercizio!),
-                                  children: [
-                                    // quando espando l'esercizi
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Wrap(
-                                          verticalDirection:
-                                              VerticalDirection.down,
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          direction: Axis.vertical,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                              padding: const EdgeInsets.all(8),
-                                              child: const Icon(
-                                                color: Colors.white,
-                                                Icons.replay,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              listaAllenamentiSelezionati[
-                                                      indexAllenamenti]
-                                                  .listaEsercizi![
-                                                      index_esercizi]
-                                                  .ripetizioniEsercizio!
-                                                  .first,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            const SizedBox(
-                                              height: 4,
-                                            ),
-                                            const Text(
-                                              "Ripetizioni",
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 32,
-                                        ),
-                                        Wrap(
-                                          verticalDirection:
-                                              VerticalDirection.down,
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          direction: Axis.vertical,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                              padding: const EdgeInsets.all(8),
-                                              child: const Icon(
-                                                color: Colors.white,
-                                                Icons.dataset_outlined,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              listaAllenamentiSelezionati[
-                                                      indexAllenamenti]
-                                                  .listaEsercizi![
-                                                      index_esercizi]
-                                                  .serieEsercizio!,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            const SizedBox(
-                                              height: 4,
-                                            ),
-                                            const Text(
-                                              "Serie",
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 32,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Wrap(
-                                            verticalDirection:
-                                                VerticalDirection.down,
-                                            crossAxisAlignment:
-                                                WrapCrossAlignment.center,
-                                            direction: Axis.vertical,
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                                padding: const EdgeInsets.all(8),
-                                                child: const Icon(
-                                                  color: Colors.white,
-                                                  Icons.timer,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 8,
-                                              ),
-                                              Text(
-                                                "${listaAllenamentiSelezionati[indexAllenamenti].listaEsercizi![index_esercizi].recuperoEsercizio!}s",
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18),
-                                              ),
-                                              const SizedBox(
-                                                height: 4,
-                                              ),
-                                              const Text(
-                                                "Recupero",
-                                                style: TextStyle(),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 16, left: 16, right: 16),
-                                      child: SizedBox(
-                                        height: 1,
-                                        child: Container(
-                                          color: Theme.of(context).dividerColor,
-                                        ),
-                                      ),
-                                    ),
-                                    ListTile(
-                                      minLeadingWidth: 8,
-                                      leading: Icon(
-                                        Icons.bookmark,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      title: const Text(
-                                        "Note",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 16, left: 16),
-                                      child: ListTile(
-                                        title: Text(
-                                          listaAllenamentiSelezionati[
-                                                  indexAllenamenti]
-                                              .noteAllenamento!,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                            const Padding(
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 8),
-                              child: Divider(),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 8, bottom: 8),
-                                child: SizedBox(
-                                  height: 48,
-                                  child: allenamentoGiaSvolto(
-                                          scheda,
-                                          listaAllenamentiSelezionati[
-                                              indexAllenamenti],
-                                          selectedDay.toDate())
-                                      ? ElevatedButton.icon(
-                                          style: ButtonStyle(
-                                              elevation:
-                                                  const MaterialStatePropertyAll(1),
-                                              backgroundColor:
-                                                  const MaterialStatePropertyAll(
-                                                      Colors.red),
-                                              shape: MaterialStateProperty.all<
-                                                      RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
-                                              ))),
-                                          icon: const Icon(
-                                              Icons.sports_esports_rounded),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        sedutaAllenamento(
-                                                            allenamento:
-                                                                listaAllenamentiSelezionati[
-                                                                    indexAllenamenti],
-                                                            scheda: scheda,
-                                                            dataSelezionata:
-                                                                selectedDay)));
-                                          },
-                                          label: const Text(
-                                            "Allenamento",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      : ElevatedButton.icon(
-                                          style: ButtonStyle(
-                                              elevation:
-                                                  const MaterialStatePropertyAll(1),
-                                              backgroundColor:
-                                                  MaterialStatePropertyAll(
-                                                      Colors.blue.shade700),
-                                              shape: MaterialStateProperty.all<
-                                                      RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
-                                              ))),
-                                          icon: const Icon(Icons.edit_document),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        sedutaAllenamento(
-                                                            allenamento:
-                                                                listaAllenamentiSelezionati[
-                                                                    indexAllenamenti],
-                                                            scheda: scheda,
-                                                            dataSelezionata:
-                                                                selectedDay)));
-                                          },
-                                          label: const Text(
-                                            "Resoconto",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                        );
-                      },
-                    );
-                    */
                   } else {
                     // schermata , al posto della lista, che mostra la giornata di riposo, di default se non ho assegnato la giornata a nessun allenamento
 
