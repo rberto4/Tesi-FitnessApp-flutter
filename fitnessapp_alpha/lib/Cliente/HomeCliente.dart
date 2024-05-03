@@ -2,7 +2,6 @@
 
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
-import 'package:app_fitness_test_2/Cliente/svolgimentoAllenamento.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
@@ -267,7 +266,6 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
               });
             },
           ),
-          
           StreamBuilder(
               stream: _dbs.getSchedaCorrente(),
               builder: (context, snapshot) {
@@ -294,8 +292,6 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                       itemBuilder: (context, indexAllenamenti) {
                         return Column(
                           children: [
-
-                            
                             ListTile(
                               title: Text(
                                 listaAllenamentiSelezionati[indexAllenamenti]
@@ -321,43 +317,34 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 ),
                               ),
                             ),
-
-                            /*
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (context, indexEsercizi) {
-                                return Card(
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Card(
+                                    child: SizedBox(
+                                      width: double.infinity,
                                       child: DataTable(
-                                          dividerThickness: 1,
-                                          columnSpacing: 16,
-                                          columns: const [
-                                           
-                                            DataColumn(label: Text("Nome")),
-                                            DataColumn(label: Text("Serie")),
-
-                                          ],
-                                          rows: [],
-                                          ),
+                                        dividerThickness: 1,
+                                        columnSpacing: 16,
+                                        columns: const [
+                                          DataColumn(label: Text("N°")),
+                                          DataColumn(label: Text("Esercizio")),
+                                          DataColumn(label: Text("Serie")),
+                                          DataColumn(
+                                              label: Text("Ripetizioni")),
+                                        ],
+                                        rows: getRowTabellaAllenamento(
+                                            indexAllenamenti,
+                                            listaAllenamentiSelezionati),
+                                      ),
                                     ),
-                                  ),
-                                ); 
-                              },
-                            ),
-                            */
-                            
+                                  
+                                
+                              ),
+                        ),
                           ],
-                          
                         );
                       },
                     );
-
                   } else {
                     // schermata , al posto della lista, che mostra la giornata di riposo, di default se non ho assegnato la giornata a nessun allenamento
 
@@ -455,6 +442,24 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
     }
 
     return check;
+  }
+
+  List<DataRow> getRowTabellaAllenamento(
+      int indexAllenamenti, List<Allenamento> listaAllenamentiSelezionati) {
+    List<DataRow> list = List.empty(growable: true);
+    int index = 1;
+    for (var a
+        in listaAllenamentiSelezionati[indexAllenamenti].listaEsercizi!) {
+      list.add(DataRow(cells: [
+        DataCell(Text("#$index")),
+        DataCell(Text(a.nomeEsercizio!)),
+        DataCell(Text(a.serieEsercizio!)),
+        DataCell(Text(a.ripetizioniEsercizio!.first)),
+      ]));
+      index++;
+    }
+
+    return list;
   }
 }
 
