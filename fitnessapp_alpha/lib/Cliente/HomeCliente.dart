@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, no_leading_underscores_for_local_identifiers, duplicate_ignore, file_names
 
+import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
@@ -46,6 +47,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
       const paginaSchedaCorrente(),
       const paginaProgressi(),
       const paginaArchivioSchede(),
+      const paginaChat()
     ];
     super.initState();
   }
@@ -142,54 +144,55 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         // bottom nav bar
         floatingActionButton: Visibility(
           visible: _isVisible,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 300, maxWidth: 300),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(48),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor,
-                    spreadRadius: 1,
-                    blurRadius: 48.0,
-                  ),
-                ],
-              ),
-              child: GNav(
-                rippleColor: Theme.of(context).focusColor,
-                hoverColor: Theme.of(context).hoverColor,
-                gap: 6,
-                activeColor: Colors.white,
-                iconSize: 24,
-                tabMargin: const EdgeInsets.all(8),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-                duration: const Duration(milliseconds: 500),
-                tabBackgroundColor: Theme.of(context).primaryColor,
-                color: Colors.grey,
-                tabs: const [
-                  GButton(
-                    icon: Icons.calendar_month,
-                    text: 'Calendario',
-                  ),
-                  GButton(
-                    icon: Icons.bar_chart_rounded,
-                    text: 'Progressi',
-                  ),
-                  GButton(
-                    icon: Icons.folder,
-                    text: 'Archivio',
-                  ),
-                ],
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-              ),
+          child: Container(
+            width: MediaQuery.of(context).size.width - 64,
+            constraints: const BoxConstraints(maxWidth: 400),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(48),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).shadowColor,
+                  spreadRadius: 1,
+                  blurRadius: 48.0,
+                ),
+              ],
+            ),
+            child: GNav(
+              rippleColor: Theme.of(context).focusColor,
+              hoverColor: Theme.of(context).hoverColor,
+              gap: 4,
+              activeColor: Colors.white,
+              iconSize: 24,
+              tabMargin: const EdgeInsets.all(4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+              duration: const Duration(milliseconds: 500),
+              tabBackgroundColor: Theme.of(context).primaryColor,
+              color: Colors.grey,
+              tabs: const [
+                GButton(
+                  icon: Icons.calendar_month,
+                  text: 'Calendario',
+                ),
+                GButton(
+                  icon: Icons.bar_chart_rounded,
+                  text: 'Progressi',
+                ),
+                GButton(
+                  icon: Icons.folder,
+                  text: 'Archivio',
+                ),
+                GButton(
+                  icon: Icons.chat_rounded,
+                  text: 'Chat',
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
             ),
           ),
         ),
@@ -317,30 +320,28 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 ),
                               ),
                             ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Card(
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      child: DataTable(
-                                        dividerThickness: 1,
-                                        columnSpacing: 16,
-                                        columns: const [
-                                          DataColumn(label: Text("N°")),
-                                          DataColumn(label: Text("Esercizio")),
-                                          DataColumn(label: Text("Serie")),
-                                          DataColumn(
-                                              label: Text("Ripetizioni")),
-                                        ],
-                                        rows: getRowTabellaAllenamento(
-                                            indexAllenamenti,
-                                            listaAllenamentiSelezionati),
-                                      ),
-                                    ),
-                                  
-                                
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: Card(
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: DataTable(
+                                    dividerThickness: 1,
+                                    columnSpacing: 16,
+                                    columns: const [
+                                      DataColumn(label: Text("N°")),
+                                      DataColumn(label: Text("Esercizio")),
+                                      DataColumn(label: Text("Serie")),
+                                      DataColumn(label: Text("Ripetizioni")),
+                                    ],
+                                    rows: getRowTabellaAllenamento(
+                                        indexAllenamenti,
+                                        listaAllenamentiSelezionati),
+                                  ),
+                                ),
                               ),
-                        ),
+                            ),
                           ],
                         );
                       },
@@ -730,7 +731,72 @@ class paginaProgressiState extends State<paginaProgressi> {
     }
   }
 }
+// pagina chat
 
+class paginaChat extends StatefulWidget {
+  const paginaChat({super.key});
+
+  @override
+  State<paginaChat> createState() => _paginaChatState();
+}
+
+class _paginaChatState extends State<paginaChat> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          ListTile(
+            title: Text(
+              "Messaggi",
+              style: TextStyle(fontSize: 24),
+            ),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          StreamBuilder(
+            stream: _dbs.getStreamChat(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => conversazioneChat()),
+                        );
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          child: Text(
+                            "AP",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        title: Text(
+                          "Andrea Presti",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Text("");
+              }
+            },
+          )
+        ],
+      ),
+    );
+  }
+}
 // pagina archivio
 
 class paginaArchivioSchede extends StatefulWidget {
