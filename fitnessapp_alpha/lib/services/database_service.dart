@@ -37,6 +37,10 @@ class DatabaseService {
     return COLLEZIONE_SCHEDE;
   }
 
+  String getCollezioneChat() {
+    return COLLEZIONE_CHAT;
+  }
+
   FirebaseAuth getAuth() {
     return _auth;
   }
@@ -111,7 +115,7 @@ class DatabaseService {
     return scheda;
   }
 
-  Stream<QuerySnapshot> getStreamChat() {
+  Stream<QuerySnapshot> getStreamElencoChat() {
     return _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
@@ -124,11 +128,12 @@ class DatabaseService {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getStreamConversazione() {
+  Stream<DocumentSnapshot<Chat>> getStreamConversazione(String doc) {
     return _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
-        .collection(COLLEZIONE_SCHEDE)
+        .collection(COLLEZIONE_CHAT)
+        .doc(doc)
         .withConverter<Chat>(
           fromFirestore: (snapshot, options) =>
               Chat.fromFirestore(snapshot.data()!),

@@ -756,7 +756,7 @@ class _paginaChatState extends State<paginaChat> {
             height: 16,
           ),
           StreamBuilder(
-            stream: _dbs.getStreamChat(),
+            stream: _dbs.getStreamElencoChat(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
@@ -776,7 +776,8 @@ class _paginaChatState extends State<paginaChat> {
                           child: Text(
                             "AP",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                         title: Text(

@@ -2,26 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Chat {
   List<Messaggio>? listaMessaggi;
-  String? destinatarioUid;
 
   Chat({
     required this.listaMessaggi,
-    required this.destinatarioUid,
   });
 
   factory Chat.fromFirestore(Map<String, dynamic> json) {
-    return Chat(
-      listaMessaggi: json['listaMessaggi'] is Iterable
-          ? List.from(json['listaMessaggi'])
-          : null,
-      destinatarioUid: json['destinatarioUid'],
-    );
+    var listaMessaggi = json['listaMessaggi'] as List;
+    List<Messaggio> listaMessagiLocal =
+        listaMessaggi.map((i) => Messaggio.fromFirestore(i)).toList();
+
+    return Chat(listaMessaggi: listaMessagiLocal);
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (listaMessaggi != null) "listaMessaggi": listaMessaggi,
-      if (destinatarioUid != null) "destinatarioUid": destinatarioUid,
+      if (listaMessaggi != null)
+        "listaMessaggi": listaMessaggi?.map((e) => e.toFirestore()),
     };
   }
 }
@@ -29,16 +26,19 @@ class Chat {
 class Messaggio {
   String? testo;
   Timestamp? dataInvio;
+  String? destinatarioUid;
 
   Messaggio({
     required this.testo,
     required this.dataInvio,
+    required this.destinatarioUid,
   });
 
   factory Messaggio.fromFirestore(Map<String, dynamic> json) {
     return Messaggio(
       testo: json['testo'],
       dataInvio: json['dataInvio'],
+      destinatarioUid: json['destinatarioUid'],
     );
   }
 
@@ -46,6 +46,7 @@ class Messaggio {
     return {
       if (testo != null) "testo": testo,
       if (dataInvio != null) "dataInvio": dataInvio,
+      if (destinatarioUid != null) "destinatarioUid": destinatarioUid,
     };
   }
 }
