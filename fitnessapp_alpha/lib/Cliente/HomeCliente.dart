@@ -784,6 +784,7 @@ class _paginaChatState extends State<paginaChat> {
                           "Andrea Presti",
                           style: TextStyle(fontSize: 18),
                         ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded),
                       ),
                     );
                   },
