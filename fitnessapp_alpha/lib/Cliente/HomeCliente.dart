@@ -780,6 +780,9 @@ class _paginaChatState extends State<paginaChat> {
                     return GestureDetector(
                       onTap: () async {
                         
+
+                        // DA MODIFICARE LA CREAZIONE DEL DOCUMENTO A LIVELLO DI COACH
+                        
                         if (await _dbs
                             .getInstanceDb()
                             .collection(_dbs.getCollezioneUtenti())

@@ -72,6 +72,7 @@ class _conversazioneChatState extends State<conversazioneChat> {
 
                                 ? Alignment.centerLeft
                                 : Alignment.centerRight,
+                                
                             child: Column(
                               mainAxisAlignment:
                                   lista_messaggi[index].destinatarioUid ==
@@ -133,7 +134,7 @@ class _conversazioneChatState extends State<conversazioneChat> {
                                                 color: (lista_messaggi[index]
                                                             .destinatarioUid ==
                                                         _dbs
-                                                            .getAuth()
+                                                            .getAuth()                                   
                                                             .currentUser!
                                                             .uid)
                                                     ? null
@@ -264,8 +265,8 @@ class _conversazioneChatState extends State<conversazioneChat> {
         .collection(_dbs.getCollezioneChat())
         .doc(uid)
         .set(chat!.toFirestore(), SetOptions(mergeFields: ['listaMessaggi']));
+
     _textEditingController.clear();
   }
 
-  void creaDocumento() {}
 }
