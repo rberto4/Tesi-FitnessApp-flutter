@@ -52,8 +52,9 @@ class DatabaseService {
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_user_loggato)
         .withConverter<UserModel>(
-          fromFirestore: UserModel.fromFirestore,
-          toFirestore: (um, _) => um.toFirestore(),
+          fromFirestore: (snapshot, options) =>
+              UserModel.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
         )
         .snapshots();
   }
@@ -139,6 +140,20 @@ class DatabaseService {
               Chat.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
+        .snapshots();
+  }
+
+  // ottengo una lista di Coach
+  Stream<QuerySnapshot<CoachModel>> getListaContatti() {
+    return _instance
+        .collection(COLLEZIONE_COACHES)
+        .withConverter<CoachModel>(
+          fromFirestore: (snapshot, options) =>
+              CoachModel.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
+        .where("listaUidClientiSeguiti",
+            arrayContains: getAuth().currentUser!.uid)
         .snapshots();
   }
 

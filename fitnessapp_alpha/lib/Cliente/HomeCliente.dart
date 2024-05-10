@@ -5,7 +5,9 @@ import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/services/ChatModel.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
+import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
@@ -741,6 +743,8 @@ class paginaChat extends StatefulWidget {
 }
 
 class _paginaChatState extends State<paginaChat> {
+  List<CoachModel> lista_contatti = List.empty(growable: true);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -756,19 +760,49 @@ class _paginaChatState extends State<paginaChat> {
             height: 16,
           ),
           StreamBuilder(
-            stream: _dbs.getStreamElencoChat(),
+            stream: _dbs.getListaContatti(),
             builder: (context, snapshot) {
+              lista_contatti.clear();
+              
               if (snapshot.hasData) {
+                for (var a in snapshot.data!.docs) {
+                  lista_contatti.add(CoachModel(
+                      listaUidClientiSeguiti: null,
+                      username: a.data().username,
+                      email: a.data().email,
+                      uid: a.id));
+                }
+
                 return ListView.builder(
                   shrinkWrap: true,
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount: lista_contatti.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+                        
+                        if (await _dbs
+                            .getInstanceDb()
+                            .collection(_dbs.getCollezioneUtenti())
+                            .doc(_dbs.getAuth().currentUser!.uid)
+                            .collection(_dbs.getCollezioneChat())
+                            .doc(lista_contatti[index].uid!)
+                            .get()
+                            .then((value) => !value.exists)) {
+                          _dbs
+                              .getInstanceDb()
+                              .collection(_dbs.getCollezioneUtenti())
+                              .doc(_dbs.getAuth().currentUser!.uid)
+                              .collection(_dbs.getCollezioneChat())
+                              .doc(lista_contatti[index].uid!)
+                              .set(Chat(listaMessaggi: List.empty())
+                                  .toFirestore());
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => conversazioneChat()),
+                              builder: (context) => conversazioneChat(
+                                  coachModel: lista_contatti[index])),
                         );
                       },
                       child: ListTile(
@@ -780,8 +814,9 @@ class _paginaChatState extends State<paginaChat> {
                             ),
                           ),
                         ),
+                        subtitle: Text(lista_contatti[index].email!),
                         title: Text(
-                          "Andrea Presti",
+                          lista_contatti[index].username!,
                           style: TextStyle(fontSize: 18),
                         ),
                         trailing: Icon(Icons.arrow_forward_ios_rounded),
