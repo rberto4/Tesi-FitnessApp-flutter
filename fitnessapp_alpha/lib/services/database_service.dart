@@ -157,6 +157,19 @@ class DatabaseService {
         .snapshots();
   }
 
+// lista di tutti i clienti del coach
+  Stream<DocumentSnapshot<CoachModel>> getListaClientiMiei() {
+    return _instance
+        .collection(COLLEZIONE_COACHES)
+        .doc(uid_user_loggato)
+        .withConverter<CoachModel>(
+          fromFirestore: (snapshot, options) =>
+              CoachModel.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
+        .snapshots();
+  }
+
   Future<DocumentSnapshot> checkIsCoach() async {
     return await _instance
         .collection(COLLEZIONE_COACHES)
