@@ -4,9 +4,7 @@ import 'dart:async';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class sedutaAllenamento extends StatefulWidget {
@@ -64,7 +62,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     _timer = Timer(const Duration(milliseconds: 1), () {});
     tempoRimasto =
         _allenamento.listaEsercizi![esercizioCorrente].recuperoEsercizio!;
-        _timer.cancel();
+    _timer.cancel();
     super.initState();
   }
 
@@ -116,7 +114,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       1
                           ? Flexible(
                               child: SizedBox(
-                                height: 64,
+                                height: 48,
+                                width: double.infinity,
                                 child: ElevatedButton.icon(
                                   icon: const Icon(Icons.sports_score_rounded),
                                   onPressed: () {
@@ -151,29 +150,29 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                   height: 70,
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    
-                                    icon: !_timer.isActive?
-                                    const Icon(Icons.timer_rounded): const Icon(null),
+                                    icon: !_timer.isActive
+                                        ? const Icon(Icons.timer_rounded)
+                                        : const Icon(null),
                                     onPressed: () {
                                       if (!_timer.isActive) {
                                         startTimer();
                                       }
                                     },
-                                    label: !_timer.isActive ?
-                                     Text(
-                                      "Avvia recupero - ${tempoRimasto}s",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ):
-                                    Text(
-                                      " ${tempoRimasto}s  ",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 28,
-                                      ),
-                                    ),
+                                    label: !_timer.isActive
+                                        ? Text(
+                                            "Avvia recupero - ${tempoRimasto}s",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                            ),
+                                          )
+                                        : Text(
+                                            " ${tempoRimasto}s  ",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 28,
+                                            ),
+                                          ),
                                     style: ButtonStyle(
                                         elevation:
                                             const MaterialStatePropertyAll(0),
@@ -197,12 +196,12 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                               ),
                             ),
 
-                            // pulsante per skippare il timer
+                      // pulsante per skippare il timer
 
                       Visibility(
                           visible: _timer.isActive,
                           child: FloatingActionButton(
-                            backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: Theme.of(context).primaryColor,
                               heroTag: "meno_15s",
                               onPressed: () {
                                 _timer.cancel();
@@ -210,7 +209,10 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                   proseguiScheda();
                                 });
                               },
-                              child: const Icon(Icons.fast_forward_rounded, color: Colors.white,)))
+                              child: const Icon(
+                                Icons.fast_forward_rounded,
+                                color: Colors.white,
+                              )))
                     ]),
               ),
         resizeToAvoidBottomInset: false,

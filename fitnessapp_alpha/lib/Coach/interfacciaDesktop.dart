@@ -2,10 +2,9 @@
 
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class HomeDesktop extends StatefulWidget {
   const HomeDesktop({super.key});
@@ -30,6 +29,7 @@ class HomeDesktop extends StatefulWidget {
 class _HomeDesktopState extends State<HomeDesktop> {
   int _indexDrawer = 0;
   DatabaseService _dbs = DatabaseService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +48,8 @@ class _HomeDesktopState extends State<HomeDesktop> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(32.0),
+                    const Padding(
+                      padding: EdgeInsets.all(32.0),
                       child: Text(
                         "Menù",
                         style: TextStyle(fontSize: 24),
@@ -75,13 +75,13 @@ class _HomeDesktopState extends State<HomeDesktop> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   StreamBuilder(
-                    stream: _dbs.getListaClientiMiei(),
+                    stream: _dbs.getStreamCoach(),
                     builder: (context, snapshot) {
-                      List lista_clienti = List.empty(growable: true);
-                      for (var a
-                          in snapshot.data!.data()!.listaUidClientiSeguiti!) {
-                        lista_clienti.add(a);
-                      }
+                      List<ClienteModel> lista_clienti =
+                          List.empty(growable: true);
+                      lista_clienti =
+                          snapshot.data!.data()!.listaClientiSeguiti!;
+
                       if (snapshot.hasData) {
                         return Expanded(
                           child: ListView.builder(
@@ -95,7 +95,7 @@ class _HomeDesktopState extends State<HomeDesktop> {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 title: Text(
-                                  lista_clienti[index],
+                                  lista_clienti[index].email!,
                                   style: TextStyle(fontSize: 12),
                                 ),
                               );

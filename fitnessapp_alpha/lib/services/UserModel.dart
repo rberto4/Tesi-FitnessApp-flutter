@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  
   String? username;
   String? email;
   String? uid;
@@ -26,36 +25,49 @@ class UserModel {
 }
 
 class CoachModel extends UserModel {
-
-  List<String>? listaUidClientiSeguiti;
+  List<ClienteModel>? listaClientiSeguiti;
 
   CoachModel(
-      {required this.listaUidClientiSeguiti,
+      {required this.listaClientiSeguiti,
       required super.username,
       required super.email,
-      super.uid
-      });
+      super.uid});
 
   factory CoachModel.fromFirestore(Map<String, dynamic> json) {
+    var listaClientiSeguiti = json['listaClientiSeguiti'] as List;
+    List<ClienteModel> listaClientiSeguitiLocal =
+        listaClientiSeguiti.map((i) => ClienteModel.fromFirestore(i)).toList();
+
     return CoachModel(
-      username: json['username'],
-      email: json['email'],
-      listaUidClientiSeguiti: json['listaUidClientiSeguiti'] is Iterable
-          ? List.from(json['listaUidClientiSeguiti'])
-          : null,
-    );
+        username: json['username'],
+        email: json['email'],
+        listaClientiSeguiti: listaClientiSeguitiLocal);
   }
-
-
 
   Map<String, Object?> toFirestore() {
     return {
       if (username != null) "username": username,
       if (email != null) "email": email,
-      if (listaUidClientiSeguiti != null)
-        "listaUidClientiSeguiti": listaUidClientiSeguiti,
+      if (listaClientiSeguiti != null)
+        "listaClientiSeguiti": listaClientiSeguiti,
     };
   }
+}
 
+class ClienteModel extends UserModel {
+  ClienteModel({required super.username, required super.email, super.uid});
 
+  factory ClienteModel.fromFirestore(Map<String, dynamic> json) {
+    return ClienteModel(
+      username: json['username'],
+      email: json['email'],
+    );
+  }
+
+  Map<String, Object?> toFirestore() {
+    return {
+      if (username != null) "username": username,
+      if (email != null) "email": email,
+    };
+  }
 }

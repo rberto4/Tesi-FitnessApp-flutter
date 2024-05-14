@@ -3,6 +3,7 @@
 import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
+import 'package:app_fitness_test_2/Cliente/svolgimentoAllenamento.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/ChatModel.dart';
@@ -344,6 +345,55 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 ),
                               ),
                             ),
+                            // pulsante di avvio allenamento / visualizza allenamento passato
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 48,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    )),
+                                    backgroundColor: MaterialStatePropertyAll(
+                                        allenamentoGiaSvolto(
+                                                scheda,
+                                                listaAllenamentiSelezionati[
+                                                    indexAllenamenti],
+                                                selectedDay.toDate())
+                                            ? Colors.red
+                                            : Colors.blue),
+                                  ),
+                                  label: Text(
+                                    allenamentoGiaSvolto(
+                                            scheda,
+                                            listaAllenamentiSelezionati[
+                                                indexAllenamenti],
+                                            selectedDay.toDate())
+                                        ? "Allenamento"
+                                        : "Resoconto allenamento",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  icon: Icon(Icons.flag_rounded),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => sedutaAllenamento(
+                                                allenamento:
+                                                    listaAllenamentiSelezionati[
+                                                        indexAllenamenti],
+                                                scheda: scheda,
+                                                dataSelezionata: selectedDay)));
+                                  },
+                                ),
+                              ),
+                            ),
                           ],
                         );
                       },
@@ -432,6 +482,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
     }
     return list;
   }
+
+  // metodo per controllare se un allenamento è presente nella lista degli allenamenti gia svolti, nel giorno selezionato
 
   bool allenamentoGiaSvolto(Scheda s, Allenamento a, DateTime d) {
     bool check = true;
@@ -763,11 +815,11 @@ class _paginaChatState extends State<paginaChat> {
             stream: _dbs.getListaContatti(),
             builder: (context, snapshot) {
               lista_contatti.clear();
-              
+
               if (snapshot.hasData) {
                 for (var a in snapshot.data!.docs) {
                   lista_contatti.add(CoachModel(
-                      listaUidClientiSeguiti: null,
+                      listaClientiSeguiti: null,
                       username: a.data().username,
                       email: a.data().email,
                       uid: a.id));
@@ -779,10 +831,8 @@ class _paginaChatState extends State<paginaChat> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () async {
-                        
-
                         // DA MODIFICARE LA CREAZIONE DEL DOCUMENTO A LIVELLO DI COACH
-                        
+
                         if (await _dbs
                             .getInstanceDb()
                             .collection(_dbs.getCollezioneUtenti())

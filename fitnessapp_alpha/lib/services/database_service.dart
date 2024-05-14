@@ -152,13 +152,12 @@ class DatabaseService {
               CoachModel.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
-        .where("listaUidClientiSeguiti",
-            arrayContains: getAuth().currentUser!.uid)
         .snapshots();
   }
 
-// lista di tutti i clienti del coach
-  Stream<DocumentSnapshot<CoachModel>> getListaClientiMiei() {
+// lista di tutti i dati dei coach - utile per lista tutti i clienti
+
+  Stream<DocumentSnapshot<CoachModel>> getStreamCoach() {
     return _instance
         .collection(COLLEZIONE_COACHES)
         .doc(uid_user_loggato)
