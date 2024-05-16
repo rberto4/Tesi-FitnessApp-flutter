@@ -70,7 +70,7 @@ class _conversazioneChatState extends State<conversazioneChat> {
                 ? _dbs.getStreamConversazione(
                     uidDestinatarioCLiente, _dbs.uid_user_loggato)
                 : _dbs.getStreamConversazione(
-                    coachModel.uid!, _dbs.uid_user_loggato),
+                    _dbs.uid_user_loggato, coachModel.uid!),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 chat = snapshot.data!.data();
@@ -138,7 +138,7 @@ class _conversazioneChatState extends State<conversazioneChat> {
                                               1.5,
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(24.0),
+                                      padding: const EdgeInsets.all(18.0),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,

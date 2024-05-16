@@ -441,6 +441,10 @@ class _paginaClienteState extends State<paginaCliente> {
     super.initState();
   }
 
+  void ricaricaStato() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -668,13 +672,7 @@ class _paginaClienteState extends State<paginaCliente> {
 
   Widget schedeCliente() {
     return Column(
-      children: [
-        CircleAvatar(
-          radius: 64,
-          child: Text("RB"),
-        ),
-        Text(coach.listaClientiSeguiti![_indexCliente].username!)
-      ],
+      children: [],
     );
   }
 }
