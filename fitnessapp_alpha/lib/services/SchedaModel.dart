@@ -103,6 +103,7 @@ class Esercizio {
   final List<String>? ripetizioniEsercizio;
   final List<String>? carichiEsercizio;
   final int? recuperoEsercizio;
+  //final String? noteEsercizio;
 
   Esercizio({
     required this.nomeEsercizio,
@@ -110,6 +111,7 @@ class Esercizio {
     required this.ripetizioniEsercizio,
     required this.carichiEsercizio,
     required this.recuperoEsercizio,
+    //required this.noteEsercizio,
   });
 
   factory Esercizio.fromFirestore(Map<String, dynamic> json) {
@@ -138,6 +140,37 @@ class Esercizio {
   }
 }
 
+// Esercizio di tipo pesistica con gli attributi da utilizzare 
+/*
+class EsercizioPesistica extends Esercizio {
+  final String? serieEsercizio;
+  final List<String>? ripetizioniEsercizio;
+  final List<String>? carichiEsercizio;
+  final int? recuperoEsercizio;
+
+  EsercizioPesistica({
+    required super.nomeEsercizio,
+    required super.noteEsercizio,
+    required this.serieEsercizio,
+    required this.ripetizioniEsercizio,
+    required this.carichiEsercizio,
+    required this.recuperoEsercizio,
+  })
+}
+*/
+
+// Esercizio di tipo cardio con gli attributi nuovi da utilizzare
+/*
+class EsercizioCardio extends Esercizio {
+  final  int? durata;
+
+  EsercizioCardio({
+    required super.nomeEsercizio,
+    required super.noteEsercizio,
+    required this.durata,
+  })
+}
+*/
 
 /*
 class EsercizioSvolto extends Esercizio {
