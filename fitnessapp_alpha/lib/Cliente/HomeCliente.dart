@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, non_constant_identifier_names, no_leading_underscores_for_local_identifiers, duplicate_ignore, file_names
+// ignore_for_file: camel_case_types, non_constant_identifier_names, no_leading_underscores_for_local_identifiers, duplicate_ignore, file_names, prefer_const_constructors, use_build_context_synchronously
 
 import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
@@ -819,6 +819,7 @@ class _paginaChatState extends State<paginaChat> {
               if (snapshot.hasData) {
                 for (var a in snapshot.data!.docs) {
                   lista_contatti.add(CoachModel(
+                      listaEserciziStandard: null,
                       listaClientiSeguiti: null,
                       username: a.data().username,
                       email: a.data().email,
@@ -855,7 +856,10 @@ class _paginaChatState extends State<paginaChat> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => conversazioneChat(
-                                  coachModel: lista_contatti[index])),
+                                    coachModel: lista_contatti[index],
+                                    mittenteCoach: false,
+                                    uidDestinatarioCLiente: "",
+                                  )),
                         );
                       },
                       child: ListTile(

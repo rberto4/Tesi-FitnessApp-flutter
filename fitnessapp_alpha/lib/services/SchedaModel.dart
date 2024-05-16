@@ -23,7 +23,6 @@ class Scheda {
   });
 
   factory Scheda.fromFirestore(Map<String, dynamic> json) {
-
     var allenamentiScheda = json['allenamentiScheda'] as List;
     List<Allenamento> allenamentiSchedaLocal =
         allenamentiScheda.map((i) => Allenamento.fromFirestore(i)).toList();
@@ -37,8 +36,7 @@ class Scheda {
         nomeScheda: json['nomeScheda'],
         idScheda: json['idScheda'],
         allenamentiScheda: allenamentiSchedaLocal,
-        allenamentiSvolti: allenamentiSvoltiLocal
-        );
+        allenamentiSvolti: allenamentiSvoltiLocal);
   }
 
   Map<String, Object?> toFirestore() {
@@ -60,7 +58,7 @@ class Allenamento {
   final List<Esercizio>? listaEsercizi;
   final List<Timestamp>? giorniAssegnati;
   final String? noteAllenamento;
-  late  String? feedbackAllenamento;
+  late String? feedbackAllenamento;
 
   // super set
   Allenamento(

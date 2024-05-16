@@ -129,12 +129,15 @@ class DatabaseService {
         .snapshots();
   }
 
-  Stream<DocumentSnapshot<Chat>> getStreamConversazione(String doc) {
+  Stream<DocumentSnapshot<Chat>> getStreamConversazione(
+      String uid_cliente, String uid_coach) {
+    print(uid_cliente);
+    print(uid_coach);
     return _instance
         .collection(COLLEZIONE_UTENTI)
-        .doc(uid_user_loggato)
+        .doc(uid_cliente)
         .collection(COLLEZIONE_CHAT)
-        .doc(doc)
+        .doc(uid_coach)
         .withConverter<Chat>(
           fromFirestore: (snapshot, options) =>
               Chat.fromFirestore(snapshot.data()!),
@@ -155,7 +158,7 @@ class DatabaseService {
         .snapshots();
   }
 
-// lista di tutti i dati dei coach - utile per lista tutti i clienti
+// lista di tutti i dati dei coach - utile per lista tutti i clienti o di esercizi standard creati dal coach
 
   Stream<DocumentSnapshot<CoachModel>> getStreamCoach() {
     return _instance
@@ -167,6 +170,21 @@ class DatabaseService {
           toFirestore: (value, options) => value.toFirestore(),
         )
         .snapshots();
+  }
+
+  Future<CoachModel> getDataCoach() async {
+    return _instance
+        .collection(COLLEZIONE_COACHES)
+        .doc(uid_user_loggato)
+        .withConverter<CoachModel>(
+          fromFirestore: (snapshot, options) =>
+              CoachModel.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
+        .get()
+        .then((value) {
+      return value.data()!;
+    });
   }
 
   Future<DocumentSnapshot> checkIsCoach() async {
