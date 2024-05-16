@@ -131,8 +131,6 @@ class DatabaseService {
 
   Stream<DocumentSnapshot<Chat>> getStreamConversazione(
       String uid_cliente, String uid_coach) {
-    print(uid_cliente);
-    print(uid_coach);
     return _instance
         .collection(COLLEZIONE_UTENTI)
         .doc(uid_cliente)

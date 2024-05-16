@@ -4,6 +4,7 @@ import 'package:app_fitness_test_2/services/ChatModel.dart';
 import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -80,6 +81,8 @@ class _conversazioneChatState extends State<conversazioneChat> {
                 if (lista_messaggi.isNotEmpty) {
                   return Expanded(
                     child: ListView.builder(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
                       reverse: true,
                       shrinkWrap: true,
                       itemCount: lista_messaggi.length,
@@ -227,49 +230,52 @@ class _conversazioneChatState extends State<conversazioneChat> {
               }
             },
           ),
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    maxLines: 5,
-                    minLines: 1,
-                    decoration: const InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, bottom: 16, top: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textEditingController,
+                      maxLines: 5,
+                      minLines: 1,
+                      decoration: const InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        filled: true,
-                        hintText: "Scrivi un messaggio..."),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          filled: true,
+                          hintText: "Scrivi un messaggio..."),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                FloatingActionButton(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    _textEditingController.text.isNotEmpty
-                        ? inviaMessaggio(
-                            _textEditingController.text,
-                            !mittenteCoach
-                                ? coachModel.uid!
-                                : uidDestinatarioCLiente,
-                            Timestamp.now())
-                        : null;
-                  },
-                  child: const Icon(Icons.send_rounded),
-                )
-              ],
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  FloatingActionButton(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      _textEditingController.text.isNotEmpty
+                          ? inviaMessaggio(
+                              _textEditingController.text,
+                              !mittenteCoach
+                                  ? coachModel.uid!
+                                  : uidDestinatarioCLiente,
+                              Timestamp.now())
+                          : null;
+                    },
+                    child: const Icon(Icons.send_rounded),
+                  )
+                ],
+              ),
             ),
           )
         ],
