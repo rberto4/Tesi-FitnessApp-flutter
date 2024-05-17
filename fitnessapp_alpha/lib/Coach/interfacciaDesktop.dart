@@ -1,15 +1,12 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types
 
 import 'package:app_fitness_test_2/Cliente/conversazione.dart';
-import 'package:app_fitness_test_2/autenticazione/login.dart';
-import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/ChatModel.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class HomeDesktop extends StatefulWidget {
@@ -54,7 +51,7 @@ class _HomeDesktopState extends State<HomeDesktop> {
                   child: const CircularProgressIndicator(),
                 );
               } else if (!snapshot.hasData) {
-                return const paginaPrincipale();
+                return paginaPrincipale();
               } else {
                 return const Center(
                     child: Text(
@@ -85,9 +82,13 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
     listaPagine = [
       const paginaHome(),
       const paginaEsercizi(),
-      const paginaCliente(),
+      paginaCliente(),
     ];
     super.initState();
+  }
+
+  void notificaRicaricaStato() {
+    setState(() {});
   }
 
   @override
@@ -102,21 +103,18 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
           visible: _menuVisibility,
           child: SizedBox(
             height: double.infinity,
-            width: _indexDrawer == 2
-                ? MediaQuery.of(context).size.width * (2 / 8)
-                : MediaQuery.of(context).size.width * (1 / 8),
             child: Card(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.all(24.0),
+                        padding: EdgeInsets.all(18.0),
                         child: Text(
                           "Menù",
                           style: TextStyle(fontSize: 24),
@@ -128,7 +126,172 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                       tileDrawer("C L I E N T I", 2, Icons.people_rounded),
                     ],
                   ),
-                  _indexDrawer == 2 ? const ListaLateraleClienti() : SizedBox()
+                  Visibility(
+                    visible: _indexDrawer == 2,
+                    child: SizedBox(
+                      height: double.infinity,
+                      width: 250,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          TextFormField(
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(),
+                            maxLines: 1,
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(16),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(16.0),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16.0)),
+                                ),
+                                filled: true,
+                                alignLabelWithHint: true,
+                                hintText: "Cerca clienti...",
+                                hintStyle: TextStyle(),
+                                suffixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: Icon(
+                                    Icons.search,
+                                  ),
+                                )),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: coach.listaClientiSeguiti!.length,
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _indexCliente = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: _indexCliente == index
+                                              ? Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.3)
+                                              : null),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Icon(
+                                              Icons.person_rounded,
+                                              color: _indexCliente == index
+                                                  ? null
+                                                  : Theme.of(context)
+                                                      .hintColor
+                                                      .withOpacity(0.3),
+                                            ),
+                                            SizedBox(
+                                              width: 8,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  coach
+                                                      .listaClientiSeguiti![
+                                                          index]
+                                                      .username!,
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: _indexCliente !=
+                                                              index
+                                                          ? Theme.of(context)
+                                                              .hintColor
+                                                          : null),
+                                                ),
+                                                Text(
+                                                  coach
+                                                      .listaClientiSeguiti![
+                                                          index]
+                                                      .email!,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
+                                                      color: _indexCliente ==
+                                                              index
+                                                          ? null
+                                                          : Theme.of(context)
+                                                              .hintColor),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          SizedBox(
+                            width: 250,
+                            height: 48,
+                            //width: MediaQuery.of(context).size.width * (1.5 / 8),
+                            child: ElevatedButton.icon(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  )),
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      Theme.of(context).primaryColor)),
+                              label: const Text(
+                                "Nuovo cliente",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              icon: const Icon(Icons.add_rounded),
+                              onPressed: () {},
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 16,
+                    height: double.infinity,
+                  )
                 ],
               ),
             ),
@@ -144,10 +307,11 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Flexible(
         child: SizedBox(
-          height: 36,
+          width: 180,
+          height: 48,
           child: ElevatedButton.icon(
             style: ButtonStyle(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.center,
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
@@ -205,217 +369,12 @@ class paginaEsercizi extends StatefulWidget {
 class _paginaEserciziState extends State<paginaEsercizi> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: double.infinity,
-        width: MediaQuery.of(context).size.width * (7 / 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // search bar
-            const SizedBox(
-              height: 16,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * (2 / 8),
-              child: TextFormField(
-                textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 24),
-                maxLines: 1,
-                decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(16),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(48.0),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(48.0)),
-                    ),
-                    filled: true,
-                    alignLabelWithHint: true,
-                    hintText: "Cerca esercizi...",
-                    hintStyle: TextStyle(fontSize: 24),
-                    suffixIcon: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Icon(
-                        Icons.search,
-                        size: 32,
-                      ),
-                    )),
-              ),
-            ),
-            Flexible(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // lista clienti
-                  const Expanded(
-                    child: SizedBox(
-                      height: double.infinity,
-                    ),
-                  ),
-
-                  SizedBox(
-                      height: double.infinity,
-                      width: MediaQuery.of(context).size.width * (2 / 8),
-                      child: const Placeholder()),
-
-                  // interfaccia per inserimento nuovo
-                ],
-              ),
-            ),
-          ],
-        )
-        /*
-        Scaffold(
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {},
-            backgroundColor: Theme.of(context).primaryColor,
-            label: Text(
-              "Nuovo esercizio",
-              style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  wordSpacing: 2),
-            ),
-            icon: Icon(
-              Icons.add_rounded,
-              color: Colors.white,
-            ),
-          ),
-          */
-        );
-  }
-}
-
-class ListaLateraleClienti extends StatefulWidget {
-  const ListaLateraleClienti({super.key});
-
-  @override
-  State<ListaLateraleClienti> createState() => _ListaLateraleClientiState();
-}
-
-class _ListaLateraleClientiState extends State<ListaLateraleClienti> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: double.infinity,
-      width: MediaQuery.of(context).size.width * (1 / 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(
-            height: 16,
-          ),
-          SizedBox(
-            // width: MediaQuery.of(context).size.width * (1.5 / 8),
-            child: TextFormField(
-              textAlign: TextAlign.left,
-              style: const TextStyle(),
-              maxLines: 1,
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(16),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(16.0),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                  ),
-                  filled: true,
-                  alignLabelWithHint: true,
-                  hintText: "Cerca clienti...",
-                  hintStyle: TextStyle(),
-                  suffixIcon: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Icon(
-                      Icons.search,
-                    ),
-                  )),
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: coach.listaClientiSeguiti!.length,
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    /*border: index == _indexCliente
-                          ? Border.all(
-                              width: 2, color: Theme.of(context).primaryColor)
-                          : null),
-                          */
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      coach.listaClientiSeguiti![index].username!,
-                      style: TextStyle(
-                          color: index != _indexCliente
-                              ? Theme.of(context).hintColor
-                              : null,
-                          fontWeight:
-                              index == _indexCliente ? FontWeight.bold : null),
-                    ),
-                    subtitle: Text(
-                      coach.listaClientiSeguiti![index].email!,
-                    ),
-                    onTap: () {
-                      setState(() {
-                        _indexCliente = index;
-                      });
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          SizedBox(
-            height: 48,
-            //width: MediaQuery.of(context).size.width * (1.5 / 8),
-            child: ElevatedButton.icon(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  )),
-                  backgroundColor:
-                      MaterialStatePropertyAll(Theme.of(context).primaryColor)),
-              label: const Text(
-                "Nuovo cliente",
-                style: TextStyle(color: Colors.white),
-              ),
-              icon: const Icon(Icons.add_rounded),
-              onPressed: () {},
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-        ],
-      ),
-    );
+    return const Placeholder();
   }
 }
 
 class paginaCliente extends StatefulWidget {
-  const paginaCliente({super.key});
+  paginaCliente({super.key});
 
   @override
   State<paginaCliente> createState() => _paginaClienteState();
@@ -425,10 +384,15 @@ class _paginaClienteState extends State<paginaCliente> {
   int _selectedIndex = 0;
   bool _chatVisible = false;
   List<Widget> widgetSchermataCliente = List.empty(growable: true);
+
   void navigaTab(int nuovaSelezione) {
     setState(() {
       _selectedIndex = nuovaSelezione;
     });
+  }
+
+  void ricaricaStato() {
+    setState(() {});
   }
 
   @override
@@ -441,13 +405,10 @@ class _paginaClienteState extends State<paginaCliente> {
     super.initState();
   }
 
-  void ricaricaStato() {
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -562,8 +523,8 @@ class _paginaClienteState extends State<paginaCliente> {
           alignment: Alignment.bottomRight,
           child: Card(
             child: SizedBox(
-              width: MediaQuery.of(context).size.width * (2 / 8),
-              height: MediaQuery.of(context).size.height * (2 / 3),
+              width: 500,
+              height: MediaQuery.of(context).size.height - 100,
               child: conversazioneChat(
                 coachModel: coach,
                 mittenteCoach: true,
@@ -672,7 +633,7 @@ class _paginaClienteState extends State<paginaCliente> {
 
   Widget schedeCliente() {
     return Column(
-      children: [],
+      children: const [],
     );
   }
 }
@@ -685,8 +646,218 @@ class nuovaSchedaCliente extends StatefulWidget {
 }
 
 class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
+  List<Allenamento> lista_allenamenti = List.empty(growable: true);
+
+  @override
+  void initState() {
+    // giornata 1 vuota, aggiunta di default allinizio
+
+    lista_allenamenti.add(Allenamento(
+        nomeAllenamento: null,
+        listaEsercizi: null,
+        noteAllenamento: null,
+        giorniAssegnati: null,
+        feedbackAllenamento: null));
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Nuova scheda",
+              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: TextFormField(
+              textAlign: TextAlign.left,
+              style: const TextStyle(),
+              maxLines: 1,
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.all(16),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(16.0),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                  ),
+                  filled: true,
+                  alignLabelWithHint: true,
+                  hintText: "Nome della scheda ...",
+                  hintStyle: TextStyle(),
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Icon(
+                      Icons.tag_rounded,
+                    ),
+                  )),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              children: [
+                Text(
+                  "Periodo di svolgimento",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  "Da ",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {}, icon: Icon(Icons.date_range_rounded)),
+                Text(
+                  " a ",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {}, icon: Icon(Icons.date_range_rounded)),
+              ],
+            ),
+          ),
+
+          // inizio logica ui per scheda
+
+          // lista allenamenti
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: Card(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: lista_allenamenti.length,
+                scrollDirection: Axis.vertical,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          titleAlignment: ListTileTitleAlignment.center,
+                          leading: Text(
+                            "GIORNO ${index + 1}      ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          title: TextFormField(
+                            textAlign: TextAlign.left,
+                            style: TextStyle(),
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(16),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(16.0),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16.0)),
+                              ),
+                              filled: true,
+                              alignLabelWithHint: true,
+                              hintText:
+                                  "Nome giornata di allenamento ${index + 1} (Es. Gambe, petto ecc..)",
+                            ),
+                          ),
+                        ),
+                        // logica per tabella esercizi
+
+                        DataTable(
+                          dividerThickness: 1,
+                          columnSpacing: 64,
+                          columns: [
+                            const DataColumn(
+                              label: Text('N°'),
+                            ),
+                            const DataColumn(
+                              label: Text('Nome'),
+                            ),
+                            const DataColumn(
+                              label: Text('Serie'),
+                            ),
+                            const DataColumn(
+                              label: Text('Recupero'),
+                            ),
+                            const DataColumn(
+                              label: Text('Note esercizio'),
+                            ),
+                          ],
+                          rows: [],
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // pulsante per aggiungere alla lista di allenamenti
+
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: 48,
+              child: ElevatedButton.icon(
+                style: ButtonStyle(
+                    elevation: MaterialStatePropertyAll(0),
+                    alignment: Alignment.centerLeft,
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    )),
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.transparent)),
+                onPressed: () {
+                  setState(() {
+                    aggiungiGiornataVuotaAllenamento();
+                  });
+                },
+                icon: Icon(Icons.add_rounded,
+                    color: Theme.of(context).primaryColor),
+                label: Text(
+                  "Aggiungi giornata di allenamento",
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 18),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void aggiungiGiornataVuotaAllenamento() {
+    lista_allenamenti.add(Allenamento(
+        nomeAllenamento: null,
+        listaEsercizi: null,
+        noteAllenamento: null,
+        giorniAssegnati: null,
+        feedbackAllenamento: null));
   }
 }
