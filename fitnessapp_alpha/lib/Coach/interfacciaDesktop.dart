@@ -647,6 +647,7 @@ class nuovaSchedaCliente extends StatefulWidget {
 
 class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
   List<Allenamento> lista_allenamenti = List.empty(growable: true);
+  List<Esercizio> lista_esercizi = List.empty(growable: true);
 
   @override
   void initState() {
@@ -658,6 +659,13 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         noteAllenamento: null,
         giorniAssegnati: null,
         feedbackAllenamento: null));
+
+    lista_esercizi.add(Esercizio(
+        nomeEsercizio: null,
+        serieEsercizio: null,
+        ripetizioniEsercizio: null,
+        carichiEsercizio: null,
+        recuperoEsercizio: null));
 
     super.initState();
   }
@@ -786,27 +794,67 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
                         ),
                         // logica per tabella esercizi
 
-                        DataTable(
-                          dividerThickness: 1,
-                          columnSpacing: 64,
-                          columns: [
-                            const DataColumn(
-                              label: Text('N°'),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DataTable(
+                            dataRowMinHeight: 64,
+                            dataRowMaxHeight: 100,
+                            dividerThickness: 1,
+                            columnSpacing: 16,
+                            horizontalMargin: 24,
+                            columns: const [
+                              DataColumn(
+                                label: Text('N°'),
+                              ),
+                              DataColumn(
+                                label: Text('Nome'),
+                              ),
+                              DataColumn(
+                                label: Text('Serie'),
+                              ),
+                              DataColumn(
+                                label: Text('Recupero'),
+                              ),
+                              DataColumn(
+                                label: Text('Note esercizio'),
+                              ),
+                            ],
+                            rows: getTableData(),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                            height: 48,
+                            child: ElevatedButton.icon(
+                              style: ButtonStyle(
+                                  elevation: MaterialStatePropertyAll(0),
+                                  alignment: Alignment.centerLeft,
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  )),
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      Colors.transparent)),
+                              onPressed: () {
+                                setState(() {
+                                  aggiungiEsercizio();
+                                });
+                              },
+                              icon: Icon(Icons.add_rounded,
+                                  color: Theme.of(context).primaryColor),
+                              label: Text(
+                                "Aggiungi esercizio",
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 18),
+                              ),
                             ),
-                            const DataColumn(
-                              label: Text('Nome'),
-                            ),
-                            const DataColumn(
-                              label: Text('Serie'),
-                            ),
-                            const DataColumn(
-                              label: Text('Recupero'),
-                            ),
-                            const DataColumn(
-                              label: Text('Note esercizio'),
-                            ),
-                          ],
-                          rows: [],
+                          ),
                         )
                       ],
                     ),
@@ -818,31 +866,34 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
 
           // pulsante per aggiungere alla lista di allenamenti
 
-          Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              height: 48,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                    elevation: MaterialStatePropertyAll(0),
-                    alignment: Alignment.centerLeft,
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    )),
-                    backgroundColor:
-                        MaterialStatePropertyAll(Colors.transparent)),
-                onPressed: () {
-                  setState(() {
-                    aggiungiGiornataVuotaAllenamento();
-                  });
-                },
-                icon: Icon(Icons.add_rounded,
-                    color: Theme.of(context).primaryColor),
-                label: Text(
-                  "Aggiungi giornata di allenamento",
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 18),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: SizedBox(
+                height: 48,
+                child: ElevatedButton.icon(
+                  style: ButtonStyle(
+                      elevation: MaterialStatePropertyAll(0),
+                      alignment: Alignment.centerLeft,
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      )),
+                      backgroundColor: MaterialStatePropertyAll(
+                          Theme.of(context).cardColor)),
+                  onPressed: () {
+                    setState(() {
+                      aggiungiGiornataVuotaAllenamento();
+                    });
+                  },
+                  icon: Icon(Icons.add_rounded,
+                      color: Theme.of(context).primaryColor),
+                  label: Text(
+                    "Nuova giornata di allenamento",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 18),
+                  ),
                 ),
               ),
             ),
@@ -859,5 +910,127 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         noteAllenamento: null,
         giorniAssegnati: null,
         feedbackAllenamento: null));
+  }
+
+  void aggiungiEsercizio() {
+    lista_esercizi.add(Esercizio(
+        nomeEsercizio: null,
+        serieEsercizio: null,
+        ripetizioniEsercizio: null,
+        carichiEsercizio: null,
+        recuperoEsercizio: null));
+  }
+
+  List<DataRow> getTableData() {
+    List<DataRow> list = List.empty(growable: true);
+    for (int i = 0; i < lista_esercizi.length; i++) {
+      list.add(DataRow(cells: [
+        DataCell(SizedBox(width: 24, child: Text((i + 1).toString()))),
+        DataCell(
+          SizedBox(
+            child: TextFormField(
+              textAlign: TextAlign.left,
+              style: TextStyle(),
+              maxLines: 1,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(16),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(16.0),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                filled: true,
+                alignLabelWithHint: true,
+                hintText: "Nome esercizio",
+              ),
+            ),
+          ),
+        ),
+        DataCell(
+          SizedBox(
+            child: TextFormField(
+              textAlign: TextAlign.left,
+              style: TextStyle(),
+              maxLines: 1,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(16),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(16.0),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                filled: true,
+                alignLabelWithHint: true,
+                hintText: "Numero serie",
+              ),
+            ),
+          ),
+        ),
+        DataCell(
+          SizedBox(
+            child: TextFormField(
+              textAlign: TextAlign.left,
+              style: TextStyle(),
+              maxLines: 1,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(16),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(16.0),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                filled: true,
+                alignLabelWithHint: true,
+                hintText: "Secondi di recupero",
+              ),
+            ),
+          ),
+        ),
+        DataCell(
+          SizedBox(
+            width: double.infinity,
+            child: TextFormField(
+              minLines: 1,
+              maxLines: 10,
+              textAlign: TextAlign.left,
+              style: TextStyle(),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(16),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(16.0),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                filled: true,
+                alignLabelWithHint: true,
+                hintText: "Nota del coach per l'esercizio",
+              ),
+            ),
+          ),
+        ),
+      ]));
+    }
+
+    return list;
   }
 }
