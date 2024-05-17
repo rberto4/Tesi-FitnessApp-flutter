@@ -105,13 +105,13 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
             height: double.infinity,
             child: Card(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
                         padding: EdgeInsets.all(18.0),
@@ -311,7 +311,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
           height: 48,
           child: ElevatedButton.icon(
             style: ButtonStyle(
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
@@ -647,25 +647,46 @@ class nuovaSchedaCliente extends StatefulWidget {
 
 class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
   List<Allenamento> lista_allenamenti = List.empty(growable: true);
-  List<Esercizio> lista_esercizi = List.empty(growable: true);
+  final TextEditingController _textEditingController_nomescheda =
+      TextEditingController();
+  final List<TextEditingController>
+      _textEditingController_lista_nomi_allenamenti =
+      List.empty(growable: true);
+
+  final List<TextEditingController> _textEditingController_lista_esercizi =
+      List.empty(growable: true);
+  final List<TextEditingController> _textEditingController_lista_serie =
+      List.empty(growable: true);
+  final List<TextEditingController> _textEditingController_lista_ripetizioni =
+      List.empty(growable: true);
+  final List<TextEditingController> _textEditingController_lista_recupero =
+      List.empty(growable: true);
+  final List<TextEditingController> _textEditingController_lista_note =
+      List.empty(growable: true);
 
   @override
   void initState() {
     // giornata 1 vuota, aggiunta di default allinizio
-
     lista_allenamenti.add(Allenamento(
         nomeAllenamento: null,
-        listaEsercizi: null,
+        listaEsercizi: List.from([
+          Esercizio(
+              nomeEsercizio: null,
+              serieEsercizio: null,
+              ripetizioniEsercizio: null,
+              carichiEsercizio: null,
+              recuperoEsercizio: null)
+        ]),
         noteAllenamento: null,
         giorniAssegnati: null,
         feedbackAllenamento: null));
 
-    lista_esercizi.add(Esercizio(
-        nomeEsercizio: null,
-        serieEsercizio: null,
-        ripetizioniEsercizio: null,
-        carichiEsercizio: null,
-        recuperoEsercizio: null));
+    _textEditingController_lista_nomi_allenamenti.add(TextEditingController());
+    _textEditingController_lista_esercizi.add(TextEditingController());
+    _textEditingController_lista_ripetizioni.add(TextEditingController());
+    _textEditingController_lista_serie.add(TextEditingController());
+    _textEditingController_lista_recupero.add(TextEditingController());
+    _textEditingController_lista_note.add(TextEditingController());
 
     super.initState();
   }
@@ -676,17 +697,40 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
+          SizedBox(height: 32),
+          ListTile(
+            title: Text(
               "Nuova scheda",
               style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             ),
+            trailing: SizedBox(
+              height: 48,
+              child: ElevatedButton.icon(
+                style: ButtonStyle(
+                    elevation: MaterialStatePropertyAll(0),
+                    alignment: Alignment.centerLeft,
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    )),
+                    backgroundColor: MaterialStatePropertyAll(Colors.blue)),
+                onPressed: () {
+                  setState(() {});
+                },
+                icon: Icon(Icons.bookmark_added_rounded, color: Colors.white),
+                label: Text(
+                  "Salva scheda",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ),
           ),
+          SizedBox(height: 16),
           Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: TextFormField(
+              controller: _textEditingController_nomescheda,
               textAlign: TextAlign.left,
               style: const TextStyle(),
               maxLines: 1,
@@ -750,117 +794,174 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
           // lista allenamenti
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: Card(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: lista_allenamenti.length,
-                scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          titleAlignment: ListTileTitleAlignment.center,
-                          leading: Text(
-                            "GIORNO ${index + 1}      ",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          title: TextFormField(
-                            textAlign: TextAlign.left,
-                            style: TextStyle(),
-                            maxLines: 1,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(16),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(16.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: lista_allenamenti.length,
+              scrollDirection: Axis.vertical,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 8),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            titleAlignment: ListTileTitleAlignment.center,
+                            leading: Text(
+                              "GIORNO ${index + 1}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                            title: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: TextFormField(
+                                controller:
+                                    _textEditingController_lista_nomi_allenamenti[
+                                        index],
+                                textAlign: TextAlign.left,
+                                style: TextStyle(),
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(16),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(16.0)),
+                                  ),
+                                  filled: true,
+                                  alignLabelWithHint: true,
+                                  hintText:
+                                      "Nome giornata di allenamento ${index + 1} (Es. Gambe, petto ecc..)",
                                 ),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            trailing: SizedBox(
+                              height: 48,
+                              child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                    elevation: MaterialStatePropertyAll(0),
+                                    alignment: Alignment.centerLeft,
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          width: 0, color: Colors.red),
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    )),
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(Colors.red)),
+                                onPressed: () {
+                                  setState(() {
+                                    rimuoviAllenamento(index);
+                                  });
+                                },
+                                icon: Icon(Icons.remove_circle_rounded,
+                                    color: Colors.white),
+                                label: Text(
+                                  "Elimina allenamento",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
                               ),
-                              filled: true,
-                              alignLabelWithHint: true,
-                              hintText:
-                                  "Nome giornata di allenamento ${index + 1} (Es. Gambe, petto ecc..)",
                             ),
                           ),
-                        ),
-                        // logica per tabella esercizi
+                          // logica per tabella esercizi
 
-                        SizedBox(
-                          width: double.infinity,
-                          child: DataTable(
-                            dataRowMinHeight: 64,
-                            dataRowMaxHeight: 100,
-                            dividerThickness: 1,
-                            columnSpacing: 16,
-                            horizontalMargin: 24,
-                            columns: const [
-                              DataColumn(
-                                label: Text('N°'),
-                              ),
-                              DataColumn(
-                                label: Text('Nome'),
-                              ),
-                              DataColumn(
-                                label: Text('Serie'),
-                              ),
-                              DataColumn(
-                                label: Text('Recupero'),
-                              ),
-                              DataColumn(
-                                label: Text('Note esercizio'),
-                              ),
-                            ],
-                            rows: getTableData(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: SizedBox(
-                            height: 48,
-                            child: ElevatedButton.icon(
-                              style: ButtonStyle(
-                                  elevation: MaterialStatePropertyAll(0),
-                                  alignment: Alignment.centerLeft,
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  )),
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      Colors.transparent)),
-                              onPressed: () {
-                                setState(() {
-                                  aggiungiEsercizio();
-                                });
-                              },
-                              icon: Icon(Icons.add_rounded,
-                                  color: Theme.of(context).primaryColor),
-                              label: Text(
-                                "Aggiungi esercizio",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 18),
+                          Visibility(
+                            visible: lista_allenamenti[index]
+                                .listaEsercizi!
+                                .isNotEmpty,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: DataTable(
+                                dataRowMinHeight: 64,
+                                dataRowMaxHeight: 100,
+                                dividerThickness: 1,
+                                columnSpacing: 16,
+                                showCheckboxColumn: true,
+                                horizontalMargin: 16,
+                                columns: const [
+                                  DataColumn(
+                                    label: Text('N°'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Nome'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Serie'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Ripetizioni'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Recupero'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Note esercizio'),
+                                  ),
+                                  DataColumn(
+                                    numeric: true,
+                                    label: Text(''),
+                                  ),
+                                ],
+                                rows: getTableData(index),
                               ),
                             ),
                           ),
-                        )
-                      ],
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: SizedBox(
+                                height: 48,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                      elevation: MaterialStatePropertyAll(0),
+                                      alignment: Alignment.centerLeft,
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      )),
+                                      backgroundColor: MaterialStatePropertyAll(
+                                          Theme.of(context).cardColor)),
+                                  onPressed: () {
+                                    setState(() {
+                                      aggiungiEsercizio(index);
+                                    });
+                                  },
+                                  icon: Icon(Icons.add_circle_rounded,
+                                      color: Theme.of(context).primaryColor),
+                                  label: Text(
+                                    "Nuovo esercizio",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
 
@@ -906,29 +1007,50 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
   void aggiungiGiornataVuotaAllenamento() {
     lista_allenamenti.add(Allenamento(
         nomeAllenamento: null,
-        listaEsercizi: null,
+        listaEsercizi: List.from([
+          Esercizio(
+              nomeEsercizio: null,
+              serieEsercizio: null,
+              ripetizioniEsercizio: null,
+              carichiEsercizio: null,
+              recuperoEsercizio: null)
+        ]),
         noteAllenamento: null,
         giorniAssegnati: null,
         feedbackAllenamento: null));
+
+    _textEditingController_lista_nomi_allenamenti.add(TextEditingController());
+    _textEditingController_lista_esercizi.add(TextEditingController());
+    _textEditingController_lista_ripetizioni.add(TextEditingController());
+    _textEditingController_lista_serie.add(TextEditingController());
+    _textEditingController_lista_recupero.add(TextEditingController());
+    _textEditingController_lista_note.add(TextEditingController());
   }
 
-  void aggiungiEsercizio() {
-    lista_esercizi.add(Esercizio(
+  void aggiungiEsercizio(int index) {
+    lista_allenamenti[index].listaEsercizi!.add(Esercizio(
         nomeEsercizio: null,
         serieEsercizio: null,
         ripetizioniEsercizio: null,
         carichiEsercizio: null,
         recuperoEsercizio: null));
+
+    _textEditingController_lista_esercizi.add(TextEditingController());
+    _textEditingController_lista_ripetizioni.add(TextEditingController());
+    _textEditingController_lista_serie.add(TextEditingController());
+    _textEditingController_lista_recupero.add(TextEditingController());
+    _textEditingController_lista_note.add(TextEditingController());
   }
 
-  List<DataRow> getTableData() {
+  List<DataRow> getTableData(int index) {
     List<DataRow> list = List.empty(growable: true);
-    for (int i = 0; i < lista_esercizi.length; i++) {
+    for (int i = 0; i < lista_allenamenti[index].listaEsercizi!.length; i++) {
       list.add(DataRow(cells: [
         DataCell(SizedBox(width: 24, child: Text((i + 1).toString()))),
         DataCell(
           SizedBox(
             child: TextFormField(
+              controller: _textEditingController_lista_esercizi[index + i],
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -954,6 +1076,7 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         DataCell(
           SizedBox(
             child: TextFormField(
+              controller: _textEditingController_lista_serie[index + i],
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -979,6 +1102,33 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         DataCell(
           SizedBox(
             child: TextFormField(
+              controller: _textEditingController_lista_ripetizioni[index + i],
+              textAlign: TextAlign.left,
+              style: TextStyle(),
+              maxLines: 1,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(16),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(16.0),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                filled: true,
+                alignLabelWithHint: true,
+                hintText: "Ripetizioni",
+              ),
+            ),
+          ),
+        ),
+        DataCell(
+          SizedBox(
+            child: TextFormField(
+              controller: _textEditingController_lista_recupero[index + i],
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -1002,11 +1152,13 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
           ),
         ),
         DataCell(
-          SizedBox(
-            width: double.infinity,
+          Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width / 4, maxHeight: 84),
             child: TextFormField(
+              controller: _textEditingController_lista_note[index + i],
               minLines: 1,
-              maxLines: 10,
+              maxLines: 5,
               textAlign: TextAlign.left,
               style: TextStyle(),
               decoration: InputDecoration(
@@ -1028,9 +1180,27 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
             ),
           ),
         ),
+        DataCell(SizedBox(
+            width: 50,
+            child: IconButton(
+              icon: Icon(Icons.delete_rounded),
+              onPressed: () {
+                rimuoviEsercizio(index, i);
+                setState(() {});
+              },
+            ))),
       ]));
     }
 
     return list;
+  }
+
+  void rimuoviAllenamento(int index) {
+    lista_allenamenti.removeAt(index);
+    _textEditingController_lista_nomi_allenamenti.removeAt(index);
+  }
+
+  void rimuoviEsercizio(int index, int index_esercizio) {
+    lista_allenamenti[index].listaEsercizi!.removeAt(index_esercizio);
   }
 }
