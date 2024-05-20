@@ -25,20 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 4,
-          shadowColor: Theme.of(context).shadowColor,
-          // shape: const RoundedRectangleBorder(borderRadius: BorderRadiusDirectional.only(bottomEnd: Radius.circular(16),bottomStart: Radius.circular(16))),
-          toolbarHeight: 220,
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-          title: const Text(
-            "Log in",
-            style: TextStyle(
-                fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-        ),
         // backgroundColor: Colors.grey.shade200,
         body: Center(
           child: SingleChildScrollView(
@@ -233,47 +219,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        "Non sei ancora registrato?",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12),
-                      ),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const RegisterPage()),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0))),
-                              side: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              "Registrati qui",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                          )),
-                    ),
                   ],
                 ),
               ),
             ),
           ),
-        ));
+        )
+      );
   }
 }
