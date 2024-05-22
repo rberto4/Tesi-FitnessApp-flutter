@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unnecessary_import, unnecessary_late, prefer_const_constructors_in_immutables, non_constant_identifier_names, sized_box_for_whitespace
 
+import 'dart:js_interop';
+
 import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/services/ChatModel.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
@@ -644,27 +646,24 @@ class nuovaSchedaCliente extends StatefulWidget {
 }
 
 class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
-  List<Allenamento> lista_allenamenti = List.empty(growable: true);
-
-  TextEditingController textEditingController_nomescheda =
-      TextEditingController();
-  List<TextEditingController> textEditingController_lista_nomi_allenamenti =
-      List.empty(growable: true);
-  List<TextEditingController> textEditingController_lista_esercizi =
-      List.empty(growable: true);
-  List<TextEditingController> textEditingController_lista_serie =
-      List.empty(growable: true);
-  List<TextEditingController> textEditingController_lista_ripetizioni =
-      List.empty(growable: true);
-  List<TextEditingController> textEditingController_lista_recupero =
-      List.empty(growable: true);
-  List<TextEditingController> textEditingController_lista_note =
-      List.empty(growable: true);
+  SchedaTextEditController schedaTextEditController = SchedaTextEditController(
+      TextEditController: TextEditingController(),
+      listaAllenamentiTextEditController: List.from([
+        AllenamentoTextEditController(
+            TextEditController: TextEditingController(),
+            listaEserciziTextEditController: List.from([
+              EsercizioTextEditController(
+                  TextEditControllerNome: TextEditingController(),
+                  TextEditControllerSerie: TextEditingController(),
+                  TextEditControllerRipetizioni: TextEditingController(),
+                  TextEditControllerRecupero: TextEditingController(),
+                  TextEditControllerNote: TextEditingController())
+            ], growable: true))
+      ], growable: true));
 
   @override
   void initState() {
     // giornata 1 + 1 esercizio, aggiunta di default all'inizio
-    aggiungiGiornataAllenamento();
 
     super.initState();
   }
@@ -708,7 +707,9 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: TextFormField(
-              controller: textEditingController_nomescheda,
+              // assegno il suo texteditcontroller
+
+              controller: schedaTextEditController.TextEditController,
               textAlign: TextAlign.left,
               style: const TextStyle(),
               maxLines: 1,
@@ -772,7 +773,8 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
           // lista allenamenti
           ListView.builder(
             shrinkWrap: true,
-            itemCount: lista_allenamenti.length,
+            itemCount: schedaTextEditController
+                .listaAllenamentiTextEditController!.length,
             scrollDirection: Axis.vertical,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
@@ -795,9 +797,9 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
                           title: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: TextFormField(
-                              controller:
-                                  textEditingController_lista_nomi_allenamenti[
-                                      index],
+                              controller: schedaTextEditController
+                                  .listaAllenamentiTextEditController![index]
+                                  .TextEditController,
                               textAlign: TextAlign.left,
                               style: TextStyle(),
                               maxLines: 1,
@@ -854,8 +856,9 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
                         // logica per tabella esercizi
 
                         Visibility(
-                          visible: lista_allenamenti[index]
-                              .listaEsercizi!
+                          visible: schedaTextEditController
+                              .listaAllenamentiTextEditController![index]
+                              .listaEserciziTextEditController!
                               .isNotEmpty,
                           child: SizedBox(
                             width: double.infinity,
@@ -979,67 +982,47 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
   }
 
   void aggiungiGiornataAllenamento() {
-    lista_allenamenti.add(Allenamento(
-        nomeAllenamento: null,
-        listaEsercizi: List.from([
-          Esercizio(
-              nomeEsercizio: null,
-              serieEsercizio: null,
-              ripetizioniEsercizio: null,
-              carichiEsercizio: null,
-              recuperoEsercizio: null)
-        ], growable: true),
-        noteAllenamento: null,
-        giorniAssegnati: null,
-        feedbackAllenamento: null));
-
-    textEditingController_lista_nomi_allenamenti.add(TextEditingController());
-    textEditingController_lista_esercizi.add(TextEditingController());
-    textEditingController_lista_ripetizioni.add(TextEditingController());
-    textEditingController_lista_serie.add(TextEditingController());
-    textEditingController_lista_recupero.add(TextEditingController());
-    textEditingController_lista_note.add(TextEditingController());
+    schedaTextEditController.listaAllenamentiTextEditController!
+        .add(AllenamentoTextEditController(
+            TextEditController: TextEditingController(),
+            listaEserciziTextEditController: List.from([
+              EsercizioTextEditController(
+                  TextEditControllerNome: TextEditingController(),
+                  TextEditControllerSerie: TextEditingController(),
+                  TextEditControllerRipetizioni: TextEditingController(),
+                  TextEditControllerRecupero: TextEditingController(),
+                  TextEditControllerNote: TextEditingController())
+            ], growable: true)));
   }
 
   void aggiungiEsercizio(int index) {
-    lista_allenamenti[index].listaEsercizi!.add(Esercizio(
-        nomeEsercizio: null,
-        serieEsercizio: null,
-        ripetizioniEsercizio: null,
-        carichiEsercizio: null,
-        recuperoEsercizio: null));
-
-    if ((lista_allenamenti.length - 1) == index) {
-      textEditingController_lista_esercizi.add(TextEditingController());
-      textEditingController_lista_ripetizioni.add(TextEditingController());
-      textEditingController_lista_serie.add(TextEditingController());
-      textEditingController_lista_recupero.add(TextEditingController());
-      textEditingController_lista_note.add(TextEditingController());
-    } else {
-      int count = ottieniIndexEserciziPrecedenti(index);
-      textEditingController_lista_esercizi.insert(
-          count, TextEditingController());
-      textEditingController_lista_ripetizioni.insert(
-          count, TextEditingController());
-      textEditingController_lista_serie.insert(count, TextEditingController());
-      textEditingController_lista_recupero.insert(
-          count, TextEditingController());
-      textEditingController_lista_note.insert(count, TextEditingController());
-    }
+    schedaTextEditController.listaAllenamentiTextEditController![index]
+        .listaEserciziTextEditController!
+        .add(EsercizioTextEditController(
+            TextEditControllerNome: TextEditingController(),
+            TextEditControllerSerie: TextEditingController(),
+            TextEditControllerRipetizioni: TextEditingController(),
+            TextEditControllerRecupero: TextEditingController(),
+            TextEditControllerNote: TextEditingController()));
   }
 
   List<DataRow> getTableData(int index) {
     List<DataRow> list = List.empty(growable: true);
 
-    int count = ottieniIndexEserciziPrecedenti(index);
-
-    for (int i = 0; i < lista_allenamenti[index].listaEsercizi!.length; i++) {
+    for (int i = 0;
+        i <
+            schedaTextEditController.listaAllenamentiTextEditController![index]
+                .listaEserciziTextEditController!.length;
+        i++) {
       list.add(DataRow(cells: [
         DataCell(SizedBox(width: 24, child: Text((i + 1).toString()))),
         DataCell(
           SizedBox(
             child: TextFormField(
-              controller: textEditingController_lista_esercizi[count + i],
+              controller: schedaTextEditController
+                  .listaAllenamentiTextEditController![index]
+                  .listaEserciziTextEditController![i]
+                  .TextEditControllerNome,
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -1065,7 +1048,10 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         DataCell(
           SizedBox(
             child: TextFormField(
-              controller: textEditingController_lista_serie[count + i],
+              controller: schedaTextEditController
+                  .listaAllenamentiTextEditController![index]
+                  .listaEserciziTextEditController![i]
+                  .TextEditControllerSerie,
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -1091,7 +1077,10 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         DataCell(
           SizedBox(
             child: TextFormField(
-              controller: textEditingController_lista_ripetizioni[count + i],
+              controller: schedaTextEditController
+                  .listaAllenamentiTextEditController![index]
+                  .listaEserciziTextEditController![i]
+                  .TextEditControllerRipetizioni,
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -1117,7 +1106,10 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
         DataCell(
           SizedBox(
             child: TextFormField(
-              controller: textEditingController_lista_recupero[count + i],
+              controller: schedaTextEditController
+                  .listaAllenamentiTextEditController![index]
+                  .listaEserciziTextEditController![i]
+                  .TextEditControllerRecupero,
               textAlign: TextAlign.left,
               style: TextStyle(),
               maxLines: 1,
@@ -1145,7 +1137,10 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width / 4, maxHeight: 84),
             child: TextFormField(
-              controller: textEditingController_lista_note[count + i],
+              controller: schedaTextEditController
+                  .listaAllenamentiTextEditController![index]
+                  .listaEserciziTextEditController![i]
+                  .TextEditControllerNote,
               minLines: 1,
               maxLines: 5,
               textAlign: TextAlign.left,
@@ -1186,61 +1181,50 @@ class _nuovaSchedaClienteState extends State<nuovaSchedaCliente> {
   }
 
   void rimuoviAllenamento(int index) {
-    ripristinaTextEditControllers(false, index, 0);
-    lista_allenamenti.removeAt(index);
+    schedaTextEditController.listaAllenamentiTextEditController!
+        .removeAt(index);
   }
 
   void rimuoviEsercizio(int index, int index_esercizio) {
-    ripristinaTextEditControllers(true, index, index_esercizio);
-    lista_allenamenti[index].listaEsercizi!.removeAt(index_esercizio);
-  }
-
-  void ripristinaTextEditControllers(
-      bool isEsercizio, int index_allenamento, int index_esercizio) {
-    int count = ottieniIndexEserciziPrecedenti(index_allenamento);
-
-    if (isEsercizio) {
-      // rimuovi esercizio singolo
-    } else {
-      // rimuovi intero allenamento
-      for (int i = count;
-          i < lista_allenamenti[index_allenamento].listaEsercizi!.length;
-          i++) {
-        textEditingController_lista_esercizi.removeAt(count + i);
-        textEditingController_lista_serie.removeAt(count + i);
-        textEditingController_lista_ripetizioni.removeAt(count + i);
-        textEditingController_lista_recupero.removeAt(count + i);
-        textEditingController_lista_note.removeAt(count + i);
-      }
-    }
+    schedaTextEditController.listaAllenamentiTextEditController![index]
+        .listaEserciziTextEditController!
+        .removeAt(index_esercizio);
   }
 
   void stampaTutto() {
-    int count = 0;
-
-    for (int i = 0; i < lista_allenamenti.length; i++) {
-      print(textEditingController_lista_nomi_allenamenti[i].text);
-      for (int j = 0; j < lista_allenamenti[i].listaEsercizi!.length; j++) {
-        print(textEditingController_lista_esercizi[j + count].text);
-        print(textEditingController_lista_serie[j + count].text);
-        print(textEditingController_lista_ripetizioni[j + count].text);
-        print(textEditingController_lista_recupero[j + count].text);
-        print(textEditingController_lista_note[j + count].text);
-        count++;
+    for (var a
+        in schedaTextEditController.listaAllenamentiTextEditController!) {
+      print("Nome allenamento : " + a.TextEditController!.text);
+      for (var b in a.listaEserciziTextEditController!) {
+        print("- nome esercizio : " + b.TextEditControllerNome!.text);
+        print("- serie : " + b.TextEditControllerSerie!.text);
+        print("- ripetizioni: " + b.TextEditControllerRipetizioni!.text);
+        print("- recupero : " + b.TextEditControllerRecupero!.text);
+        print("- note : " + b.TextEditControllerNote!.text);
       }
     }
   }
 
-  int ottieniIndexEserciziPrecedenti(int index) {
-    int count = 0;
-    for (int i = 0; i < lista_allenamenti.length; i++) {
-      if (i < index) {
-        for (int j = 0; j < lista_allenamenti[i].listaEsercizi!.length; j++) {
-          count++;
-        }
-      }
+/*
+  void salvaScheda(){
+
+    List<Allenamento> lista_allenamenti = List.empty(growable: true);
+
+    for (var a in schedaTextEditController.listaAllenamentiTextEditController!){
+      lista_allenamenti.add(Allenamento(nomeAllenamento: a.TextEditController!.text, 
+      listaEsercizi:
+      noteAllenamento: null,
+      giorniAssegnati: List.empty(growable: true), 
+      feedbackAllenamento: null));
     }
-    print("es cont :$count");
-    return (count);
+
+    Scheda scheda = Scheda(nomeScheda: schedaTextEditController.TextEditController!.text, 
+    allenamentiScheda: allenamentiScheda, 
+    inizioScheda: null,
+     fineScheda: null, 
+     idScheda: idScheda, 
+     allenamentiSvolti: 
+     );
   }
+*/
 }

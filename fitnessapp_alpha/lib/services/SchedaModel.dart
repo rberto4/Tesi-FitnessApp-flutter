@@ -1,7 +1,7 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 // OGGETTO MODELLIZZATO PER DB
 
@@ -141,17 +141,42 @@ class Esercizio {
   }
 }
 
-class EsercizioTextEditController extends Esercizio {
-  final List<TextEditingController>? listaTextEditController;
+// OGGETTI CON TEXTEDITCONTROLLER CHE ESTENDONO QUELLI STANDARD
+
+class SchedaTextEditController {
+  final TextEditingController? TextEditController;
+  final List<AllenamentoTextEditController>? listaAllenamentiTextEditController;
+
+  SchedaTextEditController(
+      {required this.TextEditController,
+      required this.listaAllenamentiTextEditController});
+}
+
+class AllenamentoTextEditController {
+  final TextEditingController? TextEditController;
+  final List<EsercizioTextEditController>? listaEserciziTextEditController;
+
+  AllenamentoTextEditController(
+      {required this.TextEditController,
+      required this.listaEserciziTextEditController});
+}
+
+class EsercizioTextEditController {
+  final TextEditingController TextEditControllerNome;
+  final TextEditingController TextEditControllerSerie;
+  final TextEditingController TextEditControllerRipetizioni;
+  final TextEditingController TextEditControllerRecupero;
+  final TextEditingController TextEditControllerNote;
 
   EsercizioTextEditController(
-      {required super.nomeEsercizio,
-      required super.serieEsercizio,
-      required super.ripetizioniEsercizio,
-      required super.carichiEsercizio,
-      required super.recuperoEsercizio,
-      required this.listaTextEditController});
+      {required this.TextEditControllerNome,
+      required this.TextEditControllerSerie,
+      required this.TextEditControllerRipetizioni,
+      required this.TextEditControllerRecupero,
+      required this.TextEditControllerNote});
 }
+
+
 
 // Esercizio di tipo pesistica con gli attributi da utilizzare 
 /*
