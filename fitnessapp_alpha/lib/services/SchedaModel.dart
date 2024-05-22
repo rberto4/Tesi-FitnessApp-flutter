@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 // OGGETTO MODELLIZZATO PER DB
 
@@ -138,6 +139,18 @@ class Esercizio {
       if (carichiEsercizio != null) "carichiEsercizio": carichiEsercizio,
     };
   }
+}
+
+class EsercizioTextEditController extends Esercizio {
+  final List<TextEditingController>? listaTextEditController;
+
+  EsercizioTextEditController(
+      {required super.nomeEsercizio,
+      required super.serieEsercizio,
+      required super.ripetizioniEsercizio,
+      required super.carichiEsercizio,
+      required super.recuperoEsercizio,
+      required this.listaTextEditController});
 }
 
 // Esercizio di tipo pesistica con gli attributi da utilizzare 

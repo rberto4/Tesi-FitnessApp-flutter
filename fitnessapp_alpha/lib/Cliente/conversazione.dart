@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_const, camel_case_types, unnecessary_new, non_constant_identifier_names, unused_import, must_be_immutable, unnecessary_this, no_logic_in_create_state, prefer_const_constructors
+// ignore_for_file: unnecessary_const, camel_case_types, unnecessary_new, non_constant_identifier_names, unused_import, must_be_immutable, unnecessary_this, no_logic_in_create_state, prefer_const_constructors, unnecessary_import
 
 import 'package:app_fitness_test_2/services/ChatModel.dart';
 import 'package:app_fitness_test_2/services/UserModel.dart';
@@ -149,7 +149,7 @@ class _conversazioneChatState extends State<conversazioneChat> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            lista_messaggi[index]!.testo!,
+                                            lista_messaggi[index].testo!,
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: (lista_messaggi[index]
