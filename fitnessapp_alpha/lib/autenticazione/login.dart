@@ -6,6 +6,7 @@ import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app_fitness_test_2/Cliente/HomeCliente.dart';
+import 'registrazione.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,12 +35,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'lib/Immagini/LogoChiaro.png',
-                      height: MediaQuery.of(context).size.height * (3 / 8),
-                      alignment: Alignment.topCenter,
-                    ),
-                    //SizedBox(height: MediaQuery.of(context).size.height * (1 / 8)),
                     SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -224,7 +219,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * (2 / 8)),
                   ],
                 ),
               ),
