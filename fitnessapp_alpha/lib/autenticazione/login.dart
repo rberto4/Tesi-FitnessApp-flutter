@@ -35,11 +35,10 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'lib/Immagini/LogoChiaro.png',
+                      'lib/Immagini/Logo.png',
                       height: MediaQuery.of(context).size.height * (3 / 8),
                       alignment: Alignment.topCenter,
                     ),
-                    //SizedBox(height: MediaQuery.of(context).size.height * (1 / 8)),
                     SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -224,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * (2 / 8)),
+                     SizedBox(height: MediaQuery.of(context).size.height * (2 / 8)),
                   ],
                 ),
               ),
