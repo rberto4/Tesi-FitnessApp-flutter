@@ -146,10 +146,15 @@ class Esercizio {
 class SchedaTextEditController {
   final TextEditingController? TextEditController;
   final List<AllenamentoTextEditController>? listaAllenamentiTextEditController;
+  late Timestamp? inizioScheda;
+  late Timestamp? fineScheda;
 
-  SchedaTextEditController(
-      {required this.TextEditController,
-      required this.listaAllenamentiTextEditController});
+  SchedaTextEditController({
+    required this.TextEditController,
+    required this.listaAllenamentiTextEditController,
+    required this.inizioScheda,
+    required this.fineScheda,
+  });
 }
 
 class AllenamentoTextEditController {

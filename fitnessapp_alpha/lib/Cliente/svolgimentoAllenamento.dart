@@ -114,7 +114,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       1
                           ? Flexible(
                               child: SizedBox(
-                                height: 48,
+                                height: 64,
                                 width: double.infinity,
                                 child: ElevatedButton.icon(
                                   icon: const Icon(Icons.sports_score_rounded),
@@ -187,7 +187,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                         ))),
                                   ),
                                 ),
-                                lineHeight: 70,
+                                lineHeight: 64,
                                 percent: getPercentualeAvanzamento(),
                                 progressColor: Colors.red,
                                 backgroundColor:
@@ -254,217 +254,235 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
             ),
           ],
         ),
-        body: ListView.builder(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          scrollDirection: Axis.vertical,
-          physics: const AlwaysScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: _allenamento.listaEsercizi!.length,
-          itemBuilder: (context, index_esercizi) {
-            return Column(
-              children: [
-                // Tile esercizio
-                ListTile(
-                  onTap: () {
-                    if (!_timer.isActive) {
-                      selezionaEsercizioAlTocco(index_esercizi);
-                    }
-                  },
-                  leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: esercizioCorrente >= 0 &&
-                                  index_esercizi <= esercizioCorrente &&
-                                  modalitaAllenamento
-                              ? Theme.of(context).primaryColor
-                              : Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(48)),
-                      child: esercizioCorrente > 0 &&
-                              index_esercizi < esercizioCorrente &&
-                              modalitaAllenamento
-                          ? const Icon(
-                              Icons.done_rounded,
-                              color: Colors.white,
-                              size: 20,
-                            )
-                          : Text(
-                              "#${index_esercizi + 1}",
-                              style: TextStyle(
-                                  color: esercizioCorrente != index_esercizi
-                                      ? Theme.of(context).hintColor
-                                      : null,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            )),
-                  title: Text(
-                    _allenamento.listaEsercizi![index_esercizi].nomeEsercizio!,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    "${_allenamento.listaEsercizi![index_esercizi].serieEsercizio!} Serie",
-                    style: TextStyle(color: Theme.of(context).hintColor),
-                  ),
-                ),
-
-                // lista serie
-
-                Visibility(
-                  visible: esercizioCorrente == index_esercizi ? true : false,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: int.parse(
-                      _allenamento
-                          .listaEsercizi![index_esercizi].serieEsercizio!,
-                    ),
-                    itemBuilder: (context, index_serie) {
-                      // in base alla serie corrente mostro la scheda SELEZIONATA oppure no
-
-                      if (index_serie == serieCorrente) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16)),
-                            side: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 2.0),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                contentPadding:
-                                    const EdgeInsets.only(right: 8, left: 16),
-                                title: Text(
-                                  "${index_serie + 1}°  Serie",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                                trailing: IconButton(
-                                    icon: const Icon(Icons.description_rounded),
-                                    onPressed: () {
-                                      dialogNoteCoach(
-                                          _allenamento.noteAllenamento!);
-                                    }),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 4),
-                                child: Text("Carico (Kg)"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, bottom: 8),
-                                child: TextFormField(
-                                  controller: _lista_controllers_carichi[
-                                      getIndexControllers(
-                                          index_esercizi, index_serie)],
-                                  textAlign: TextAlign.right,
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                          decimal: true),
-                                  decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.0),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0)),
-                                    ),
-                                    filled: true,
-                                    alignLabelWithHint: false,
-                                    prefixIcon:
-                                        Icon(Icons.fitness_center_outlined),
-                                  ),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 4),
-                                child: Text("Ripetizioni"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, bottom: 16),
-                                child: TextFormField(
-                                  controller: _lista_controllers_ripetizioni[
-                                      getIndexControllers(
-                                          index_esercizi, index_serie)],
-                                  textAlign: TextAlign.right,
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                          decimal: true),
-                                  decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.0),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0)),
-                                    ),
-                                    filled: true,
-                                    alignLabelWithHint: false,
-                                    prefixIcon: Icon(Icons.restart_alt_rounded),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        // scheda esercizio non selezionato
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: GestureDetector(
-                            onTap: () {
-                              if (!_timer.isActive) {
-                                selezionaSerieAlTocco(index_serie);
-                              }
-                            },
-                            child: Card(
-                              child: ListTile(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                horizontalTitleGap: 8,
-                                trailing: Text(
-                                  "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
-                                  style: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                ),
-                                title: Text(
-                                  "${index_serie + 1}°  Serie",
-                                  style: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                ),
-                                leading: serieCorrente > index_serie &&
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                scrollDirection: Axis.vertical,
+                physics: const AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _allenamento.listaEsercizi!.length,
+                itemBuilder: (context, index_esercizi) {
+                  return Column(
+                    children: [
+                      // Tile esercizio
+                      ListTile(
+                        onTap: () {
+                          if (!_timer.isActive) {
+                            selezionaEsercizioAlTocco(index_esercizi);
+                          }
+                        },
+                        leading: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: esercizioCorrente >= 0 &&
+                                        index_esercizi <= esercizioCorrente &&
                                         modalitaAllenamento
-                                    ? Icon(
-                                        Icons.done_rounded,
-                                        color: Theme.of(context).hintColor,
-                                      )
-                                    : null,
-                              ),
-                            ),
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(48)),
+                            child: esercizioCorrente > 0 &&
+                                    index_esercizi < esercizioCorrente &&
+                                    modalitaAllenamento
+                                ? const Icon(
+                                    Icons.done_rounded,
+                                    color: Colors.white,
+                                    size: 20,
+                                  )
+                                : Text(
+                                    "#${index_esercizi + 1}",
+                                    style: TextStyle(
+                                        color:
+                                            esercizioCorrente != index_esercizi
+                                                ? Theme.of(context).hintColor
+                                                : null,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  )),
+                        title: Text(
+                          _allenamento
+                              .listaEsercizi![index_esercizi].nomeEsercizio!,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          "${_allenamento.listaEsercizi![index_esercizi].serieEsercizio!} Serie",
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                        ),
+                      ),
+
+                      // lista serie
+
+                      Visibility(
+                        visible:
+                            esercizioCorrente == index_esercizi ? true : false,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: int.parse(
+                            _allenamento
+                                .listaEsercizi![index_esercizi].serieEsercizio!,
                           ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
+                          itemBuilder: (context, index_serie) {
+                            // in base alla serie corrente mostro la scheda SELEZIONATA oppure no
+
+                            if (index_serie == serieCorrente) {
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(16)),
+                                  side: BorderSide(
+                                      color: Theme.of(context).primaryColor,
+                                      width: 2.0),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    ListTile(
+                                      contentPadding: const EdgeInsets.only(
+                                          right: 8, left: 16),
+                                      title: Text(
+                                        "${index_serie + 1}°  Serie",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                      trailing: IconButton(
+                                          icon: const Icon(
+                                              Icons.description_rounded),
+                                          onPressed: () {
+                                            dialogNoteCoach(
+                                                _allenamento.noteAllenamento!);
+                                          }),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      child: Text("Carico (Kg)"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16, right: 16, bottom: 8),
+                                      child: TextFormField(
+                                        controller: _lista_controllers_carichi[
+                                            getIndexControllers(
+                                                index_esercizi, index_serie)],
+                                        textAlign: TextAlign.right,
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(decimal: true),
+                                        decoration: const InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8.0),
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8.0)),
+                                          ),
+                                          filled: true,
+                                          alignLabelWithHint: false,
+                                          prefixIcon: Icon(
+                                              Icons.fitness_center_outlined),
+                                        ),
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      child: Text("Ripetizioni"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16, right: 16, bottom: 16),
+                                      child: TextFormField(
+                                        controller:
+                                            _lista_controllers_ripetizioni[
+                                                getIndexControllers(
+                                                    index_esercizi,
+                                                    index_serie)],
+                                        textAlign: TextAlign.right,
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(decimal: true),
+                                        decoration: const InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8.0),
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8.0)),
+                                          ),
+                                          filled: true,
+                                          alignLabelWithHint: false,
+                                          prefixIcon:
+                                              Icon(Icons.restart_alt_rounded),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              // scheda esercizio non selezionato
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!_timer.isActive) {
+                                      selezionaSerieAlTocco(index_serie);
+                                    }
+                                  },
+                                  child: Card(
+                                    child: ListTile(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                      horizontalTitleGap: 8,
+                                      trailing: Text(
+                                        "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
+                                        style: TextStyle(
+                                            color: Theme.of(context).hintColor),
+                                      ),
+                                      title: Text(
+                                        "${index_serie + 1}°  Serie",
+                                        style: TextStyle(
+                                            color: Theme.of(context).hintColor),
+                                      ),
+                                      leading: serieCorrente > index_serie &&
+                                              modalitaAllenamento
+                                          ? Icon(
+                                              Icons.done_rounded,
+                                              color:
+                                                  Theme.of(context).hintColor,
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: 100,
+            )
+          ],
         ),
       ),
     );
@@ -500,10 +518,13 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
     });
   }
 
+  // cambio manuale dell'esercizio. devo anche cambiare il recupero
+
   void selezionaEsercizioAlTocco(int i) {
     setState(() {
       esercizioCorrente = i;
       serieCorrente = 0;
+      tempoRimasto = _allenamento.listaEsercizi![i].recuperoEsercizio!;
     });
   }
 
