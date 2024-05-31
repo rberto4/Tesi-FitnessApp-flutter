@@ -13,11 +13,13 @@ class conversazioneChat extends StatefulWidget {
   CoachModel coachModel;
   String uidDestinatarioCLiente;
   bool mittenteCoach;
-  conversazioneChat(
-      {super.key,
-      required this.coachModel,
-      required this.mittenteCoach,
-      required this.uidDestinatarioCLiente});
+
+  conversazioneChat({
+    super.key,
+    required this.coachModel,
+    required this.mittenteCoach,
+    required this.uidDestinatarioCLiente,
+  });
 
   @override
   State<conversazioneChat> createState() => _conversazioneChatState(
@@ -31,8 +33,12 @@ class _conversazioneChatState extends State<conversazioneChat> {
   late CoachModel coachModel;
   bool mittenteCoach;
   String uidDestinatarioCLiente;
+
   _conversazioneChatState(
-      this.coachModel, this.mittenteCoach, this.uidDestinatarioCLiente);
+    this.coachModel,
+    this.mittenteCoach,
+    this.uidDestinatarioCLiente,
+  );
 
   @override
   void initState() {
