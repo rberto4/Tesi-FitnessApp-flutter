@@ -26,8 +26,10 @@ la schermata home si presenta ad ogni avvio dell'applicazione, una volta che vie
 - Progressi
 - Archivio
 - Chat
-L'utente può liberamente passare da una sezione all'altra attraverso l'uso della barra di navigazione inferiore, che ne mostrerà le sezione attualmente selezionata.
-la sezione Calendario fa riferimento alla scheda attualmente in uso dal cliente, la sua funzione principale è quella di mostrare l'allenamento previsto per la giornata corrente oppure l'eventuale giornata di riposo.
-
-
+  
+L'utente può liberamente passare da una sezione all'altra attraverso l'uso della barra di navigazione inferiore, che mostrerà le sezione attualmente selezionata.
+la sezione Calendario fa riferimento alla scheda attualmente in uso dal cliente, la sua funzione principale è quella di mostrare l'allenamento (anche più di uno) previsto per la giornata corrente,  oppure l'eventuale giornata di riposo.
+Sempre nella stessa schermata, un date picker a scorrimento permette di selezionare una determinata giornata e di mostrare il relativo allenamento; se si tratta di una giornata in cui l'utente si è già allenato, allora è possibile visualizzare un resoconto dell'allenamento, con i carichi utilizzati e le ripetizioni di ogni esercizio, altrimenti l'utente può avviare l'allenamento previsto per la data selezionata.
+la seconda sezione presente nella homepage è quella dedicata ai progressi e ai miglioramenti dell'utente; si presenta come un elenco in cui vengono mostrati tutti gli esercizi che l'utente svolge nella propria scheda, con la possibilità di filtrare per allenamento.
+Per ogni esercizio l'utente può visualizzarne i dettagli relativi ad ogni seduta di allenamento in cui esso viene svolto, tenere traccia della progressione dei carichi e del carico massimale attuale, anche atraverso la visione di un grafico animato.
 
