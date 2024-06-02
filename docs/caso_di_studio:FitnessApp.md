@@ -1,3 +1,5 @@
+
+
 ## Requisiti e funzionalità
 L'applicazione in oggetto, vuole essere un'sistema in grado di gestire tutti gli aspetti relativi alla creazione e distribuzione delle schede di allenamento da parte di un'utente "Coach", e la relativa visualizzazione da parte di un'utente di tipo "Cliente".
 Ogni Scheda è composta da Allenamenti, caratterizzati da un nome, dalla lista di Esercizi di cui l'allenamento si compone, e da un riferimento sulle date (con, eventualmente, l'orario di svolgimento) assegnate a quel preciso Allenamento.
@@ -21,15 +23,32 @@ Questo approccio, oltre ad evitare l'inutile registrazione di utenti randomici n
 ## Schermata Cliente 
 
 ### homepage 
-la schermata home si presenta ad ogni avvio dell'applicazione, una volta che viene eseguito l'accesso al proprio account, ed è composta da 4 sezioni principali:
+la schermata home si presenta ad ogni avvio dell'applicazione una volta che viene eseguito l'accesso al proprio account, ed è composta da 4 tabs principali:
 - Calendario
 - Progressi
 - Archivio
 - Chat
   
-L'utente può liberamente passare da una sezione all'altra attraverso l'uso della barra di navigazione inferiore, che mostrerà le sezione attualmente selezionata.
+L'utente può liberamente passare da una sezione all'altra attraverso l'uso della barra di navigazione inferiore, che mostrerà il tab attualmente in uso.
+
+
+
+### tab calendario
 la sezione Calendario fa riferimento alla scheda attualmente in uso dal cliente, la sua funzione principale è quella di mostrare l'allenamento (anche più di uno) previsto per la giornata corrente,  oppure l'eventuale giornata di riposo.
 Sempre nella stessa schermata, un date picker a scorrimento permette di selezionare una determinata giornata e di mostrare il relativo allenamento; se si tratta di una giornata in cui l'utente si è già allenato, allora è possibile visualizzare un resoconto dell'allenamento, con i carichi utilizzati e le ripetizioni di ogni esercizio, altrimenti l'utente può avviare l'allenamento previsto per la data selezionata.
+
+### tab progressi
 la seconda sezione presente nella homepage è quella dedicata ai progressi e ai miglioramenti dell'utente; si presenta come un elenco in cui vengono mostrati tutti gli esercizi che l'utente svolge nella propria scheda, con la possibilità di filtrare per allenamento.
-Per ogni esercizio l'utente può visualizzarne i dettagli relativi ad ogni seduta di allenamento in cui esso viene svolto, tenere traccia della progressione dei carichi e del carico massimale attuale, anche atraverso la visione di un grafico animato.
+Per ogni esercizio l'utente può visualizzarne i dettagli relativi ad ogni seduta di allenamento, tenere traccia della progressione dei carichi e del carico massimale attuale, anche atraverso la visione di un grafico animato.
+
+
+### tab archivio
+il terzo tab è dedicato all'archivio delle schede di allenamento completate, ovvero tutte quelle già completate dal cliente 
+
+### tab chat
+l'ultima sezione presente nella homepage è quella dedicata al sistema di instant messaging integrato nell'applicazione, il quale permette al cliente di mantenersi in contatto con il coach per eventuali richieste e/o chiarimenti riguardanti il proprio percorso di coaching. La UI dell'interfaccia si presenta come una classica app di messaggistica, con un campo di testo e il pulsante di invio nella parte inferiore, ed una lista dedicata alla conversazione, in ordine crescente rispeto alla data di invio dei messaggi.
+
+
+
+
 
