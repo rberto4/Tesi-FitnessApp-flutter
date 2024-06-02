@@ -9,3 +9,7 @@ https://docs.flutter.dev/resources/architectural-overview
 ### utili per come scrivere trovare articoli ecc.
 https://tesinsieme.it/tesi-sperimentale-la-guida-completa-per-scriverla-in-6-passaggi/
 https://tesinsieme.it/3-3-modi-per-trovare-fonti-tesi-di-laurea/
+
+
+patter mvc
+https://rohaaan.hashnode.dev/mastering-the-mvc-pattern-in-flutter-a-guide-to-better-code-organization
