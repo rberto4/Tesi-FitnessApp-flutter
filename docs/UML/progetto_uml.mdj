@@ -47,7 +47,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -272,
-											"top": -512,
+											"top": -560,
 											"height": 13
 										},
 										{
@@ -58,7 +58,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 909,
-											"top": 351,
+											"top": 327,
 											"width": 447,
 											"height": 13,
 											"text": "Autenticazione"
@@ -72,7 +72,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -272,
-											"top": -512,
+											"top": -560,
 											"width": 38.27001953125,
 											"height": 13,
 											"text": "(from )"
@@ -86,14 +86,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -272,
-											"top": -512,
+											"top": -560,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 904,
-									"top": 344,
+									"top": 320,
 									"width": 457,
 									"height": 25,
 									"stereotypeLabel": {
@@ -112,7 +112,7 @@
 							],
 							"font": "Arial;13;0",
 							"left": 904,
-							"top": 344,
+							"top": 320,
 							"width": 456,
 							"height": 456,
 							"nameCompartment": {

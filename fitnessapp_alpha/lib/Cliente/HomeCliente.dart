@@ -4,6 +4,7 @@ import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
 import 'package:app_fitness_test_2/Cliente/svolgimentoAllenamento.dart';
+import 'package:app_fitness_test_2/Cliente/widgetTabella.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 import 'package:app_fitness_test_2/services/ChatModel.dart';
@@ -14,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 final DatabaseService _dbs = DatabaseService();
@@ -275,9 +277,11 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
           StreamBuilder(
               stream: _dbs.getSchedaCorrente(),
               builder: (context, snapshot) {
+                List lista = List.empty(growable: true);
+
                 if (snapshot.hasData) {
                   // SCHEDA PRESENTE
-                  List lista = snapshot.data!.docs;
+                  lista = snapshot.data!.docs;
                   Scheda scheda = lista[0].data();
                   schedaGlobal = scheda;
                   List<Allenamento> listaAllenamentiSelezionati =
@@ -323,28 +327,12 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: Card(
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: DataTable(
-                                    dividerThickness: 1,
-                                    columnSpacing: 16,
-                                    columns: const [
-                                      DataColumn(label: Text("N°")),
-                                      DataColumn(label: Text("Esercizio")),
-                                      DataColumn(label: Text("Serie")),
-                                      DataColumn(label: Text("Ripetizioni")),
-                                    ],
-                                    rows: getRowTabellaAllenamento(
-                                        indexAllenamenti,
-                                        listaAllenamentiSelezionati),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            widgetTabellaEsercizi(
+                                    lista_esercizi: listaAllenamentiSelezionati[
+                                            indexAllenamenti]
+                                        .listaEsercizi,
+                                    context: context)
+                                .creaTabella(),
                             // pulsante di avvio allenamento / visualizza allenamento passato
 
                             Padding(
@@ -498,26 +486,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
 
     return check;
   }
-
-  List<DataRow> getRowTabellaAllenamento(
-      int indexAllenamenti, List<Allenamento> listaAllenamentiSelezionati) {
-    List<DataRow> list = List.empty(growable: true);
-    int index = 1;
-    for (var a
-        in listaAllenamentiSelezionati[indexAllenamenti].listaEsercizi!) {
-      list.add(DataRow(cells: [
-        DataCell(Text("#$index")),
-        DataCell(Text(a.nomeEsercizio!)),
-        DataCell(Text(a.serieEsercizio!)),
-        DataCell(Text(a.ripetizioniEsercizio!.first)),
-      ]));
-      index++;
-    }
-
-    return list;
-  }
 }
-
 // pagina progressi
 
 class paginaProgressi extends StatefulWidget {
@@ -891,6 +860,7 @@ class _paginaChatState extends State<paginaChat> {
     );
   }
 }
+
 // pagina archivio
 
 class paginaArchivioSchede extends StatefulWidget {
@@ -902,8 +872,165 @@ class paginaArchivioSchede extends StatefulWidget {
 class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
   String nome_scheda_filtrato = "";
   TextEditingController searchbar_controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                "Archivio schede",
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+            // barra di ricerca
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 16, right: 0),
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: TextFormField(
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                  controller: searchbar_controller,
+                  textAlign: TextAlign.start,
+                  textAlignVertical: TextAlignVertical.center,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16.0),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      ),
+                      filled: false,
+                      alignLabelWithHint: true,
+                      hintText: "Cerca..",
+                      suffixIcon: Icon(
+                        Icons.search,
+                      ),
+                      prefixIcon: searchbar_controller.text.isNotEmpty
+                          ? IconButton(
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () {
+                                setState(() {
+                                  searchbar_controller.clear();
+                                });
+                              },
+                              icon: Icon(Icons.cancel_rounded))
+                          : null),
+                ),
+              ),
+            ),
+            StreamBuilder(
+              stream: _dbs.getTotaleSchede(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 64),
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasData) {
+                  final List<Scheda> schede =
+                      List.from(snapshot.data!.docs.map((e) => e.data()));
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: schede.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      if (searchbar_controller.text.isEmpty &&
+                          schede[index].nomeScheda!.toLowerCase().contains(
+                              searchbar_controller.text.toLowerCase())) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(top: 8, left: 8, right: 8),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  leading: Icon(Icons.note_alt_rounded),
+                                  title: Text(
+                                    schede[index].nomeScheda!,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 24),
+                                  ),
+                                ),
+                                ListTile(
+                                  title: Text("Dal  " +
+                                      DateFormat.yMd(
+                                              Locale('it', 'IT').countryCode)
+                                          .format(schede[index]
+                                              .inizioScheda!
+                                              .toDate()) +
+                                      "  al  " +
+                                      DateFormat.yMd(
+                                              Locale('it', 'IT').countryCode)
+                                          .format(schede[index]
+                                              .fineScheda!
+                                              .toDate())),
+                                ),
+                                Divider(),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount:
+                                      schede[index].allenamentiScheda!.length,
+                                  itemBuilder: (context, index_allenamenti) {
+                                    return ExpansionTile(
+                                      shape: Border(),
+                                      title: Text(schede[index]
+                                          .allenamentiScheda![index_allenamenti]
+                                          .nomeAllenamento!),
+                                      children: [
+                                        widgetTabellaEsercizi(
+                                                lista_esercizi: schede[index]
+                                                    .allenamentiScheda![
+                                                        index_allenamenti]
+                                                    .listaEsercizi!,
+                                                context: context)
+                                            .creaTabella()
+                                      ],
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                } else {
+                  return Text("no data");
+                }
+              },
+            ),
+            SizedBox(
+              height: 96,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

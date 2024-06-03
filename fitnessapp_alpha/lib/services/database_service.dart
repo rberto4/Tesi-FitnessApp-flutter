@@ -58,8 +58,8 @@ class DatabaseService {
         )
         .snapshots();
   }
-  // stream per recuperare l'ultima scheda ricevuta
 
+  // stream per recuperare l'ultima scheda ricevuta
   Stream<QuerySnapshot> getSchedaCorrente() {
     return _instance
         .collection(COLLEZIONE_UTENTI)
@@ -71,7 +71,6 @@ class DatabaseService {
           toFirestore: (value, options) => value.toFirestore(),
         )
         .where("fineScheda", isGreaterThanOrEqualTo: Timestamp.now())
-        .limit(1)
         .snapshots();
   }
 
