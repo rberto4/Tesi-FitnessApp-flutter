@@ -61,12 +61,17 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "FITNESSAPP",
-            style: TextStyle(letterSpacing: 2),
+          centerTitle: true,
+          toolbarHeight: 90,
+          title: Image.asset(
+            'lib/Immagini/Logo.png',
+            height: 150,
+            width: 150,
+            alignment: Alignment.bottomCenter,
           ),
           actions: [
             IconButton(
+                color: Theme.of(context).hintColor,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -974,20 +979,29 @@ class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 24),
                                   ),
+                                  trailing: index == 0
+                                      ? Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(48),
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  width: 1)),
+                                          child: Text(
+                                            "in uso",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      : null,
                                 ),
                                 ListTile(
-                                  title: Text("Dal  " +
-                                      DateFormat.yMd(
-                                              Locale('it', 'IT').countryCode)
-                                          .format(schede[index]
-                                              .inizioScheda!
-                                              .toDate()) +
-                                      "  al  " +
-                                      DateFormat.yMd(
-                                              Locale('it', 'IT').countryCode)
-                                          .format(schede[index]
-                                              .fineScheda!
-                                              .toDate())),
+                                  title: Text(
+                                      "Dal  ${DateFormat.yMd(Locale('it', 'IT').countryCode).format(schede[index].inizioScheda!.toDate())}  al  ${DateFormat.yMd(Locale('it', 'IT').countryCode).format(schede[index].fineScheda!.toDate())}"),
                                 ),
                                 Divider(),
                                 ListView.builder(

@@ -354,8 +354,10 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                           icon: const Icon(
                                               Icons.description_rounded),
                                           onPressed: () {
-                                            dialogNoteCoach(
-                                                _allenamento.noteAllenamento!);
+                                            dialogNoteCoach(_allenamento
+                                                .listaEsercizi![
+                                                    esercizioCorrente]
+                                                .noteEsercizio!);
                                           }),
                                     ),
                                     const Padding(

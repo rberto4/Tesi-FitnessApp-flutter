@@ -19,7 +19,47 @@ class widgetTabellaEsercizi {
           alignment: AlignmentDirectional.centerStart,
           child: IconButton(
             color: Theme.of(context).hintColor,
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      actionsAlignment: MainAxisAlignment.center,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      icon: const Icon(Icons.bookmark_rounded),
+                      title: Text(
+                        "Note per ${a.nomeEsercizio!}",
+                      ),
+                      content: Text(a.noteEsercizio!),
+                      actions: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                              icon: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: Icon(Icons.close),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              label: const Text("Chiudi"),
+                              style: ButtonStyle(
+                                  elevation: const MaterialStatePropertyAll(1),
+                                  backgroundColor:
+                                      const MaterialStatePropertyAll(
+                                          Colors.red),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  )))),
+                        )
+                      ],
+                    );
+                  });
+            },
             icon: Icon(Icons.sticky_note_2_rounded),
           ),
         ))

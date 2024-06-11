@@ -20,8 +20,8 @@ class _MainPageCoachState extends State<MainPageCoach> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      smartphoneScaffold: HomeSmartphone(),
-      tabletScaffold: HomeTablet(),
+      smartphoneScaffold: const HomeSmartphone(),
+      tabletScaffold: const HomeTablet(),
       desktopScaffold: HomeDesktop(),
     );
   }

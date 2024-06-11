@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unnecessary_import, unnecessary_late, prefer_const_constructors_in_immutables, non_constant_identifier_names, sized_box_for_whitespace
+// ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unnecessary_import, unnecessary_late, prefer_const_constructors_in_immutables, non_constant_identifier_names, sized_box_for_whitespace, must_be_immutable
 
 import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
@@ -153,8 +153,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                     height: 8,
                   ),
                   tileDrawer("CLIENTI", 0, Icons.people_rounded),
-                  tileDrawer("ESERCIZI", 1, Icons.fitness_center_rounded),
-                  tileDrawer("COACH", 2, Icons.person_2_rounded),
+                  tileDrawer("COACH", 1, Icons.person_2_rounded),
                   const Spacer(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -614,11 +613,9 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
         }
       case 1:
         {
-          return Text(_indexDrawer.toString());
-        }
-      case 2:
-        {
-          return Text(_indexDrawer.toString());
+          return Align(
+              alignment: Alignment.topLeft,
+              child: infoUtente(coach.username!, coach.email!));
         }
       default:
         return Placeholder();
@@ -779,7 +776,8 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
     switch (_indexTabcliente) {
       case 0:
         {
-          return infoCliente();
+          return infoUtente(coach.listaClientiSeguiti![_indexCliente].username!,
+              coach.listaClientiSeguiti![_indexCliente].email!);
         }
       case 1:
         {
@@ -795,7 +793,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
   }
 
 // elenco widget tab clienti + metodi
-  Widget infoCliente() {
+  Widget infoUtente(String username, String email) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -814,38 +812,14 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
-            coach.listaClientiSeguiti![_indexCliente].username!,
+            username,
             style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
           ),
         ),
         Divider(),
         ListTile(
           leading: Icon(Icons.email_rounded),
-          title: Text(coach.listaClientiSeguiti![_indexCliente].email!),
-        ),
-        Spacer(),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              height: 48,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    )),
-                    backgroundColor: MaterialStatePropertyAll(Colors.red)),
-                label: const Text(
-                  "Elimina cliente",
-                  style: TextStyle(color: Colors.white),
-                ),
-                icon: const Icon(Icons.delete_forever_rounded),
-                onPressed: () {},
-              ),
-            ),
-          ),
+          title: Text(email),
         ),
       ],
     );
@@ -1451,13 +1425,13 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
   void stampaTutto() {
     for (var a
         in schedaTextEditController.listaAllenamentiTextEditController!) {
-      print("Nome allenamento : " + a.TextEditController!.text);
+      print("Nome allenamento : ${a.TextEditController!.text}");
       for (var b in a.listaEserciziTextEditController!) {
-        print("- nome esercizio : " + b.TextEditControllerNome!.text);
-        print("- serie : " + b.TextEditControllerSerie!.text);
-        print("- ripetizioni: " + b.TextEditControllerRipetizioni!.text);
-        print("- recupero : " + b.TextEditControllerRecupero!.text);
-        print("- note : " + b.TextEditControllerNote!.text);
+        print("- nome esercizio : ${b.TextEditControllerNome.text}");
+        print("- serie : ${b.TextEditControllerSerie.text}");
+        print("- ripetizioni: ${b.TextEditControllerRipetizioni.text}");
+        print("- recupero : ${b.TextEditControllerRecupero.text}");
+        print("- note : ${b.TextEditControllerNote.text}");
       }
     }
   }
@@ -1543,6 +1517,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
       List<Esercizio> lista_esercizi = List.empty(growable: true);
       for (var b in a.listaEserciziTextEditController!) {
         lista_esercizi.add(Esercizio(
+            noteEsercizio: b.TextEditControllerNote.text,
             nomeEsercizio: b.TextEditControllerNome.text,
             serieEsercizio: b.TextEditControllerSerie.text,
             ripetizioniEsercizio: List.generate(
@@ -1555,7 +1530,6 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
       lista_allenamenti.add(Allenamento(
           nomeAllenamento: a.TextEditController!.text,
           listaEsercizi: lista_esercizi,
-          noteAllenamento: null,
           giorniAssegnati: List.empty(growable: true),
           feedbackAllenamento: ""));
     }
