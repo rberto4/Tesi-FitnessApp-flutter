@@ -20,13 +20,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 final DatabaseService _dbs = DatabaseService();
 
-Scheda schedaGlobal = Scheda(
-    nomeScheda: null,
-    allenamentiScheda: null,
-    inizioScheda: null,
-    fineScheda: null,
-    idScheda: null,
-    allenamentiSvolti: null);
+late Scheda schedaGlobal;
 
 class MainPageUtente extends StatefulWidget {
   const MainPageUtente({super.key});
@@ -36,19 +30,20 @@ class MainPageUtente extends StatefulWidget {
 }
 
 class _MainPageUtenteState extends State<MainPageUtente> {
-  late List<Widget> tabPages = List.empty(growable: true);
+  late List<Widget> _tabPages = List.empty(growable: true);
   int _selectedIndex = 0;
-  bool _isVisible = true;
-
-  updateBottomNavVisibility(bool b) {
-    setState(() {
-      _isVisible = b;
-    });
-  }
 
   @override
   void initState() {
-    tabPages = [
+    schedaGlobal = Scheda(
+        nomeScheda: null,
+        allenamentiScheda: null,
+        inizioScheda: null,
+        fineScheda: null,
+        idScheda: null,
+        allenamentiSvolti: null);
+
+    _tabPages = [
       const paginaSchedaCorrente(),
       const paginaProgressi(),
       const paginaArchivioSchede(),
@@ -127,7 +122,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                   const Divider(),
                   ListTile(
                       onTap: () {
-                        AuthenticationHelper().signOut().then((result) {
+                        AuthenticationService().signOut().then((result) {
                           if (result == null) {
                             Navigator.pushReplacement(
                                 context,
@@ -152,62 +147,59 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         // bottom nav bar
-        floatingActionButton: Visibility(
-          visible: _isVisible,
-          child: Container(
-            width: MediaQuery.of(context).size.width - 64,
-            constraints: const BoxConstraints(maxWidth: 400),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(48),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).shadowColor,
-                  spreadRadius: 1,
-                  blurRadius: 48.0,
-                ),
-              ],
-            ),
-            child: GNav(
-              rippleColor: Theme.of(context).focusColor,
-              hoverColor: Theme.of(context).hoverColor,
-              gap: 4,
-              activeColor: Colors.white,
-              iconSize: 24,
-              tabMargin: const EdgeInsets.all(4),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-              duration: const Duration(milliseconds: 500),
-              tabBackgroundColor: Theme.of(context).primaryColor,
-              color: Colors.grey,
-              tabs: const [
-                GButton(
-                  icon: Icons.calendar_month,
-                  text: 'Calendario',
-                ),
-                GButton(
-                  icon: Icons.bar_chart_rounded,
-                  text: 'Progressi',
-                ),
-                GButton(
-                  icon: Icons.folder,
-                  text: 'Archivio',
-                ),
-                GButton(
-                  icon: Icons.chat_rounded,
-                  text: 'Chat',
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
+        floatingActionButton: Container(
+          width: MediaQuery.of(context).size.width - 64,
+          constraints: const BoxConstraints(maxWidth: 400),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(48),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor,
+                spreadRadius: 1,
+                blurRadius: 48.0,
+              ),
+            ],
+          ),
+          child: GNav(
+            rippleColor: Theme.of(context).focusColor,
+            hoverColor: Theme.of(context).hoverColor,
+            gap: 4,
+            activeColor: Colors.white,
+            iconSize: 24,
+            tabMargin: const EdgeInsets.all(4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+            duration: const Duration(milliseconds: 500),
+            tabBackgroundColor: Theme.of(context).primaryColor,
+            color: Colors.grey,
+            tabs: const [
+              GButton(
+                icon: Icons.calendar_month,
+                text: 'Calendario',
+              ),
+              GButton(
+                icon: Icons.bar_chart_rounded,
+                text: 'Progressi',
+              ),
+              GButton(
+                icon: Icons.folder,
+                text: 'Archivio',
+              ),
+              GButton(
+                icon: Icons.chat_rounded,
+                text: 'Chat',
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
           ),
         ),
         resizeToAvoidBottomInset: true,
-        body: tabPages[_selectedIndex]);
+        body: _tabPages[_selectedIndex]);
   }
 }
 
@@ -223,12 +215,7 @@ class paginaSchedaCorrente extends StatefulWidget {
 
 // ignore: camel_case_types
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
-  late Timestamp selectedDay = Timestamp.now();
-  // ignore: non_constant_identifier_names
-  List<Allenamento?> lista_sedute_allenamenti = List.empty(growable: true);
-  final ScrollController scrollController = ScrollController();
-  // ignore: non_constant_identifier_names
-  bool btn_nav_bar_visibility = true;
+  late Timestamp _selectedDay = Timestamp.now();
   _paginaSchedaCorrenteState();
 
   @override
@@ -272,10 +259,10 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                   monthStrStyle: Theme.of(context).textTheme.headlineSmall),
             ),
             locale: "it_IT",
-            initialDate: selectedDay.toDate(),
+            initialDate: _selectedDay.toDate(),
             onDateChange: (selectedDate) {
               setState(() {
-                selectedDay = Timestamp.fromDate(selectedDate);
+                _selectedDay = Timestamp.fromDate(selectedDate);
               });
             },
           ),
@@ -296,7 +283,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
 
                   listaAllenamentiSelezionati =
                       allenamentiPerIlGiornoSelezionato(
-                          scheda, selectedDay.toDate());
+                          scheda, _selectedDay.toDate());
 
                   if (listaAllenamentiSelezionati.isNotEmpty) {
                     return ListView.builder(
@@ -333,7 +320,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                               ),
                             ),
                             widgetTabellaEsercizi(
-                                    lista_esercizi: listaAllenamentiSelezionati[
+                                    listaEsercizi: listaAllenamentiSelezionati[
                                             indexAllenamenti]
                                         .listaEsercizi,
                                     context: context)
@@ -358,7 +345,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                 scheda,
                                                 listaAllenamentiSelezionati[
                                                     indexAllenamenti],
-                                                selectedDay.toDate())
+                                                _selectedDay.toDate())
                                             ? Colors.red
                                             : Colors.blue),
                                   ),
@@ -367,7 +354,7 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                             scheda,
                                             listaAllenamentiSelezionati[
                                                 indexAllenamenti],
-                                            selectedDay.toDate())
+                                            _selectedDay.toDate())
                                         ? "Allenamento"
                                         : "Resoconto allenamento",
                                     style: TextStyle(color: Colors.white),
@@ -382,7 +369,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                                     listaAllenamentiSelezionati[
                                                         indexAllenamenti],
                                                 scheda: scheda,
-                                                dataSelezionata: selectedDay)));
+                                                dataSelezionata:
+                                                    _selectedDay)));
                                   },
                                 ),
                               ),
@@ -502,7 +490,7 @@ class paginaProgressi extends StatefulWidget {
 }
 
 class paginaProgressiState extends State<paginaProgressi> {
-  int? _index_allenamento_filtrato;
+  int? _indexAllenamentoFiltrato;
 
   @override
   Widget build(BuildContext context) {
@@ -519,7 +507,7 @@ class paginaProgressiState extends State<paginaProgressi> {
             // pulsante annulla filtri
 
             trailing: Visibility(
-              visible: (_index_allenamento_filtrato == null) ? false : true,
+              visible: (_indexAllenamentoFiltrato == null) ? false : true,
               child: Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -527,7 +515,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                 child: IconButton(
                   onPressed: () {
                     setState(() {
-                      _index_allenamento_filtrato = null;
+                      _indexAllenamentoFiltrato = null;
                     });
                   },
                   icon: const Icon(Icons.filter_list_off_rounded),
@@ -559,14 +547,14 @@ class paginaProgressiState extends State<paginaProgressi> {
                   label: Text(
                     schedaGlobal.allenamentiScheda![index].nomeAllenamento!,
                     style: TextStyle(
-                        color: _index_allenamento_filtrato == index
+                        color: _indexAllenamentoFiltrato == index
                             ? Colors.white
                             : null),
                   ),
-                  selected: _index_allenamento_filtrato == index,
+                  selected: _indexAllenamentoFiltrato == index,
                   onSelected: (bool selected) {
                     setState(() {
-                      _index_allenamento_filtrato = selected ? index : null;
+                      _indexAllenamentoFiltrato = selected ? index : null;
                     });
                   },
                 );
@@ -664,26 +652,26 @@ class paginaProgressiState extends State<paginaProgressi> {
 
   int getLenghtEsercizi() {
     int lenght = 0;
-    if (_index_allenamento_filtrato == null) {
+    if (_indexAllenamentoFiltrato == null) {
       for (var element in schedaGlobal.allenamentiScheda!) {
         lenght = lenght + element.listaEsercizi!.length;
       }
     } else {
-      lenght = schedaGlobal.allenamentiScheda![_index_allenamento_filtrato!]
-          .listaEsercizi!.length;
+      lenght = schedaGlobal
+          .allenamentiScheda![_indexAllenamentoFiltrato!].listaEsercizi!.length;
     }
     return lenght;
   }
 
   List<Esercizio> getListaEsercizi() {
     List<Esercizio> list = List.empty(growable: true);
-    if (_index_allenamento_filtrato == null) {
+    if (_indexAllenamentoFiltrato == null) {
       for (var element in schedaGlobal.allenamentiScheda!) {
         list.addAll(element.listaEsercizi!);
       }
     } else {
       list.addAll(schedaGlobal
-          .allenamentiScheda![_index_allenamento_filtrato!].listaEsercizi!);
+          .allenamentiScheda![_indexAllenamentoFiltrato!].listaEsercizi!);
     }
     return list;
   }
@@ -769,7 +757,7 @@ class paginaChat extends StatefulWidget {
 }
 
 class _paginaChatState extends State<paginaChat> {
-  List<CoachModel> lista_contatti = List.empty(growable: true);
+  List<Coach> listaCoach = List.empty(growable: true);
 
   @override
   Widget build(BuildContext context) {
@@ -786,23 +774,22 @@ class _paginaChatState extends State<paginaChat> {
             height: 16,
           ),
           StreamBuilder(
-            stream: _dbs.getListaContatti(),
+            stream: _dbs.getListaCoach(),
             builder: (context, snapshot) {
-              lista_contatti.clear();
+              listaCoach.clear();
 
               if (snapshot.hasData) {
                 for (var a in snapshot.data!.docs) {
-                  lista_contatti.add(CoachModel(
-                      listaEserciziStandard: null,
-                      listaClientiSeguiti: null,
-                      username: a.data().username,
-                      email: a.data().email,
-                      uid: a.id));
+                  for (var b in a.data().listaClientiSeguiti!) {
+                    if (b.uid == _dbs.uid_user_loggato) {
+                      listaCoach.add(a.data());
+                    }
+                  }
                 }
 
                 return ListView.builder(
                   shrinkWrap: true,
-                  itemCount: lista_contatti.length,
+                  itemCount: listaCoach.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () async {
@@ -811,9 +798,9 @@ class _paginaChatState extends State<paginaChat> {
                         if (await _dbs
                             .getInstanceDb()
                             .collection(_dbs.getCollezioneUtenti())
-                            .doc(_dbs.getAuth().currentUser!.uid)
+                            .doc(_dbs.uid_user_loggato)
                             .collection(_dbs.getCollezioneChat())
-                            .doc(lista_contatti[index].uid!)
+                            .doc(listaCoach[index].uid!)
                             .get()
                             .then((value) => !value.exists)) {
                           _dbs
@@ -821,7 +808,7 @@ class _paginaChatState extends State<paginaChat> {
                               .collection(_dbs.getCollezioneUtenti())
                               .doc(_dbs.getAuth().currentUser!.uid)
                               .collection(_dbs.getCollezioneChat())
-                              .doc(lista_contatti[index].uid!)
+                              .doc(listaCoach[index].uid!)
                               .set(Chat(listaMessaggi: List.empty())
                                   .toFirestore());
                         }
@@ -830,24 +817,18 @@ class _paginaChatState extends State<paginaChat> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => conversazioneChat(
-                                    coachModel: lista_contatti[index],
+                                    coachModel: listaCoach[index],
                                     mittenteCoach: false,
                                     uidDestinatarioCLiente: "",
                                   )),
                         );
                       },
                       child: ListTile(
-                        leading: CircleAvatar(
-                          child: Text(
-                            "AP",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        subtitle: Text(lista_contatti[index].email!),
+                        leading:
+                            CircleAvatar(child: Icon(Icons.person_rounded)),
+                        subtitle: Text(listaCoach[index].email!),
                         title: Text(
-                          lista_contatti[index].username!,
+                          listaCoach[index].username!,
                           style: TextStyle(fontSize: 18),
                         ),
                         trailing: Icon(Icons.arrow_forward_ios_rounded),
@@ -875,7 +856,6 @@ class paginaArchivioSchede extends StatefulWidget {
 }
 
 class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
-  String nome_scheda_filtrato = "";
   TextEditingController searchbar_controller = TextEditingController();
 
   @override
@@ -901,7 +881,7 @@ class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: TextFormField(
+                child: TextField(
                   onChanged: (value) {
                     setState(() {});
                   },
@@ -1017,7 +997,7 @@ class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
                                           .nomeAllenamento!),
                                       children: [
                                         widgetTabellaEsercizi(
-                                                lista_esercizi: schede[index]
+                                                listaEsercizi: schede[index]
                                                     .allenamentiScheda![
                                                         index_allenamenti]
                                                     .listaEsercizi!,
@@ -1032,6 +1012,7 @@ class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
                           ),
                         );
                       }
+                      return null;
                     },
                   );
                 } else {

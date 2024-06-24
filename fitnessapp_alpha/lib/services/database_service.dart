@@ -9,14 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 const String COLLEZIONE_UTENTI = "users";
 const String COLLEZIONE_SCHEDE = "schede";
 const String COLLEZIONE_CHAT = "chat";
-const String COLLEZIONE_COACHES = "coaches";
+const String COLLEZIONE_COACHES = "coach";
 
 class DatabaseService {
   late final FirebaseAuth _auth = FirebaseAuth.instance;
   late String uid_user_loggato = _auth.currentUser!.uid;
   final FirebaseFirestore _instance = FirebaseFirestore.instance;
-  late final DocumentReference _doc_reference;
-  late final Query _col_reference_schedacorrente;
 
   DatabaseService();
 
@@ -43,20 +41,6 @@ class DatabaseService {
 
   FirebaseAuth getAuth() {
     return _auth;
-  }
-
-  // stream per dettagli documento utente
-
-  Stream<DocumentSnapshot> getDocumentoUtenteStream() {
-    return _instance
-        .collection(COLLEZIONE_UTENTI)
-        .doc(uid_user_loggato)
-        .withConverter<UserModel>(
-          fromFirestore: (snapshot, options) =>
-              UserModel.fromFirestore(snapshot.data()!),
-          toFirestore: (value, options) => value.toFirestore(),
-        )
-        .snapshots();
   }
 
   // stream per recuperare l'ultima scheda ricevuta
@@ -144,19 +128,19 @@ class DatabaseService {
   }
 
   // ottengo una lista di Coach
-  Stream<QuerySnapshot<CoachModel>> getListaContatti() {
+  Stream<QuerySnapshot<Coach>> getListaCoach() {
     return _instance
         .collection(COLLEZIONE_COACHES)
-        .withConverter<CoachModel>(
+        .withConverter<Coach>(
           fromFirestore: (snapshot, options) =>
-              CoachModel.fromFirestore(snapshot.data()!),
+              Coach.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
         .snapshots();
   }
 
 // lista di tutti i dati dei coach - utile per lista tutti i clienti o di esercizi standard creati dal coach
-
+/*
   Stream<DocumentSnapshot<CoachModel>> getStreamCoach() {
     return _instance
         .collection(COLLEZIONE_COACHES)
@@ -168,14 +152,15 @@ class DatabaseService {
         )
         .snapshots();
   }
+  */
 
-  Future<CoachModel> getDataCoach() async {
+  Future<Coach> getDataCoach() async {
     return _instance
         .collection(COLLEZIONE_COACHES)
         .doc(uid_user_loggato)
-        .withConverter<CoachModel>(
+        .withConverter<Coach>(
           fromFirestore: (snapshot, options) =>
-              CoachModel.fromFirestore(snapshot.data()!),
+              Coach.fromFirestore(snapshot.data()!),
           toFirestore: (value, options) => value.toFirestore(),
         )
         .get()
@@ -184,10 +169,21 @@ class DatabaseService {
     });
   }
 
-  Future<DocumentSnapshot> checkIsCoach() async {
+  Future<DocumentSnapshot> controlloSeUtenteCoach() async {
     return await _instance
         .collection(COLLEZIONE_COACHES)
         .doc(_auth.currentUser!.uid)
         .get();
+  }
+
+  Stream<QuerySnapshot<Cliente>> getListaTotaleClienti() {
+    return _instance
+        .collection(COLLEZIONE_UTENTI)
+        .withConverter<Cliente>(
+          fromFirestore: (snapshot, options) =>
+              Cliente.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => value.toFirestore(),
+        )
+        .snapshots();
   }
 }

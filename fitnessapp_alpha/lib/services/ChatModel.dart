@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Chat {
@@ -16,6 +18,8 @@ class Chat {
   }
 
   Map<String, dynamic> toFirestore() {
+    // stream per dettagli documento utente
+
     return {
       if (listaMessaggi != null)
         "listaMessaggi": listaMessaggi?.map((e) => e.toFirestore()),

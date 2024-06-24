@@ -10,7 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class conversazioneChat extends StatefulWidget {
-  CoachModel coachModel;
+  Coach coachModel;
   String uidDestinatarioCLiente;
   bool mittenteCoach;
 
@@ -30,7 +30,7 @@ class _conversazioneChatState extends State<conversazioneChat> {
   final DatabaseService _dbs = DatabaseService();
   final TextEditingController _textEditingController = TextEditingController();
   late Chat? chat;
-  late CoachModel coachModel;
+  late Coach coachModel;
   bool mittenteCoach;
   String uidDestinatarioCLiente;
 

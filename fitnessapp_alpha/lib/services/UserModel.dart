@@ -1,74 +1,48 @@
 // ignore_for_file: file_names
-
-import 'package:app_fitness_test_2/services/SchedaModel.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-class UserModel {
+class User {
   String? username;
   String? email;
   String? uid;
-
-  UserModel({required this.username, required this.email, this.uid});
-
-  factory UserModel.fromFirestore(Map<String, dynamic> json) {
-    return UserModel(
-      username: json['username'],
-      email: json['email'],
-    );
-  }
-
-  Map<String, Object?> toFirestore() {
-    return {
-      if (username != null) "username": username,
-      if (email != null) "email": email,
-    };
-  }
+  User({required this.username, required this.email, required this.uid});
 }
 
-class CoachModel extends UserModel {
-  List<ClienteModel>? listaClientiSeguiti;
-  List<Esercizio>? listaEserciziStandard;
+class Coach extends User {
+  List<Cliente>? listaClientiSeguiti;
 
-  CoachModel(
+  Coach(
       {required this.listaClientiSeguiti,
-      required this.listaEserciziStandard,
       required super.username,
       required super.email,
-      super.uid});
+      required super.uid});
 
-  factory CoachModel.fromFirestore(Map<String, dynamic> json) {
+  factory Coach.fromFirestore(Map<String, dynamic> json) {
     var listaClientiSeguiti = json['listaClientiSeguiti'] as List;
-    List<ClienteModel> listaClientiSeguitiLocal =
-        listaClientiSeguiti.map((i) => ClienteModel.fromFirestore(i)).toList();
+    List<Cliente> listaClientiSeguitiLocal =
+        listaClientiSeguiti.map((i) => Cliente.fromFirestore(i)).toList();
 
-    var listaEserciziStandard = json['listaEserciziStandard'] as List;
-    List<Esercizio> listaEserciziStandardLocal =
-        listaEserciziStandard.map((i) => Esercizio.fromFirestore(i)).toList();
-    return CoachModel(
+    return Coach(
         username: json['username'],
         email: json['email'],
-        listaClientiSeguiti: listaClientiSeguitiLocal,
-        listaEserciziStandard: listaEserciziStandardLocal);
+        uid: json['uid'],
+        listaClientiSeguiti: listaClientiSeguitiLocal);
   }
 
   Map<String, Object?> toFirestore() {
     return {
       if (username != null) "username": username,
       if (email != null) "email": email,
+      if (uid != null) "uid": uid,
       if (listaClientiSeguiti != null)
-        "listaClientiSeguiti": listaClientiSeguiti,
-      if (listaEserciziStandard != null)
-        "listaEserciziStandard": listaEserciziStandard,
+        "listaClientiSeguiti": listaClientiSeguiti?.map((e) => e.toFirestore()),
     };
   }
 }
 
-class ClienteModel extends UserModel {
-  ClienteModel(
-      {required super.username, required super.email, required super.uid});
+class Cliente extends User {
+  Cliente({required super.username, required super.email, required super.uid});
 
-  factory ClienteModel.fromFirestore(Map<String, dynamic> json) {
-    return ClienteModel(
+  factory Cliente.fromFirestore(Map<String, dynamic> json) {
+    return Cliente(
         username: json['username'], email: json['email'], uid: json['uid']);
   }
 

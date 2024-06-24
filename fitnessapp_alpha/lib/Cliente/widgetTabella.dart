@@ -1,15 +1,17 @@
+// ignore_for_file: file_names, camel_case_types, prefer_typing_uninitialized_variables
+
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:flutter/material.dart';
 
 class widgetTabellaEsercizi {
-  List<Esercizio>? lista_esercizi;
+  List<Esercizio>? listaEsercizi;
   var context;
-  widgetTabellaEsercizi({required this.lista_esercizi, required this.context});
+  widgetTabellaEsercizi({required this.listaEsercizi, required this.context});
 
   List<DataRow> _getRow() {
     List<DataRow> list = List.empty(growable: true);
     int index = 1;
-    for (var a in lista_esercizi!) {
+    for (var a in listaEsercizi!) {
       list.add(DataRow(cells: [
         DataCell(Text("#$index")),
         DataCell(Text(a.nomeEsercizio!)),
@@ -60,7 +62,7 @@ class widgetTabellaEsercizi {
                     );
                   });
             },
-            icon: Icon(Icons.sticky_note_2_rounded),
+            icon: const Icon(Icons.sticky_note_2_rounded),
           ),
         ))
       ]));

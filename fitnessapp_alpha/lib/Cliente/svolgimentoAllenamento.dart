@@ -40,9 +40,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
 
 // controllers per ripetizioni e serie
 
-  late final List<TextEditingController> _lista_controllers_ripetizioni =
+  late final List<TextEditingController> _listaControllersRipetizioni =
       List.empty(growable: true);
-  late final List<TextEditingController> _lista_controllers_carichi =
+  late final List<TextEditingController> _listaControllersCarichi =
       List.empty(growable: true);
 
 // controller per il campo di testo dei feedback
@@ -369,7 +369,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                       padding: const EdgeInsets.only(
                                           left: 16, right: 16, bottom: 8),
                                       child: TextFormField(
-                                        controller: _lista_controllers_carichi[
+                                        controller: _listaControllersCarichi[
                                             getIndexControllers(
                                                 index_esercizi, index_serie)],
                                         textAlign: TextAlign.right,
@@ -404,7 +404,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                           left: 16, right: 16, bottom: 16),
                                       child: TextFormField(
                                         controller:
-                                            _lista_controllers_ripetizioni[
+                                            _listaControllersRipetizioni[
                                                 getIndexControllers(
                                                     index_esercizi,
                                                     index_serie)],
@@ -451,7 +451,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                               horizontal: 16),
                                       horizontalTitleGap: 8,
                                       trailing: Text(
-                                        "${_lista_controllers_carichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
+                                        "${_listaControllersCarichi[getIndexControllers(index_esercizi, index_serie)].text}Kg",
                                         style: TextStyle(
                                             color: Theme.of(context).hintColor),
                                       ),
@@ -481,7 +481,7 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
             )
           ],
@@ -580,9 +580,9 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
           b < _allenamento.listaEsercizi![a].carichiEsercizio!.length;
           b++) {
         _allenamento.listaEsercizi![a].carichiEsercizio![b] =
-            _lista_controllers_carichi[i].text;
+            _listaControllersCarichi[i].text;
         _allenamento.listaEsercizi![a].ripetizioniEsercizio![b] =
-            _lista_controllers_ripetizioni[i].text;
+            _listaControllersRipetizioni[i].text;
         i++;
       }
     }
@@ -774,8 +774,8 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
   }
 
   void inizializzaTextControllers() {
-    _lista_controllers_carichi.clear();
-    _lista_controllers_ripetizioni.clear();
+    _listaControllersCarichi.clear();
+    _listaControllersRipetizioni.clear();
 
     if (modalitaAllenamento) {
       for (var a in _allenamento.listaEsercizi!) {
@@ -783,14 +783,14 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
           TextEditingController t = TextEditingController.fromValue(
               TextEditingValue(text: a.ripetizioniEsercizio![b]));
 
-          _lista_controllers_ripetizioni.add(t);
+          _listaControllersRipetizioni.add(t);
         }
 
         for (int c = 0; c < a.carichiEsercizio!.length; c++) {
           TextEditingController t = TextEditingController.fromValue(
               TextEditingValue(text: a.carichiEsercizio![c]));
 
-          _lista_controllers_carichi.add(t);
+          _listaControllersCarichi.add(t);
         }
       }
     } else {
@@ -801,14 +801,14 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
           TextEditingController t = TextEditingController.fromValue(
               TextEditingValue(text: a.ripetizioniEsercizio![b]));
 
-          _lista_controllers_ripetizioni.add(t);
+          _listaControllersRipetizioni.add(t);
         }
 
         for (int c = 0; c < a.carichiEsercizio!.length; c++) {
           TextEditingController t = TextEditingController.fromValue(
               TextEditingValue(text: a.carichiEsercizio![c]));
 
-          _lista_controllers_carichi.add(t);
+          _listaControllersCarichi.add(t);
         }
       }
     }

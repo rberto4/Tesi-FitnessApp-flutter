@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unnecessary_import, unnecessary_late, prefer_const_constructors_in_immutables, non_constant_identifier_names, sized_box_for_whitespace, must_be_immutable
+// ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unnecessary_import, unnecessary_late, prefer_const_constructors_in_immutables, non_constant_identifier_names, sized_box_for_whitespace, must_be_immutable, no_logic_in_create_state
 
 import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
@@ -8,34 +8,25 @@ import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class HomeDesktop extends StatelessWidget {
-  CoachModel coach = CoachModel(
-      listaClientiSeguiti: null,
-      listaEserciziStandard: null,
-      username: null,
-      email: null);
-  DatabaseService _dbs = DatabaseService();
+  final DatabaseService _dbs = DatabaseService();
 
   HomeDesktop({super.key});
-
-  Future<void> ottieniDati() async {
-    coach = await _dbs.getDataCoach();
-  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ottieniDati(),
+      future: _dbs.getDataCoach(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else if (!snapshot.hasData) {
+        } else if (snapshot.hasData) {
+          Coach coach = snapshot.data!;
           return paginaPrincipale(
             coach: coach,
             dbs: _dbs,
@@ -51,7 +42,7 @@ class HomeDesktop extends StatelessWidget {
 }
 
 class paginaPrincipale extends StatefulWidget {
-  late CoachModel coach;
+  late Coach coach;
   late DatabaseService dbs;
   paginaPrincipale({super.key, required this.coach, required this.dbs});
 
@@ -60,8 +51,8 @@ class paginaPrincipale extends StatefulWidget {
 }
 
 class _paginaPrincipaleState extends State<paginaPrincipale> {
-  late CoachModel coach;
-  late DatabaseService _dbs;
+  late Coach coach;
+  late final DatabaseService _dbs;
   int _indexDrawer = 0;
   int _indexCliente = 0;
   int _indexTabcliente = 0;
@@ -169,9 +160,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: selettorePagine(),
-            ),
+                padding: const EdgeInsets.all(16.0), child: selettorePagine()),
           )
         ],
       ),
@@ -251,137 +240,162 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                     const SizedBox(
                       height: 16,
                     ),
-                    ListView.builder(
-                      itemCount: coach.listaClientiSeguiti!.length,
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        if (cercaClientiTextEditController.text.isEmpty) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _indexCliente = index;
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: _indexCliente == index
-                                        ? Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.3)
-                                        : null),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            coach.listaClientiSeguiti![index]
-                                                .username!,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: _indexCliente != index
-                                                    ? Theme.of(context)
-                                                        .hintColor
-                                                    : null),
-                                          ),
-                                          Text(
-                                            coach.listaClientiSeguiti![index]
-                                                .email!,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                                color: _indexCliente == index
-                                                    ? null
-                                                    : Theme.of(context)
-                                                        .hintColor),
-                                          ),
-                                        ],
+                    coach.listaClientiSeguiti!.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: coach.listaClientiSeguiti!.length,
+                            shrinkWrap: true,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              if (cercaClientiTextEditController.text.isEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _indexCliente = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: _indexCliente == index
+                                              ? Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.3)
+                                              : null),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  coach
+                                                      .listaClientiSeguiti![
+                                                          index]
+                                                      .username!,
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: _indexCliente !=
+                                                              index
+                                                          ? Theme.of(context)
+                                                              .hintColor
+                                                          : null),
+                                                ),
+                                                Text(
+                                                  coach
+                                                      .listaClientiSeguiti![
+                                                          index]
+                                                      .email!,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
+                                                      color: _indexCliente ==
+                                                              index
+                                                          ? null
+                                                          : Theme.of(context)
+                                                              .hintColor),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          );
-                        } else if (coach.listaClientiSeguiti![index].username!
-                            .toLowerCase()
-                            .contains(cercaClientiTextEditController.text
-                                .toLowerCase())) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _indexCliente = index;
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: _indexCliente == index
-                                        ? Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.3)
-                                        : null),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            coach.listaClientiSeguiti![index]
-                                                .username!,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: _indexCliente != index
-                                                    ? Theme.of(context)
-                                                        .hintColor
-                                                    : null),
-                                          ),
-                                          Text(
-                                            coach.listaClientiSeguiti![index]
-                                                .email!,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                                color: _indexCliente == index
-                                                    ? null
-                                                    : Theme.of(context)
-                                                        .hintColor),
-                                          ),
-                                        ],
+                                );
+                              } else if (coach
+                                  .listaClientiSeguiti![index].username!
+                                  .toLowerCase()
+                                  .contains(cercaClientiTextEditController.text
+                                      .toLowerCase())) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _indexCliente = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: _indexCliente == index
+                                              ? Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.3)
+                                              : null),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  coach
+                                                      .listaClientiSeguiti![
+                                                          index]
+                                                      .username!,
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: _indexCliente !=
+                                                              index
+                                                          ? Theme.of(context)
+                                                              .hintColor
+                                                          : null),
+                                                ),
+                                                Text(
+                                                  coach
+                                                      .listaClientiSeguiti![
+                                                          index]
+                                                      .email!,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
+                                                      color: _indexCliente ==
+                                                              index
+                                                          ? null
+                                                          : Theme.of(context)
+                                                              .hintColor),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return SizedBox();
-                        }
-                      },
-                    ),
+                                );
+                              } else {
+                                return SizedBox();
+                              }
+                            },
+                          )
+                        : Expanded(
+                            child: Center(
+                                child: Text("Nessun cliente collegato"))),
                     const SizedBox(
                       height: 8,
                     ),
@@ -403,7 +417,9 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                           style: TextStyle(color: Colors.white),
                         ),
                         icon: const Icon(Icons.add_rounded),
-                        onPressed: () {},
+                        onPressed: () {
+                          showNuovoClienteDialog(context);
+                        },
                       ),
                     ),
                   ],
@@ -412,202 +428,225 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
               SizedBox(
                 width: 16,
               ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            pulsanteNavigazioneClienteTab(
-                                "Info cliente",
-                                0,
-                                Icons.note_alt_rounded,
-                                _indexTabcliente,
-                                navigaTab),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            pulsanteNavigazioneClienteTab(
-                                "Schede",
-                                1,
-                                Icons.archive_sharp,
-                                _indexTabcliente,
-                                navigaTab),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            pulsanteNavigazioneClienteTab(
-                                "Nuova scheda",
-                                2,
-                                Icons.edit_calendar_rounded,
-                                _indexTabcliente,
-                                navigaTab),
-                            Spacer(),
-                            // pulsante visibilita chat
 
-                            SizedBox(
-                              height: 48,
-                              child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                    elevation: MaterialStatePropertyAll(0),
-                                    alignment: Alignment.centerLeft,
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                    )),
-                                    backgroundColor: _chatVisibile
-                                        ? MaterialStatePropertyAll(
-                                            Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(0.3))
-                                        : MaterialStatePropertyAll(
-                                            Theme.of(context).cardColor)),
-                                onPressed: () async {
-                                  // serve per creare il documento qualora fosse la prima volta che si usa la chat per l'utente selezionato
-                                  if (await _dbs
-                                      .getInstanceDb()
-                                      .collection(_dbs.getCollezioneUtenti())
-                                      .doc(coach
-                                          .listaClientiSeguiti![_indexCliente]
-                                          .uid!)
-                                      .collection(_dbs.getCollezioneChat())
-                                      .doc(_dbs.uid_user_loggato)
-                                      .get()
-                                      .then((value) => !value.exists)) {
-                                    _dbs
-                                        .getInstanceDb()
-                                        .collection(_dbs.getCollezioneUtenti())
-                                        .doc(coach
-                                            .listaClientiSeguiti![_indexCliente]
-                                            .uid!)
-                                        .collection(_dbs.getCollezioneChat())
-                                        .doc(_dbs.uid_user_loggato)
-                                        .set(Chat(listaMessaggi: List.empty())
-                                            .toFirestore());
-                                  }
-                                  setState(() {
-                                    _chatVisibile = !_chatVisibile;
-                                    if (drawerEspanso) {
-                                      drawerEspanso = !drawerEspanso;
-                                      larghezzaDrawer == 200
-                                          ? larghezzaDrawer = 80
-                                          : larghezzaDrawer = 200;
-                                    }
-                                  });
-                                },
-                                icon: _chatVisibile == true
-                                    ? Icon(
-                                        Icons.visibility_rounded,
-                                        color: Theme.of(context)
-                                            .hintColor
-                                            .withOpacity(0.8),
-                                      )
-                                    : Icon(
-                                        Icons.visibility_off_rounded,
-                                        color: Theme.of(context)
-                                            .hintColor
-                                            .withOpacity(0.8),
+              coach.listaClientiSeguiti!.isNotEmpty
+                  ? Expanded(
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(16)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  pulsanteNavigazioneClienteTab(
+                                      "Info cliente",
+                                      0,
+                                      Icons.note_alt_rounded,
+                                      _indexTabcliente,
+                                      navigaTab),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  pulsanteNavigazioneClienteTab(
+                                      "Schede",
+                                      1,
+                                      Icons.archive_sharp,
+                                      _indexTabcliente,
+                                      navigaTab),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  pulsanteNavigazioneClienteTab(
+                                      "Nuova scheda",
+                                      2,
+                                      Icons.edit_calendar_rounded,
+                                      _indexTabcliente,
+                                      navigaTab),
+                                  Spacer(),
+                                  // pulsante visibilita chat
+
+                                  SizedBox(
+                                    height: 48,
+                                    child: ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                          elevation:
+                                              MaterialStatePropertyAll(0),
+                                          alignment: Alignment.centerLeft,
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          )),
+                                          backgroundColor: _chatVisibile
+                                              ? MaterialStatePropertyAll(
+                                                  Theme.of(context)
+                                                      .primaryColor
+                                                      .withOpacity(0.3))
+                                              : MaterialStatePropertyAll(
+                                                  Theme.of(context).cardColor)),
+                                      onPressed: () async {
+                                        // serve per creare il documento qualora fosse la prima volta che si usa la chat per l'utente selezionato
+                                        if (await _dbs
+                                            .getInstanceDb()
+                                            .collection(
+                                                _dbs.getCollezioneUtenti())
+                                            .doc(coach
+                                                .listaClientiSeguiti![
+                                                    _indexCliente]
+                                                .uid!)
+                                            .collection(
+                                                _dbs.getCollezioneChat())
+                                            .doc(_dbs.uid_user_loggato)
+                                            .get()
+                                            .then((value) => !value.exists)) {
+                                          _dbs
+                                              .getInstanceDb()
+                                              .collection(
+                                                  _dbs.getCollezioneUtenti())
+                                              .doc(coach
+                                                  .listaClientiSeguiti![
+                                                      _indexCliente]
+                                                  .uid!)
+                                              .collection(
+                                                  _dbs.getCollezioneChat())
+                                              .doc(_dbs.uid_user_loggato)
+                                              .set(Chat(
+                                                      listaMessaggi:
+                                                          List.empty())
+                                                  .toFirestore());
+                                        }
+                                        setState(() {
+                                          _chatVisibile = !_chatVisibile;
+                                          if (drawerEspanso) {
+                                            drawerEspanso = !drawerEspanso;
+                                            larghezzaDrawer == 200
+                                                ? larghezzaDrawer = 80
+                                                : larghezzaDrawer = 200;
+                                          }
+                                        });
+                                      },
+                                      icon: _chatVisibile == true
+                                          ? Icon(
+                                              Icons.visibility_rounded,
+                                              color: Theme.of(context)
+                                                  .hintColor
+                                                  .withOpacity(0.8),
+                                            )
+                                          : Icon(
+                                              Icons.visibility_off_rounded,
+                                              color: Theme.of(context)
+                                                  .hintColor
+                                                  .withOpacity(0.8),
+                                            ),
+                                      label: Text(
+                                        "Chat",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context).hintColor),
                                       ),
-                                label: Text(
-                                  "Chat",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).hintColor),
-                                ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          // Widget tabs
+
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Expanded(child: selettoreTabsPaginaCLiente())
+                        ],
                       ),
-                    ),
-
-                    // Widget tabs
-
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Expanded(child: selettoreTabsPaginaCLiente())
-                  ],
-                ),
-              ),
+                    )
+                  : Container(),
 
               // riquadro chat
 
-              AnimatedCrossFade(
-                firstChild: SizedBox(
-                  width: 350,
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: SizedBox(
-                          height: 64,
-                          width: double.infinity,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                CircleAvatar(child: Icon(Icons.person_rounded)),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      coach.listaClientiSeguiti![_indexCliente]
-                                          .username!,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+              coach.listaClientiSeguiti!.isNotEmpty
+                  ? AnimatedCrossFade(
+                      firstChild: SizedBox(
+                        width: 350,
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: SizedBox(
+                                height: 64,
+                                width: double.infinity,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).cardColor,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 16,
                                       ),
-                                    ),
-                                    Text(
-                                      coach.listaClientiSeguiti![_indexCliente]
-                                          .email!,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
+                                      CircleAvatar(
+                                          child: Icon(Icons.person_rounded)),
+                                      SizedBox(
+                                        width: 8,
                                       ),
-                                    ),
-                                  ],
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            coach
+                                                .listaClientiSeguiti![
+                                                    _indexCliente]
+                                                .username!,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            coach
+                                                .listaClientiSeguiti![
+                                                    _indexCliente]
+                                                .email!,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Expanded(child: conversazione()),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Expanded(child: conversazione()),
-                    ],
-                  ),
-                ),
-                secondChild: SizedBox(),
-                crossFadeState: _chatVisibile
-                    ? CrossFadeState.showFirst
-                    : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 250),
-              ),
+                      secondChild: SizedBox(),
+                      crossFadeState: _chatVisibile
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
+                      duration: const Duration(milliseconds: 250),
+                    )
+                  : Container()
             ],
           );
         }
@@ -699,7 +738,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                 setState(() {
                   // se index è 10 allora hai premuto il tasto logout
                   if (index == 10) {
-                    AuthenticationHelper().signOut().then((result) {
+                    AuthenticationService().signOut().then((result) {
                       if (result == null) {
                         Navigator.pushReplacement(
                             context,
@@ -736,7 +775,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                 setState(() {
                   // se index è 10 allora hai premuto il tasto logout
                   if (index == 10) {
-                    AuthenticationHelper().signOut().then((result) {
+                    AuthenticationService().signOut().then((result) {
                       if (result == null) {
                         Navigator.pushReplacement(
                             context,
@@ -849,8 +888,6 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                     )),
                     backgroundColor: MaterialStatePropertyAll(Colors.blue)),
                 onPressed: () {
-                  stampaTutto();
-
                   salvaScheda();
                 },
                 icon: Icon(Icons.bookmark_added_rounded, color: Colors.white),
@@ -1421,25 +1458,9 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
         .removeAt(index_esercizio);
   }
 
-// metodo stampa scheda
-  void stampaTutto() {
-    for (var a
-        in schedaTextEditController.listaAllenamentiTextEditController!) {
-      print("Nome allenamento : ${a.TextEditController!.text}");
-      for (var b in a.listaEserciziTextEditController!) {
-        print("- nome esercizio : ${b.TextEditControllerNome.text}");
-        print("- serie : ${b.TextEditControllerSerie.text}");
-        print("- ripetizioni: ${b.TextEditControllerRipetizioni.text}");
-        print("- recupero : ${b.TextEditControllerRecupero.text}");
-        print("- note : ${b.TextEditControllerNote.text}");
-      }
-    }
-  }
-
 // dialog per selezionare la data
 
   void dialogDataPicker(bool dataIniziale) {
-    late Timestamp date;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1492,7 +1513,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                       },
                       label: const Text("Chiudi"),
                       style: ButtonStyle(
-                          elevation: const MaterialStatePropertyAll(1),
+                          elevation: const WidgetStatePropertyAll(1),
                           backgroundColor:
                               const MaterialStatePropertyAll(Colors.red),
                           shape:
@@ -1551,5 +1572,138 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
         .set(
           scheda.toFirestore(),
         );
+  }
+
+  // mostra dialog di creazione nuovo utente
+
+  void showNuovoClienteDialog(var context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            actionsAlignment: MainAxisAlignment.end,
+            actionsOverflowAlignment: OverflowBarAlignment.end,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            title: Text(
+              "Gestisci un nuovo cliente",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width / 4,
+              height: MediaQuery.of(context).size.height / 2,
+              child: Column(
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                        "Seleziona il cliente che vuoi iniziare a seguire come coach"),
+                  ),
+                  Expanded(
+                    child: StreamBuilder(
+                      stream: _dbs.getListaTotaleClienti(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasData) {
+                          List<Cliente> listaClienti =
+                              List.empty(growable: true);
+
+                          for (var a in snapshot.data!.docs) {
+                            listaClienti.add(a.data());
+                          }
+
+                          return ListView.builder(
+                            itemCount: listaClienti.length,
+                            shrinkWrap: true,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                contentPadding: EdgeInsets.all(0),
+                                title: Text(listaClienti[index].username!),
+                                subtitle: Text(listaClienti[index].email!),
+                                leading: CircleAvatar(
+                                  child: Icon(Icons.person_rounded),
+                                ),
+                                trailing: Checkbox(
+                                  value: controlloClienteCollegato(
+                                      listaClienti[index]),
+                                  onChanged: (value) => {
+                                    setState(() {
+                                      modificaStatoClienteCollegato(
+                                          value!, listaClienti[index]);
+                                    }),
+                                    Navigator.pop(context)
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return Text("Nessun cliente presente");
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              SizedBox(
+                height: 48,
+                child: ElevatedButton.icon(
+                    icon: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Icon(Icons.close),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    label: const Text("Annulla"),
+                    style: ButtonStyle(
+                        elevation: const WidgetStatePropertyAll(1),
+                        backgroundColor:
+                            const WidgetStatePropertyAll(Colors.red),
+                        shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        )))),
+              ),
+            ],
+          );
+        });
+  }
+
+  bool controlloClienteCollegato(Cliente cliente) {
+    bool value = false;
+    for (var a in coach.listaClientiSeguiti!) {
+      if (a.uid == cliente.uid) {
+        value = true;
+      }
+    }
+    return value;
+  }
+
+  void modificaStatoClienteCollegato(bool value, Cliente cliente) {
+    if (value) {
+      coach.listaClientiSeguiti!.add(Cliente(
+          username: cliente.username, email: cliente.email, uid: cliente.uid));
+    } else {
+      for (var a in coach.listaClientiSeguiti!) {
+        if (a.uid == cliente.uid) {
+          coach.listaClientiSeguiti!.remove(a);
+        }
+      }
+    }
+    print(coach.toFirestore().toString());
+    _dbs
+        .getInstanceDb()
+        .collection(_dbs.getCollezioneCoaches())
+        .doc(_dbs.getAuth().currentUser!.uid)
+        .update(coach.toFirestore());
   }
 }

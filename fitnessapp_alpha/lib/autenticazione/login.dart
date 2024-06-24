@@ -2,6 +2,7 @@
 
 import 'package:app_fitness_test_2/Coach/HomeCoach.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/autenticazione/registrazione.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool passwordVisible = true;
-  TextEditingController mailcontroller = TextEditingController();
-  TextEditingController passwordcontroller = TextEditingController();
+  bool _passwordVisible = true;
+  final TextEditingController _mailcontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
   final DatabaseService _dbs = DatabaseService();
+  final AuthenticationService _authenticationService = AuthenticationService();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -55,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 TextFormField(
-                    controller: mailcontroller,
+                    controller: _mailcontroller,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Devi inserire una e-mail';
@@ -90,27 +92,31 @@ class _LoginPageState extends State<LoginPage> {
                         color: Theme.of(context).hintColor,
                       ),
                     )),
-                const SizedBox(
+                SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: EdgeInsetsDirectional.only(top: 16, bottom: 8),
+                    padding:
+                        const EdgeInsetsDirectional.only(top: 16, bottom: 8),
                     child: Text(
                       "Password",
                       textAlign: TextAlign.start,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).hintColor,
+                      ),
                     ),
                   ),
                 ),
                 TextFormField(
-                  controller: passwordcontroller,
+                  controller: _passwordcontroller,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Devi inserire una password';
                     }
                     return null;
                   },
-                  obscureText: passwordVisible,
+                  obscureText: _passwordVisible,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -139,13 +145,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     suffixIcon: IconButton(
                       color: Theme.of(context).primaryColor,
-                      icon: Icon(!passwordVisible
+                      icon: Icon(!_passwordVisible
                           ? Icons.visibility
                           : Icons.visibility_off),
                       onPressed: () {
                         setState(
                           () {
-                            passwordVisible = !passwordVisible;
+                            _passwordVisible = !_passwordVisible;
                           },
                         );
                       },
@@ -161,16 +167,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          AuthenticationHelper()
+                          _authenticationService
                               .signIn(
-                                  email: mailcontroller.text,
-                                  password: passwordcontroller.text)
+                                  email: _mailcontroller.text,
+                                  password: _passwordcontroller.text)
                               .then((result) {
                             if (result == null) {
                               Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context) {
                                 return FutureBuilder<DocumentSnapshot>(
-                                  future: _dbs.checkIsCoach(),
+                                  future: _dbs.controlloSeUtenteCoach(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       if (snapshot.data!.exists) {
@@ -198,11 +204,11 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                              const RoundedRectangleBorder(
+                          shape: const WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8)))),
-                          backgroundColor: MaterialStatePropertyAll(
+                          backgroundColor: WidgetStatePropertyAll(
                               Theme.of(context).primaryColor)),
                       child: const Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -210,6 +216,46 @@ class _LoginPageState extends State<LoginPage> {
                           "Accedi",
                           style: TextStyle(
                               color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      )),
+                ),
+                SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: Center(
+                        child:
+                            Text(" - Oppure, se non disponi di un account - ",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context).hintColor,
+                                )))),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegisterPage(),
+                            ));
+                      },
+                      style: ButtonStyle(
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 1),
+                              borderRadius: const BorderRadius.all(
+                                  const Radius.circular(8)))),
+                          backgroundColor:
+                              const WidgetStatePropertyAll(Colors.transparent)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          "Registrati",
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),

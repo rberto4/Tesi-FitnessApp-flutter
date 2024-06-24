@@ -5,9 +5,7 @@ import 'package:app_fitness_test_2/services/SchedaModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 DatabaseService _dbs = DatabaseService();
 
@@ -28,7 +26,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
   List<String> listaAssegnazioni = List.empty(growable: true);
 
   TimeOfDay orarioSelezionato = TimeOfDay.now();
-  late DateTime data_selezionata = DateUtils.dateOnly(DateTime.now());
+  Timestamp dataSelezionata = Timestamp.now();
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +108,10 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                     monthStrStyle: Theme.of(context).textTheme.headlineSmall),
               ),
               locale: "it_IT",
-              initialDate: data_selezionata,
+              initialDate: dataSelezionata.toDate(),
               onDateChange: (selectedDate) {
                 setState(() {
-                  data_selezionata = selectedDate;
+                  dataSelezionata = Timestamp.fromDate(selectedDate);
                 });
               },
             ),
@@ -147,7 +145,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                             value!,
                             index,
                             scheda,
-                            data_selezionata,
+                            dataSelezionata.toDate(),
                           );
                         });
                       },
@@ -161,7 +159,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                     Align(
                       alignment: Alignment.center,
                       child: widgetTabellaEsercizi(
-                              lista_esercizi: scheda
+                              listaEsercizi: scheda
                                   .allenamentiScheda![index].listaEsercizi,
                               context: context)
                           .creaTabella(),
@@ -187,10 +185,10 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                                   borderRadius: BorderRadius.circular(16.0),
                                 )),
                                 backgroundColor:
-                                    MaterialStatePropertyAll(Colors.red),
+                                    const MaterialStatePropertyAll(Colors.red),
                               ),
-                              label: Text("Orario di allenamento"),
-                              icon: Icon(Icons.alarm_add_rounded),
+                              label: const Text("Orario di allenamento"),
+                              icon: const Icon(Icons.alarm_add_rounded),
                               onPressed: () {
                                 _selectTime(index, scheda, scheda.idScheda!);
                               },
@@ -224,9 +222,9 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
             i,
             s,
             DateTime(
-                data_selezionata.year,
-                data_selezionata.month,
-                data_selezionata.day,
+                dataSelezionata.toDate().year,
+                dataSelezionata.toDate().month,
+                dataSelezionata.toDate().day,
                 orarioSelezionato.hour,
                 orarioSelezionato.minute));
         orarioSelezionato.replacing(hour: 0, minute: 0);
@@ -238,7 +236,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
     bool b = false;
     for (var a in l) {
       if (DateUtils.dateOnly(a.toDate()) ==
-          DateUtils.dateOnly(data_selezionata)) {
+          DateUtils.dateOnly(dataSelezionata.toDate())) {
         b = true;
       }
     }
@@ -249,7 +247,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
     bool b = false;
     for (var a in list) {
       if (DateUtils.dateOnly(a.toDate()) ==
-          DateUtils.dateOnly(data_selezionata)) {
+          DateUtils.dateOnly(dataSelezionata.toDate())) {
         if (a.toDate().hour != 0 || a.toDate().minute != 0) {
           b = true;
         }
@@ -262,7 +260,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
     late String b = "Orario allenamento";
     for (var a in list) {
       if (DateUtils.dateOnly(a.toDate()) ==
-          DateUtils.dateOnly(data_selezionata)) {
+          DateUtils.dateOnly(dataSelezionata.toDate())) {
         if (a.toDate().hour != 0 || a.toDate().minute != 0) {
           if (a.toDate().hour < 10 && a.toDate().minute > 10) {
             b = "0${a.toDate().hour}:${a.toDate().minute}";

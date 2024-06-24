@@ -181,9 +181,7 @@ class EsercizioTextEditController {
       required this.TextEditControllerNote});
 }
 
-
-
-// Esercizio di tipo pesistica con gli attributi da utilizzare 
+// Esercizio di tipo pesistica con gli attributi da utilizzare
 /*
 class EsercizioPesistica extends Esercizio {
   final String? serieEsercizio;
@@ -259,3 +257,4 @@ class EsercizioSvolto extends Esercizio {
   }
 }
 */
+

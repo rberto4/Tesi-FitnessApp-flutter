@@ -1,32 +1,60 @@
-
+import 'dart:async';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthenticationHelper {
-  
+class AuthenticationService {
   final DatabaseService _dbs = DatabaseService();
   //SIGN UP METHOD
 
-
-  Future signUp(
-      {required String email,
-      required String password,
-      required String username}) async {
+  Future signUpCliente({
+    required String email,
+    required String password,
+    required String username,
+  }) async {
     try {
       await _dbs.getAuth().createUserWithEmailAndPassword(
             email: email,
             password: password,
           );
-      _dbs.getAuth().currentUser?.updateDisplayName(username);
-      _dbs
+      await _dbs.getAuth().currentUser?.updateDisplayName(username);
+      await _dbs
           .getInstanceDb()
           .collection(_dbs.getCollezioneUtenti())
-          .doc(_dbs.getAuth().currentUser?.uid)
+          .doc(_dbs.uid_user_loggato)
           .set({
-        "mail": _dbs.getAuth().currentUser?.email,
+        "email": _dbs.getAuth().currentUser?.email,
         "username": username,
-        "isCoach": false
+        "uid": _dbs.getAuth().currentUser!.uid
       });
+
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+
+  Future signUpCoach({
+    required String email,
+    required String password,
+    required String username,
+  }) async {
+    try {
+      await _dbs.getAuth().createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+      await _dbs.getAuth().currentUser?.updateDisplayName(username);
+      await _dbs
+          .getInstanceDb()
+          .collection(_dbs.getCollezioneCoaches())
+          .doc(_dbs.uid_user_loggato)
+          .set({
+        "email": _dbs.getAuth().currentUser?.email,
+        "username": username,
+        "uid": _dbs.getAuth().currentUser!.uid,
+        "listaClientiSeguiti": List.empty(growable: true)
+      });
+
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
