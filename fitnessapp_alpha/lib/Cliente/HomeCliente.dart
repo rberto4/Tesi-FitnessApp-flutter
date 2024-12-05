@@ -1,27 +1,26 @@
-// ignore_for_file: camel_case_types, non_constant_identifier_names, no_leading_underscores_for_local_identifiers, duplicate_ignore, file_names
+// ignore_for_file: camel_case_types, non_constant_identifier_names, no_leading_underscores_for_local_identifiers, duplicate_ignore, file_names, prefer_const_constructors, use_build_context_synchronously
 
+import 'package:app_fitness_test_2/Cliente/conversazione.dart';
 import 'package:app_fitness_test_2/Cliente/gestioneCalendario.dart';
 import 'package:app_fitness_test_2/Cliente/progressioneEsercizio.dart';
 import 'package:app_fitness_test_2/Cliente/svolgimentoAllenamento.dart';
+import 'package:app_fitness_test_2/Cliente/widgetTabella.dart';
 import 'package:app_fitness_test_2/autenticazione/login.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
+import 'package:app_fitness_test_2/services/ChatModel.dart';
 import 'package:app_fitness_test_2/services/SchedaModel.dart';
+import 'package:app_fitness_test_2/services/UserModel.dart';
 import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 final DatabaseService _dbs = DatabaseService();
 
-Scheda schedaGlobal = Scheda(
-    nomeScheda: null,
-    allenamentiScheda: null,
-    inizioScheda: null,
-    fineScheda: null,
-    idScheda: null,
-    allenamentiSvolti: null);
+late Scheda schedaGlobal;
 
 class MainPageUtente extends StatefulWidget {
   const MainPageUtente({super.key});
@@ -31,22 +30,24 @@ class MainPageUtente extends StatefulWidget {
 }
 
 class _MainPageUtenteState extends State<MainPageUtente> {
-  late List<Widget> tabPages = List.empty(growable: true);
+  late List<Widget> _tabPages = List.empty(growable: true);
   int _selectedIndex = 0;
-  bool _isVisible = true;
-
-  updateBottomNavVisibility(bool b) {
-    setState(() {
-      _isVisible = b;
-    });
-  }
 
   @override
   void initState() {
-    tabPages = [
+    schedaGlobal = Scheda(
+        nomeScheda: null,
+        allenamentiScheda: null,
+        inizioScheda: null,
+        fineScheda: null,
+        idScheda: null,
+        allenamentiSvolti: null);
+
+    _tabPages = [
       const paginaSchedaCorrente(),
       const paginaProgressi(),
       const paginaArchivioSchede(),
+      const paginaChat()
     ];
     super.initState();
   }
@@ -55,12 +56,17 @@ class _MainPageUtenteState extends State<MainPageUtente> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "FITNESSAPP",
-            style: TextStyle(letterSpacing: 2),
+          centerTitle: true,
+          toolbarHeight: 90,
+          title: Image.asset(
+            'lib/Immagini/Logo.png',
+            height: 150,
+            width: 150,
+            alignment: Alignment.bottomCenter,
           ),
           actions: [
             IconButton(
+                color: Theme.of(context).hintColor,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -116,7 +122,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                   const Divider(),
                   ListTile(
                       onTap: () {
-                        AuthenticationHelper().signOut().then((result) {
+                        AuthenticationService().signOut().then((result) {
                           if (result == null) {
                             Navigator.pushReplacement(
                                 context,
@@ -129,7 +135,7 @@ class _MainPageUtenteState extends State<MainPageUtente> {
                           }
                         });
                       },
-                      leading: const Icon(Icons.logout_rounded),
+                      trailing: const Icon(Icons.logout_rounded),
                       title: const Text(
                         "Logout",
                         style: TextStyle(fontSize: 18),
@@ -141,62 +147,60 @@ class _MainPageUtenteState extends State<MainPageUtente> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         // bottom nav bar
-        floatingActionButton: Visibility(
-          visible: _isVisible,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 300, maxWidth: 300),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(48),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor,
-                    spreadRadius: 1,
-                    blurRadius: 48.0,
-                  ),
-                ],
+        floatingActionButton: Container(
+          width: MediaQuery.of(context).size.width - 64,
+          constraints: const BoxConstraints(maxWidth: 400),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(48),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor,
+                spreadRadius: 1,
+                blurRadius: 48.0,
               ),
-              child: GNav(
-                rippleColor: Theme.of(context).focusColor,
-                hoverColor: Theme.of(context).hoverColor,
-                gap: 6,
-                activeColor: Colors.white,
-                iconSize: 24,
-                tabMargin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-                duration: const Duration(milliseconds: 500),
-                tabBackgroundColor: Theme.of(context).primaryColor,
-                color: Colors.grey,
-                tabs: const [
-                  GButton(
-                    icon: Icons.calendar_month,
-                    text: 'Calendario',
-                  ),
-                  GButton(
-                    icon: Icons.bar_chart_rounded,
-                    text: 'Progressi',
-                  ),
-                  GButton(
-                    icon: Icons.folder,
-                    text: 'Archivio',
-                  ),
-                ],
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
+            ],
+          ),
+          child: GNav(
+            rippleColor: Theme.of(context).focusColor,
+            hoverColor: Theme.of(context).hoverColor,
+            gap: 4,
+            activeColor: Colors.white,
+            iconSize: 24,
+            tabMargin: const EdgeInsets.all(4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+            duration: const Duration(milliseconds: 500),
+            tabBackgroundColor: Theme.of(context).primaryColor,
+            color: Colors.grey,
+            tabs: const [
+              GButton(
+                icon: Icons.calendar_month,
+                text: 'Calendario',
               ),
-            ),
+              GButton(
+                icon: Icons.bar_chart_rounded,
+                text: 'Progressi',
+              ),
+              GButton(
+                icon: Icons.folder,
+                text: 'Archivio',
+              ),
+              GButton(
+                icon: Icons.chat_rounded,
+                text: 'Chat',
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
           ),
         ),
         resizeToAvoidBottomInset: true,
-        body: tabPages[_selectedIndex]);
+        body: _tabPages[_selectedIndex]);
   }
-
 }
 
 // TAB SCHEDA CORRENTE E CALENDARIO
@@ -211,12 +215,7 @@ class paginaSchedaCorrente extends StatefulWidget {
 
 // ignore: camel_case_types
 class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
-  late Timestamp selectedDay = Timestamp.now();
-  // ignore: non_constant_identifier_names
-  List<Allenamento?> lista_sedute_allenamenti = List.empty(growable: true);
-  final ScrollController scrollController = ScrollController();
-  // ignore: non_constant_identifier_names
-  bool btn_nav_bar_visibility = true;
+  late Timestamp _selectedDay = Timestamp.now();
   _paginaSchedaCorrenteState();
 
   @override
@@ -227,7 +226,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
           EasyDateTimeLine(
             headerProps: EasyHeaderProps(
               centerHeader: false,
-              padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+              padding:
+                  const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
               monthPickerType: MonthPickerType.dropDown,
               showSelectedDate: true,
               selectedDateStyle: Theme.of(context).textTheme.titleMedium,
@@ -259,19 +259,21 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                   monthStrStyle: Theme.of(context).textTheme.headlineSmall),
             ),
             locale: "it_IT",
-            initialDate: selectedDay.toDate(),
+            initialDate: _selectedDay.toDate(),
             onDateChange: (selectedDate) {
               setState(() {
-                selectedDay = Timestamp.fromDate(selectedDate);
+                _selectedDay = Timestamp.fromDate(selectedDate);
               });
             },
           ),
           StreamBuilder(
               stream: _dbs.getSchedaCorrente(),
               builder: (context, snapshot) {
+                List lista = List.empty(growable: true);
+
                 if (snapshot.hasData) {
                   // SCHEDA PRESENTE
-                  List lista = snapshot.data!.docs;
+                  lista = snapshot.data!.docs;
                   Scheda scheda = lista[0].data();
                   schedaGlobal = scheda;
                   List<Allenamento> listaAllenamentiSelezionati =
@@ -281,329 +283,105 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
 
                   listaAllenamentiSelezionati =
                       allenamentiPerIlGiornoSelezionato(
-                          scheda, selectedDay.toDate());
+                          scheda, _selectedDay.toDate());
 
                   if (listaAllenamentiSelezionati.isNotEmpty) {
                     return ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.all(8),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: listaAllenamentiSelezionati.length,
                       itemBuilder: (context, indexAllenamenti) {
-                        return Card(
-                          child: Column(children: [
-                            // titolo allenamento
+                        return Column(
+                          children: [
                             ListTile(
-                              trailing: const Visibility(
-                                  visible: true,
-                                  child: Text(
-                                    "",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )),
                               title: Text(
-                                listaAllenamentiSelezionati[
-                                        indexAllenamenti]
+                                listaAllenamentiSelezionati[indexAllenamenti]
                                     .nomeAllenamento!,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold),
                               ),
-                            ),
-                            ListView.builder(
-                              itemCount: listaAllenamentiSelezionati[
-                                      indexAllenamenti]
-                                  .listaEsercizi!
-                                  .length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (context, index_esercizi) {
-                                return ExpansionTile(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(48))),
-                                  leading: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                                    child: Text(
-                                      "#"
-                                      "${index_esercizi + 1}",
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  title: Text(listaAllenamentiSelezionati[
-                                          indexAllenamenti]
-                                      .listaEsercizi![index_esercizi]
-                                      .nomeEsercizio!),
-                                  children: [
-                                    // quando espando l'esercizi
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Wrap(
-                                          verticalDirection:
-                                              VerticalDirection.down,
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          direction: Axis.vertical,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                              padding: const EdgeInsets.all(8),
-                                              child: const Icon(
-                                                color: Colors.white,
-                                                Icons.replay,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              listaAllenamentiSelezionati[
-                                                      indexAllenamenti]
-                                                  .listaEsercizi![
-                                                      index_esercizi]
-                                                  .ripetizioniEsercizio!
-                                                  .first,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            const SizedBox(
-                                              height: 4,
-                                            ),
-                                            const Text(
-                                              "Ripetizioni",
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 32,
-                                        ),
-                                        Wrap(
-                                          verticalDirection:
-                                              VerticalDirection.down,
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          direction: Axis.vertical,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                              padding: const EdgeInsets.all(8),
-                                              child: const Icon(
-                                                color: Colors.white,
-                                                Icons.dataset_outlined,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              listaAllenamentiSelezionati[
-                                                      indexAllenamenti]
-                                                  .listaEsercizi![
-                                                      index_esercizi]
-                                                  .serieEsercizio!,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            const SizedBox(
-                                              height: 4,
-                                            ),
-                                            const Text(
-                                              "Serie",
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 32,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Wrap(
-                                            verticalDirection:
-                                                VerticalDirection.down,
-                                            crossAxisAlignment:
-                                                WrapCrossAlignment.center,
-                                            direction: Axis.vertical,
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                                padding: const EdgeInsets.all(8),
-                                                child: const Icon(
-                                                  color: Colors.white,
-                                                  Icons.timer,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 8,
-                                              ),
-                                              Text(
-                                                "${listaAllenamentiSelezionati[indexAllenamenti].listaEsercizi![index_esercizi].recuperoEsercizio!}s",
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18),
-                                              ),
-                                              const SizedBox(
-                                                height: 4,
-                                              ),
-                                              const Text(
-                                                "Recupero",
-                                                style: TextStyle(),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 16, left: 16, right: 16),
-                                      child: SizedBox(
-                                        height: 1,
-                                        child: Container(
-                                          color: Theme.of(context).dividerColor,
-                                        ),
-                                      ),
-                                    ),
-                                    ListTile(
-                                      minLeadingWidth: 8,
-                                      leading: Icon(
-                                        Icons.bookmark,
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(48),
+                                    border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context).primaryColor)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    "18:30",
+                                    style: TextStyle(
                                         color: Theme.of(context).primaryColor,
-                                      ),
-                                      title: const Text(
-                                        "Note",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 16, left: 16),
-                                      child: ListTile(
-                                        title: Text(
-                                          listaAllenamentiSelezionati[
-                                                  indexAllenamenti]
-                                              .noteAllenamento!,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                            const Padding(
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 8),
-                              child: Divider(),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 8, bottom: 8),
-                                child: SizedBox(
-                                  height: 48,
-                                  child: allenamentoGiaSvolto(
-                                          scheda,
-                                          listaAllenamentiSelezionati[
-                                              indexAllenamenti],
-                                          selectedDay.toDate())
-                                      ? ElevatedButton.icon(
-                                          style: ButtonStyle(
-                                              elevation:
-                                                  const MaterialStatePropertyAll(1),
-                                              backgroundColor:
-                                                  const MaterialStatePropertyAll(
-                                                      Colors.red),
-                                              shape: MaterialStateProperty.all<
-                                                      RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
-                                              ))),
-                                          icon: const Icon(
-                                              Icons.sports_esports_rounded),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        sedutaAllenamento(
-                                                            allenamento:
-                                                                listaAllenamentiSelezionati[
-                                                                    indexAllenamenti],
-                                                            scheda: scheda,
-                                                            dataSelezionata:
-                                                                selectedDay)));
-                                          },
-                                          label: const Text(
-                                            "Allenamento",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      : ElevatedButton.icon(
-                                          style: ButtonStyle(
-                                              elevation:
-                                                  const MaterialStatePropertyAll(1),
-                                              backgroundColor:
-                                                  MaterialStatePropertyAll(
-                                                      Colors.blue.shade700),
-                                              shape: MaterialStateProperty.all<
-                                                      RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
-                                              ))),
-                                          icon: const Icon(Icons.edit_document),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        sedutaAllenamento(
-                                                            allenamento:
-                                                                listaAllenamentiSelezionati[
-                                                                    indexAllenamenti],
-                                                            scheda: scheda,
-                                                            dataSelezionata:
-                                                                selectedDay)));
-                                          },
-                                          label: const Text(
-                                            "Resoconto",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ),
-                          ]),
+                            widgetTabellaEsercizi(
+                                    listaEsercizi: listaAllenamentiSelezionati[
+                                            indexAllenamenti]
+                                        .listaEsercizi,
+                                    context: context)
+                                .creaTabella(),
+                            // pulsante di avvio allenamento / visualizza allenamento passato
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 48,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                    shape: WidgetStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    )),
+                                    backgroundColor: WidgetStatePropertyAll(
+                                        allenamentoGiaSvolto(
+                                                scheda,
+                                                listaAllenamentiSelezionati[
+                                                    indexAllenamenti],
+                                                _selectedDay.toDate())
+                                            ? Colors.red
+                                            : Colors.blue),
+                                  ),
+                                  label: Text(
+                                    allenamentoGiaSvolto(
+                                            scheda,
+                                            listaAllenamentiSelezionati[
+                                                indexAllenamenti],
+                                            _selectedDay.toDate())
+                                        ? "Allenamento"
+                                        : "Resoconto allenamento",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  icon: Icon(Icons.flag_rounded),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => sedutaAllenamento(
+                                                allenamento:
+                                                    listaAllenamentiSelezionati[
+                                                        indexAllenamenti],
+                                                scheda: scheda,
+                                                dataSelezionata:
+                                                    _selectedDay)));
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     );
                   } else {
+                    // schermata , al posto della lista, che mostra la giornata di riposo, di default se non ho assegnato la giornata a nessun allenamento
+
                     return Center(
                         child: Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
@@ -615,12 +393,14 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                           Icon(
                             Icons.hotel_rounded,
                             size: 108,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).hintColor.withOpacity(0.3),
                           ),
                           Text("Giorno di riposo",
                               style: TextStyle(
                                   fontSize: 24,
-                                  color: Theme.of(context).hintColor,
+                                  color: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.3),
                                   fontWeight: FontWeight.bold)),
                           const SizedBox(
                             height: 8,
@@ -630,7 +410,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                             TextSpan(
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: Theme.of(context).hintColor,
+                                  color: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.3),
                                   fontWeight: FontWeight.bold),
                               children: [
                                 const TextSpan(
@@ -641,7 +423,9 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                   child: Icon(
                                     Icons.edit_calendar_rounded,
                                     size: 18,
-                                    color: Theme.of(context).primaryColor,
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.3),
                                   ),
                                 ),
                                 const TextSpan(
@@ -680,6 +464,8 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
     return list;
   }
 
+  // metodo per controllare se un allenamento è presente nella lista degli allenamenti gia svolti, nel giorno selezionato
+
   bool allenamentoGiaSvolto(Scheda s, Allenamento a, DateTime d) {
     bool check = true;
 
@@ -694,7 +480,6 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
     return check;
   }
 }
-
 // pagina progressi
 
 class paginaProgressi extends StatefulWidget {
@@ -705,7 +490,7 @@ class paginaProgressi extends StatefulWidget {
 }
 
 class paginaProgressiState extends State<paginaProgressi> {
-  int? _index_allenamento_filtrato;
+  int? _indexAllenamentoFiltrato;
 
   @override
   Widget build(BuildContext context) {
@@ -722,7 +507,7 @@ class paginaProgressiState extends State<paginaProgressi> {
             // pulsante annulla filtri
 
             trailing: Visibility(
-              visible: (_index_allenamento_filtrato == null) ? false : true,
+              visible: (_indexAllenamentoFiltrato == null) ? false : true,
               child: Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -730,7 +515,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                 child: IconButton(
                   onPressed: () {
                     setState(() {
-                      _index_allenamento_filtrato = null;
+                      _indexAllenamentoFiltrato = null;
                     });
                   },
                   icon: const Icon(Icons.filter_list_off_rounded),
@@ -762,14 +547,14 @@ class paginaProgressiState extends State<paginaProgressi> {
                   label: Text(
                     schedaGlobal.allenamentiScheda![index].nomeAllenamento!,
                     style: TextStyle(
-                        color: _index_allenamento_filtrato == index
+                        color: _indexAllenamentoFiltrato == index
                             ? Colors.white
                             : null),
                   ),
-                  selected: _index_allenamento_filtrato == index,
+                  selected: _indexAllenamentoFiltrato == index,
                   onSelected: (bool selected) {
                     setState(() {
-                      _index_allenamento_filtrato = selected ? index : null;
+                      _indexAllenamentoFiltrato = selected ? index : null;
                     });
                   },
                 );
@@ -786,8 +571,7 @@ class paginaProgressiState extends State<paginaProgressi> {
               shrinkWrap: true,
               itemCount: getLenghtEsercizi(),
               itemBuilder: (context, index) {
-                List<Esercizio> _lista_esercizi =
-                    List.empty(growable: true);
+                List<Esercizio> _lista_esercizi = List.empty(growable: true);
                 _lista_esercizi = getListaEsercizi();
                 return GestureDetector(
                   onTap: () {
@@ -822,10 +606,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                                     0
                                 ? const Text("Mai eseguito")
                                 : Text(
-                                    "${(getAvanzamentoEsercizio(
-                                                    _lista_esercizi[index]) *
-                                                100)
-                                            .toStringAsFixed(0)}%  Eseguiti",
+                                    "${(getAvanzamentoEsercizio(_lista_esercizi[index]) * 100).toStringAsFixed(0)}%  Eseguiti",
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   ),
@@ -850,11 +631,7 @@ class paginaProgressiState extends State<paginaProgressi> {
                               lineWidth: 12,
                               circularStrokeCap: CircularStrokeCap.round,
                               center: Text(
-                                "${getNumeroEsecuzioniSvolte(
-                                            _lista_esercizi[index])
-                                        .toStringAsFixed(0)}/${getNumeroEsecuzioniInScheda(
-                                            _lista_esercizi[index])
-                                        .toStringAsFixed(0)}",
+                                "${getNumeroEsecuzioniSvolte(_lista_esercizi[index]).toStringAsFixed(0)}/${getNumeroEsecuzioniInScheda(_lista_esercizi[index]).toStringAsFixed(0)}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
@@ -875,26 +652,26 @@ class paginaProgressiState extends State<paginaProgressi> {
 
   int getLenghtEsercizi() {
     int lenght = 0;
-    if (_index_allenamento_filtrato == null) {
+    if (_indexAllenamentoFiltrato == null) {
       for (var element in schedaGlobal.allenamentiScheda!) {
         lenght = lenght + element.listaEsercizi!.length;
       }
     } else {
-      lenght = schedaGlobal.allenamentiScheda![_index_allenamento_filtrato!]
-          .listaEsercizi!.length;
+      lenght = schedaGlobal
+          .allenamentiScheda![_indexAllenamentoFiltrato!].listaEsercizi!.length;
     }
     return lenght;
   }
 
   List<Esercizio> getListaEsercizi() {
     List<Esercizio> list = List.empty(growable: true);
-    if (_index_allenamento_filtrato == null) {
+    if (_indexAllenamentoFiltrato == null) {
       for (var element in schedaGlobal.allenamentiScheda!) {
         list.addAll(element.listaEsercizi!);
       }
     } else {
       list.addAll(schedaGlobal
-          .allenamentiScheda![_index_allenamento_filtrato!].listaEsercizi!);
+          .allenamentiScheda![_indexAllenamentoFiltrato!].listaEsercizi!);
     }
     return list;
   }
@@ -970,6 +747,105 @@ class paginaProgressiState extends State<paginaProgressi> {
     }
   }
 }
+// pagina chat
+
+class paginaChat extends StatefulWidget {
+  const paginaChat({super.key});
+
+  @override
+  State<paginaChat> createState() => _paginaChatState();
+}
+
+class _paginaChatState extends State<paginaChat> {
+  List<Coach> listaCoach = List.empty(growable: true);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          ListTile(
+            title: Text(
+              "Messaggi",
+              style: TextStyle(fontSize: 24),
+            ),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          StreamBuilder(
+            stream: _dbs.getListaCoach(),
+            builder: (context, snapshot) {
+              listaCoach.clear();
+
+              if (snapshot.hasData) {
+                for (var a in snapshot.data!.docs) {
+                  for (var b in a.data().listaClientiSeguiti!) {
+                    if (b.uid == _dbs.uid_user_loggato) {
+                      listaCoach.add(a.data());
+                    }
+                  }
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: listaCoach.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () async {
+                        // DA MODIFICARE LA CREAZIONE DEL DOCUMENTO A LIVELLO DI COACH
+
+                        if (await _dbs
+                            .getInstanceDb()
+                            .collection(_dbs.getCollezioneUtenti())
+                            .doc(_dbs.uid_user_loggato)
+                            .collection(_dbs.getCollezioneChat())
+                            .doc(listaCoach[index].uid!)
+                            .get()
+                            .then((value) => !value.exists)) {
+                          _dbs
+                              .getInstanceDb()
+                              .collection(_dbs.getCollezioneUtenti())
+                              .doc(_dbs.getAuth().currentUser!.uid)
+                              .collection(_dbs.getCollezioneChat())
+                              .doc(listaCoach[index].uid!)
+                              .set(Chat(listaMessaggi: List.empty())
+                                  .toFirestore());
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => conversazioneChat(
+                                    coachModel: listaCoach[index],
+                                    mittenteCoach: false,
+                                    uidDestinatarioCLiente: "",
+                                  )),
+                        );
+                      },
+                      child: ListTile(
+                        leading:
+                            CircleAvatar(child: Icon(Icons.person_rounded)),
+                        subtitle: Text(listaCoach[index].email!),
+                        title: Text(
+                          listaCoach[index].username!,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Text("");
+              }
+            },
+          )
+        ],
+      ),
+    );
+  }
+}
 
 // pagina archivio
 
@@ -980,10 +856,176 @@ class paginaArchivioSchede extends StatefulWidget {
 }
 
 class _paginaArchivioSchedeState extends State<paginaArchivioSchede> {
-  String nome_scheda_filtrato = "";
   TextEditingController searchbar_controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                "Archivio schede",
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+            // barra di ricerca
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 16, right: 0),
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                  controller: searchbar_controller,
+                  textAlign: TextAlign.start,
+                  textAlignVertical: TextAlignVertical.center,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16.0),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      ),
+                      filled: false,
+                      alignLabelWithHint: true,
+                      hintText: "Cerca..",
+                      suffixIcon: Icon(
+                        Icons.search,
+                      ),
+                      prefixIcon: searchbar_controller.text.isNotEmpty
+                          ? IconButton(
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () {
+                                setState(() {
+                                  searchbar_controller.clear();
+                                });
+                              },
+                              icon: Icon(Icons.cancel_rounded))
+                          : null),
+                ),
+              ),
+            ),
+            StreamBuilder(
+              stream: _dbs.getTotaleSchede(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 64),
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasData) {
+                  final List<Scheda> schede =
+                      List.from(snapshot.data!.docs.map((e) => e.data()));
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: schede.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      if (searchbar_controller.text.isEmpty &&
+                          schede[index].nomeScheda!.toLowerCase().contains(
+                              searchbar_controller.text.toLowerCase())) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(top: 8, left: 8, right: 8),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  leading: Icon(Icons.note_alt_rounded),
+                                  title: Text(
+                                    schede[index].nomeScheda!,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 24),
+                                  ),
+                                  trailing: index == 0
+                                      ? Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(48),
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  width: 1)),
+                                          child: Text(
+                                            "in uso",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                ListTile(
+                                  title: Text(
+                                      "Dal  ${DateFormat.yMd(Locale('it', 'IT').countryCode).format(schede[index].inizioScheda!.toDate())}  al  ${DateFormat.yMd(Locale('it', 'IT').countryCode).format(schede[index].fineScheda!.toDate())}"),
+                                ),
+                                Divider(),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount:
+                                      schede[index].allenamentiScheda!.length,
+                                  itemBuilder: (context, index_allenamenti) {
+                                    return ExpansionTile(
+                                      shape: Border(),
+                                      title: Text(schede[index]
+                                          .allenamentiScheda![index_allenamenti]
+                                          .nomeAllenamento!),
+                                      children: [
+                                        widgetTabellaEsercizi(
+                                                listaEsercizi: schede[index]
+                                                    .allenamentiScheda![
+                                                        index_allenamenti]
+                                                    .listaEsercizi!,
+                                                context: context)
+                                            .creaTabella()
+                                      ],
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return null;
+                    },
+                  );
+                } else {
+                  return Text("no data");
+                }
+              },
+            ),
+            SizedBox(
+              height: 96,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

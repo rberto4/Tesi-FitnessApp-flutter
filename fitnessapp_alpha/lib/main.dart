@@ -17,8 +17,10 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   FirebaseFirestore.instance.settings =
       const Settings(persistenceEnabled: true);
+
   runApp(const MyApp());
 }
 
@@ -130,7 +132,7 @@ class loadingPageMain extends StatelessWidget {
             return const LoginPage();
           } else {
             return FutureBuilder<DocumentSnapshot>(
-              future: _dbs.checkIsCoach(),
+              future: _dbs.controlloSeUtenteCoach(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data!.exists) {
@@ -142,7 +144,8 @@ class loadingPageMain extends StatelessWidget {
                   return SizedBox(
                       width: double.infinity,
                       height: double.infinity,
-                      child: Center(child: CircularProgressIndicator(
+                      child: Center(
+                          child: CircularProgressIndicator(
                         backgroundColor: Theme.of(context).canvasColor,
                       )));
                 }

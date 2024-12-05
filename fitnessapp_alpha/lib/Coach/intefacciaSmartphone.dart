@@ -13,7 +13,10 @@ class _HomeSmartphoneState extends State<HomeSmartphone> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.green,
+      body: Center(
+        child: Text(
+            "Allarga la schermata, oppure utilizza un dispositivo con un display più ampio"),
+      ),
     );
   }
 }

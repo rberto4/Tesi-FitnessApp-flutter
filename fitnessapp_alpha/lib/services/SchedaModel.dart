@@ -1,6 +1,7 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 // OGGETTO MODELLIZZATO PER DB
 
@@ -23,7 +24,6 @@ class Scheda {
   });
 
   factory Scheda.fromFirestore(Map<String, dynamic> json) {
-
     var allenamentiScheda = json['allenamentiScheda'] as List;
     List<Allenamento> allenamentiSchedaLocal =
         allenamentiScheda.map((i) => Allenamento.fromFirestore(i)).toList();
@@ -37,8 +37,7 @@ class Scheda {
         nomeScheda: json['nomeScheda'],
         idScheda: json['idScheda'],
         allenamentiScheda: allenamentiSchedaLocal,
-        allenamentiSvolti: allenamentiSvoltiLocal
-        );
+        allenamentiSvolti: allenamentiSvoltiLocal);
   }
 
   Map<String, Object?> toFirestore() {
@@ -59,14 +58,12 @@ class Allenamento {
   final String? nomeAllenamento;
   final List<Esercizio>? listaEsercizi;
   final List<Timestamp>? giorniAssegnati;
-  final String? noteAllenamento;
-  late  String? feedbackAllenamento;
+  late String? feedbackAllenamento;
 
   // super set
   Allenamento(
       {required this.nomeAllenamento,
       required this.listaEsercizi,
-      required this.noteAllenamento,
       required this.giorniAssegnati,
       required this.feedbackAllenamento});
 
@@ -78,7 +75,6 @@ class Allenamento {
     return Allenamento(
       feedbackAllenamento: json['feedbackAllenamento'],
       nomeAllenamento: json['nomeAllenamento'],
-      noteAllenamento: json['noteAllenamento'],
       giorniAssegnati: json['giorniAssegnati'] is Iterable
           ? List.from(json['giorniAssegnati'])
           : null,
@@ -91,7 +87,6 @@ class Allenamento {
       if (feedbackAllenamento != null)
         "feedbackAllenamento": feedbackAllenamento,
       if (nomeAllenamento != null) "nomeAllenamento": nomeAllenamento,
-      if (noteAllenamento != null) "noteAllenamento": noteAllenamento,
       if (giorniAssegnati != null) "giorniAssegnati": giorniAssegnati,
       if (listaEsercizi != null)
         "listaEsercizi": listaEsercizi?.map((e) => e.toFirestore()),
@@ -102,20 +97,25 @@ class Allenamento {
 class Esercizio {
   final String? nomeEsercizio;
   final String? serieEsercizio;
+  final String? noteEsercizio;
   final List<String>? ripetizioniEsercizio;
   final List<String>? carichiEsercizio;
   final int? recuperoEsercizio;
+  //final String? noteEsercizio;
 
   Esercizio({
     required this.nomeEsercizio,
     required this.serieEsercizio,
     required this.ripetizioniEsercizio,
     required this.carichiEsercizio,
+    required this.noteEsercizio,
     required this.recuperoEsercizio,
+    //required this.noteEsercizio,
   });
 
   factory Esercizio.fromFirestore(Map<String, dynamic> json) {
     return Esercizio(
+      noteEsercizio: json['noteEsercizio'],
       recuperoEsercizio: json['recuperoEsercizio'],
       nomeEsercizio: json['nomeEsercizio'],
       serieEsercizio: json['serieEsercizio'],
@@ -130,6 +130,7 @@ class Esercizio {
 
   Map<String, dynamic> toFirestore() {
     return {
+      if (noteEsercizio != null) "noteEsercizio": noteEsercizio,
       if (nomeEsercizio != null) "nomeEsercizio": nomeEsercizio,
       if (recuperoEsercizio != null) "recuperoEsercizio": recuperoEsercizio,
       if (serieEsercizio != null) "serieEsercizio": serieEsercizio,
@@ -140,6 +141,77 @@ class Esercizio {
   }
 }
 
+// OGGETTI CON TEXTEDITCONTROLLER CHE ESTENDONO QUELLI STANDARD
+
+class SchedaTextEditController {
+  final TextEditingController? TextEditController;
+  final List<AllenamentoTextEditController>? listaAllenamentiTextEditController;
+  late Timestamp? inizioScheda;
+  late Timestamp? fineScheda;
+
+  SchedaTextEditController({
+    required this.TextEditController,
+    required this.listaAllenamentiTextEditController,
+    required this.inizioScheda,
+    required this.fineScheda,
+  });
+}
+
+class AllenamentoTextEditController {
+  final TextEditingController? TextEditController;
+  final List<EsercizioTextEditController>? listaEserciziTextEditController;
+
+  AllenamentoTextEditController(
+      {required this.TextEditController,
+      required this.listaEserciziTextEditController});
+}
+
+class EsercizioTextEditController {
+  final TextEditingController TextEditControllerNome;
+  final TextEditingController TextEditControllerSerie;
+  final TextEditingController TextEditControllerRipetizioni;
+  final TextEditingController TextEditControllerRecupero;
+  final TextEditingController TextEditControllerNote;
+
+  EsercizioTextEditController(
+      {required this.TextEditControllerNome,
+      required this.TextEditControllerSerie,
+      required this.TextEditControllerRipetizioni,
+      required this.TextEditControllerRecupero,
+      required this.TextEditControllerNote});
+}
+
+// Esercizio di tipo pesistica con gli attributi da utilizzare
+/*
+class EsercizioPesistica extends Esercizio {
+  final String? serieEsercizio;
+  final List<String>? ripetizioniEsercizio;
+  final List<String>? carichiEsercizio;
+  final int? recuperoEsercizio;
+
+  EsercizioPesistica({
+    required super.nomeEsercizio,
+    required super.noteEsercizio,
+    required this.serieEsercizio,
+    required this.ripetizioniEsercizio,
+    required this.carichiEsercizio,
+    required this.recuperoEsercizio,
+  })
+}
+*/
+
+// Esercizio di tipo cardio con gli attributi nuovi da utilizzare
+/*
+class EsercizioCardio extends Esercizio {
+  final  int? durata;
+
+  EsercizioCardio({
+    required super.nomeEsercizio,
+    required super.noteEsercizio,
+    required this.durata,
+  })
+}
+*/
 
 /*
 class EsercizioSvolto extends Esercizio {
@@ -185,3 +257,4 @@ class EsercizioSvolto extends Esercizio {
   }
 }
 */
+
