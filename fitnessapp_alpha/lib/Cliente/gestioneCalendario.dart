@@ -179,13 +179,13 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
                             height: 48,
                             child: ElevatedButton.icon(
                               style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
+                                shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16.0),
                                 )),
                                 backgroundColor:
-                                    const MaterialStatePropertyAll(Colors.red),
+                                    const WidgetStatePropertyAll(Colors.red),
                               ),
                               label: const Text("Orario di allenamento"),
                               icon: const Icon(Icons.alarm_add_rounded),
@@ -319,7 +319,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
           actions: [
             OutlinedButton(
               style: ButtonStyle(
-                  textStyle: MaterialStatePropertyAll(
+                  textStyle: WidgetStatePropertyAll(
                       TextStyle(color: Theme.of(context).primaryColor))),
               child: const Text('Annulla'),
               onPressed: () {
@@ -329,7 +329,7 @@ class _gestioneCalendarioState extends State<gestioneCalendario> {
             ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
-                      MaterialStatePropertyAll(Theme.of(context).primaryColor)),
+                      WidgetStatePropertyAll(Theme.of(context).primaryColor)),
               child: const Text('Assegna'),
               onPressed: () {
                 for (var a in scheda.allenamentiScheda!) {

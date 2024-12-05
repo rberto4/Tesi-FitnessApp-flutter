@@ -131,11 +131,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                   ),
                                   style: ButtonStyle(
                                       elevation:
-                                          const MaterialStatePropertyAll(0),
+                                          const WidgetStatePropertyAll(0),
                                       backgroundColor:
-                                          const MaterialStatePropertyAll(
+                                          const WidgetStatePropertyAll(
                                               Colors.green),
-                                      shape: MaterialStateProperty.all<
+                                      shape: WidgetStateProperty.all<
                                               RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                         borderRadius:
@@ -175,11 +175,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                                           ),
                                     style: ButtonStyle(
                                         elevation:
-                                            const MaterialStatePropertyAll(0),
+                                            const WidgetStatePropertyAll(0),
                                         backgroundColor:
-                                            const MaterialStatePropertyAll(
+                                            const WidgetStatePropertyAll(
                                                 Colors.transparent),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
@@ -244,10 +244,10 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   style: ButtonStyle(
-                      elevation: const MaterialStatePropertyAll(1),
-                      backgroundColor: MaterialStatePropertyAll(
+                      elevation: const WidgetStatePropertyAll(1),
+                      backgroundColor: WidgetStatePropertyAll(
                           Theme.of(context).primaryColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(48.0),
                       )))),
@@ -656,11 +656,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     },
                     label: const Text("Chiudi"),
                     style: ButtonStyle(
-                        elevation: const MaterialStatePropertyAll(1),
-                        backgroundColor: MaterialStatePropertyAll(
+                        elevation: const WidgetStatePropertyAll(1),
+                        backgroundColor: WidgetStatePropertyAll(
                             Theme.of(context).primaryColor),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16.0),
                         )))),
@@ -716,11 +716,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     },
                     label: const Text("Chiudi"),
                     style: ButtonStyle(
-                        elevation: const MaterialStatePropertyAll(1),
-                        backgroundColor: MaterialStatePropertyAll(
+                        elevation: const WidgetStatePropertyAll(1),
+                        backgroundColor: WidgetStatePropertyAll(
                             Theme.of(context).primaryColor),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16.0),
                         )))),
@@ -759,11 +759,11 @@ class _sedutaAllenamentoState extends State<sedutaAllenamento> {
                     },
                     label: const Text("Esci da allenamento"),
                     style: ButtonStyle(
-                        elevation: const MaterialStatePropertyAll(1),
+                        elevation: const WidgetStatePropertyAll(1),
                         backgroundColor:
-                            const MaterialStatePropertyAll(Colors.red),
+                            const WidgetStatePropertyAll(Colors.red),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16.0),
                         )))),

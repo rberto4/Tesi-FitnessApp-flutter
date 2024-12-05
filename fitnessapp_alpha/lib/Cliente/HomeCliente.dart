@@ -335,12 +335,12 @@ class _paginaSchedaCorrenteState extends State<paginaSchedaCorrente> {
                                 height: 48,
                                 child: ElevatedButton.icon(
                                   style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                             RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16.0),
                                     )),
-                                    backgroundColor: MaterialStatePropertyAll(
+                                    backgroundColor: WidgetStatePropertyAll(
                                         allenamentoGiaSvolto(
                                                 scheda,
                                                 listaAllenamentiSelezionati[

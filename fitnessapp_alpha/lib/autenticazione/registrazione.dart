@@ -6,20 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:app_fitness_test_2/autenticazione/metodi_autenticazione.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool _passwordVisible = true;
+  final bool _passwordVisible = true;
   bool _registrazioneCoach = false;
 
-  TextEditingController _mailcontroller = TextEditingController();
-  TextEditingController _usernamecontroller = TextEditingController();
-  TextEditingController _passwordcontroller = TextEditingController();
-  TextEditingController _confirmpasswordcontroller = TextEditingController();
+  final TextEditingController _mailcontroller = TextEditingController();
+  final TextEditingController _usernamecontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+  final TextEditingController _confirmpasswordcontroller = TextEditingController();
   final AuthenticationService _authenticationService = AuthenticationService();
   final _formKey = GlobalKey<FormState>();
 
@@ -255,7 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Container(height: 16),
                     SwitchListTile(
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.all(0),
                       title: Text("Mi sto registrando come Coach",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,

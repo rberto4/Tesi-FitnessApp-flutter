@@ -48,11 +48,11 @@ class widgetTabellaEsercizi {
                               },
                               label: const Text("Chiudi"),
                               style: ButtonStyle(
-                                  elevation: const MaterialStatePropertyAll(1),
+                                  elevation: const WidgetStatePropertyAll(1),
                                   backgroundColor:
-                                      const MaterialStatePropertyAll(
+                                      const WidgetStatePropertyAll(
                                           Colors.red),
-                                  shape: MaterialStateProperty.all<
+                                  shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16.0),

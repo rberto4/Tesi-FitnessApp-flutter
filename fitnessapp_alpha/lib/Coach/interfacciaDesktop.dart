@@ -10,6 +10,7 @@ import 'package:app_fitness_test_2/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class HomeDesktop extends StatelessWidget {
   final DatabaseService _dbs = DatabaseService();
@@ -406,11 +407,12 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                       //width: MediaQuery.of(context).size.width * (1.5 / 8),
                       child: ElevatedButton.icon(
                         style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16.0),
                             )),
-                            backgroundColor: MaterialStatePropertyAll(
+                            backgroundColor: WidgetStatePropertyAll(
                                 Theme.of(context).primaryColor)),
                         label: const Text(
                           "Nuovo cliente",
@@ -474,21 +476,20 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                                     height: 48,
                                     child: ElevatedButton.icon(
                                       style: ButtonStyle(
-                                          elevation:
-                                              MaterialStatePropertyAll(0),
+                                          elevation: WidgetStatePropertyAll(0),
                                           alignment: Alignment.centerLeft,
-                                          shape: MaterialStateProperty.all<
+                                          shape: WidgetStateProperty.all<
                                                   RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
                                           )),
                                           backgroundColor: _chatVisibile
-                                              ? MaterialStatePropertyAll(
+                                              ? WidgetStatePropertyAll(
                                                   Theme.of(context)
                                                       .primaryColor
                                                       .withOpacity(0.3))
-                                              : MaterialStatePropertyAll(
+                                              : WidgetStatePropertyAll(
                                                   Theme.of(context).cardColor)),
                                       onPressed: () async {
                                         // serve per creare il documento qualora fosse la prima volta che si usa la chat per l'utente selezionato
@@ -682,15 +683,15 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
       height: 48,
       child: ElevatedButton.icon(
         style: ButtonStyle(
-            elevation: MaterialStatePropertyAll(0),
+            elevation: WidgetStatePropertyAll(0),
             alignment: Alignment.center,
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             )),
             backgroundColor: index_pulsante != index_selezionato
-                ? MaterialStatePropertyAll(Colors.transparent)
-                : MaterialStatePropertyAll(Theme.of(context).primaryColor)),
+                ? WidgetStatePropertyAll(Colors.transparent)
+                : WidgetStatePropertyAll(Theme.of(context).primaryColor)),
         label: Text(
           testo,
           style: TextStyle(
@@ -725,12 +726,12 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
             height: 48,
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
+                  backgroundColor: WidgetStatePropertyAll(
                     _indexDrawer == index
                         ? Theme.of(context).primaryColor
                         : Theme.of(context).cardColor.withOpacity(0.3),
                   ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.0),
                   ))),
@@ -880,13 +881,13 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
               height: 48,
               child: ElevatedButton.icon(
                 style: ButtonStyle(
-                    elevation: MaterialStatePropertyAll(0),
+                    elevation: WidgetStatePropertyAll(0),
                     alignment: Alignment.centerLeft,
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     )),
-                    backgroundColor: MaterialStatePropertyAll(Colors.blue)),
+                    backgroundColor: WidgetStatePropertyAll(Colors.blue)),
                 onPressed: () {
                   salvaScheda();
                 },
@@ -963,24 +964,23 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                         height: 48,
                         child: ElevatedButton(
                             style: ButtonStyle(
-                                elevation: MaterialStatePropertyAll(0),
+                                elevation: WidgetStatePropertyAll(0),
                                 alignment: Alignment.centerLeft,
-                                shape: MaterialStateProperty.all<
+                                shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(48.0),
                                 )),
-                                backgroundColor: MaterialStatePropertyAll(
+                                backgroundColor: WidgetStatePropertyAll(
                                     Theme.of(context)
                                         .primaryColor
                                         .withOpacity(0.3))),
                             onPressed: () {
-                              dialogDataPicker(false);
+                              dialogDataPicker(true);
                             },
                             child: Text(
-                              schedaTextEditController.inizioScheda!
-                                  .toDate()
-                                  .toString(),
+                             DateFormat('dd/MM/yyyy', "it_IT").format( schedaTextEditController.inizioScheda!.toDate()
+                                  ),
                               style: TextStyle(fontSize: 18),
                             )),
                       ),
@@ -1006,14 +1006,14 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                         height: 48,
                         child: ElevatedButton(
                             style: ButtonStyle(
-                                elevation: MaterialStatePropertyAll(0),
+                                elevation: WidgetStatePropertyAll(0),
                                 alignment: Alignment.centerLeft,
-                                shape: MaterialStateProperty.all<
+                                shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(48.0),
                                 )),
-                                backgroundColor: MaterialStatePropertyAll(
+                                backgroundColor: WidgetStatePropertyAll(
                                     Theme.of(context)
                                         .primaryColor
                                         .withOpacity(0.3))),
@@ -1021,9 +1021,9 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                               dialogDataPicker(false);
                             },
                             child: Text(
-                              schedaTextEditController.fineScheda!
-                                  .toDate()
-                                  .toString(),
+                              DateFormat('dd/MM/yyyy', "it_IT").format( schedaTextEditController.fineScheda!.toDate()
+                                  ),
+                             
                               style: TextStyle(fontSize: 18),
                             )),
                       ),
@@ -1090,9 +1090,9 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                             height: 48,
                             child: ElevatedButton.icon(
                               style: ButtonStyle(
-                                  elevation: MaterialStatePropertyAll(0),
+                                  elevation: WidgetStatePropertyAll(0),
                                   alignment: Alignment.centerLeft,
-                                  shape: MaterialStateProperty.all<
+                                  shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                     side:
@@ -1100,7 +1100,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                                     borderRadius: BorderRadius.circular(16.0),
                                   )),
                                   backgroundColor:
-                                      MaterialStatePropertyAll(Colors.red)),
+                                      WidgetStatePropertyAll(Colors.red)),
                               onPressed: () {
                                 setState(() {
                                   rimuoviAllenamento(index);
@@ -1171,14 +1171,14 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                               height: 48,
                               child: ElevatedButton.icon(
                                 style: ButtonStyle(
-                                    elevation: MaterialStatePropertyAll(0),
+                                    elevation: WidgetStatePropertyAll(0),
                                     alignment: Alignment.centerLeft,
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                             RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16.0),
                                     )),
-                                    backgroundColor: MaterialStatePropertyAll(
+                                    backgroundColor: WidgetStatePropertyAll(
                                         Theme.of(context).cardColor)),
                                 onPressed: () {
                                   setState(() {
@@ -1215,14 +1215,14 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                 height: 48,
                 child: ElevatedButton.icon(
                   style: ButtonStyle(
-                      elevation: MaterialStatePropertyAll(0),
+                      elevation: WidgetStatePropertyAll(0),
                       alignment: Alignment.centerLeft,
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0),
                       )),
-                      backgroundColor: MaterialStatePropertyAll(
-                          Theme.of(context).cardColor)),
+                      backgroundColor:
+                          WidgetStatePropertyAll(Theme.of(context).cardColor)),
                   onPressed: () {
                     setState(() {
                       aggiungiGiornataAllenamento();
@@ -1515,9 +1515,9 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
                       style: ButtonStyle(
                           elevation: const WidgetStatePropertyAll(1),
                           backgroundColor:
-                              const MaterialStatePropertyAll(Colors.red),
+                              const WidgetStatePropertyAll(Colors.red),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16.0),
                           )))),
@@ -1530,7 +1530,7 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
 
 // metodo per salvare scheda in db
 
-  void salvaScheda() {
+  Future<void> salvaScheda() async {
     List<Allenamento> lista_allenamenti = List.empty(growable: true);
 
     for (var a
@@ -1554,21 +1554,22 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
           giorniAssegnati: List.empty(growable: true),
           feedbackAllenamento: ""));
     }
+    DocumentReference docRef = _dbs
+    .getInstanceDb()
+    .collection(_dbs.getCollezioneUtenti())
+    .doc(coach.listaClientiSeguiti![_indexCliente].uid!)
+    .collection(_dbs.getCollezioneSchede())
+    .doc();
 
     Scheda scheda = Scheda(
         nomeScheda: schedaTextEditController.TextEditController!.text,
         allenamentiScheda: lista_allenamenti,
-        inizioScheda: Timestamp.now(),
-        fineScheda: Timestamp.now(),
-        idScheda: null,
+        inizioScheda:  schedaTextEditController.inizioScheda!,
+        fineScheda: schedaTextEditController.fineScheda!,
+        idScheda: docRef.id,
         allenamentiSvolti: List.empty(growable: true));
 
-    _dbs
-        .getInstanceDb()
-        .collection(_dbs.getCollezioneUtenti())
-        .doc(coach.listaClientiSeguiti![_indexCliente].uid!)
-        .collection(_dbs.getCollezioneSchede())
-        .doc()
+    await docRef
         .set(
           scheda.toFirestore(),
         );
@@ -1699,7 +1700,6 @@ class _paginaPrincipaleState extends State<paginaPrincipale> {
         }
       }
     }
-    print(coach.toFirestore().toString());
     _dbs
         .getInstanceDb()
         .collection(_dbs.getCollezioneCoaches())
